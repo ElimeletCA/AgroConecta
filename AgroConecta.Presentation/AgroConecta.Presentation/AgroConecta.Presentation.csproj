@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-AgroConecta.Presentation-5b97564a-ef00-459f-9279-eab1a2cd6dd1</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="Data\app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\AgroConecta.Presentation.Client\AgroConecta.Presentation.Client.csproj"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.*"/>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.*"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.*"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.*"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.*"/>
+        <PackageReference Include="Extensions.MudBlazor.StaticInput" Version="2.*"/>
+    </ItemGroup>
+
+</Project>
