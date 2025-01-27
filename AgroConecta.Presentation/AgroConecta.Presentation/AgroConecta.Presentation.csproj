@@ -22,4 +22,11 @@
         <PackageReference Include="Extensions.MudBlazor.StaticInput" Version="2.*"/>
     </ItemGroup>
 
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\appsettings.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\favicon.ico" />
+    </ItemGroup>
+
 </Project>
