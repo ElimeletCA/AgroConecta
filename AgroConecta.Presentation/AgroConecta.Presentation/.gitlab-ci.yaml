@@ -33,8 +33,6 @@ deploy:
     # install envsubst and ssh-add
     - apk add gettext openssh-client
   script:
-    # Add SSH host to known_hosts
-    - ssh-keyscan -H 104.234.67.129 >> ~/.ssh/known_hosts
     # create the new docker-compose.yml
     - envsubst < AgroConecta.Presentation/AgroConecta.Presentation/docker-compose.tmpl > docker-compose.yml
     # start ssh-agent and import ssh private key
@@ -46,8 +44,8 @@ deploy:
     - touch ~/.ssh/known_hosts
     - chmod 600 ~/.ssh/known_hosts
     - echo $SSH_HOST_KEY >> ~/.ssh/known_hosts
-    # upload docker-compose to the server
-    - scp docker-compose.yml gitlab-deploy@104.234.67.129:/home/agroconecta/
+    # Use ssh with StrictHostKeyChecking=no to skip host key verification
+    - scp -o StrictHostKeyChecking=no docker-compose.yml gitlab-deploy@104.234.67.129:/home/agroconecta/
     # docker login and restart services
     - ssh gitlab-deploy@104.234.67.129 "cd /home/agroconecta;
       docker login -u $CI_REGISTRY_USER
