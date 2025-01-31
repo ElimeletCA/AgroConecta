@@ -21,7 +21,7 @@ build:
       -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker build -f AgroConecta.Presentation/AgroConecta.Presentation/Dockerfile
+    - docker build --no-cache -f AgroConecta.Presentation/AgroConecta.Presentation/Dockerfile
       --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
       --tag $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
