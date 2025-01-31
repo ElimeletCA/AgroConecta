@@ -33,6 +33,8 @@ deploy:
     # install envsubst and ssh-add
     - apk add gettext openssh-client
   script:
+    # Add SSH host to known_hosts
+    - ssh-keyscan -H 104.234.67.129 >> ~/.ssh/known_hosts
     # create the new docker-compose.yml
     - envsubst < AgroConecta.Presentation/AgroConecta.Presentation/docker-compose.tmpl > docker-compose.yml
     # start ssh-agent and import ssh private key
