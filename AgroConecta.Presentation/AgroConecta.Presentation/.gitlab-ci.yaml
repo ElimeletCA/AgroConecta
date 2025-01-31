@@ -1,0 +1,53 @@
+#
+# .gitlab-ci.yaml
+# https://cylab.be/blog/229/continuous-deployment-with-gitlab-and-docker
+#
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  ## Run on a gitlab-runner that is configured with docker-in-docker
+  tags:
+    - dind
+  image: docker:latest
+  services:
+    - docker:latest-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $CI_REGISTRY_USER
+      -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest
+      --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+      --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+deploy:
+  stage: deploy
+  image: alpine
+  before_script:
+    # install envsubst and ssh-add
+    - apk add gettext openssh-client
+  script:
+    # create the new docker-compose.yml
+    - envsubst < docker-compose.tmpl > docker-compose.yml
+    # start ssh-agent and import ssh private key
+    - eval `ssh-agent`
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    # add server to list of known hosts
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - touch ~/.ssh/known_hosts
+    - chmod 600 ~/.ssh/known_hosts
+    - echo $SSH_HOST_KEY >> ~/.ssh/known_hosts
+    # upload docker-compose to the server
+    - scp docker-compose.yml gitlab-deploy@104.234.67.129:/home/agroconecta/
+    # docker login and restart services
+    - ssh gitlab-deploy@104.234.67.129 "cd /home/agroconecta;
+      docker login -u $CI_REGISTRY_USER
+      -p $CI_REGISTRY_PASSWORD $CI_REGISTRY;
+      docker compose up -d"
