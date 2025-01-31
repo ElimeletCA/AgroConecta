@@ -34,7 +34,7 @@ deploy:
     - apk add gettext openssh-client
   script:
     # create the new docker-compose.yml
-    - envsubst < docker-compose.tmpl > docker-compose.yml
+    - envsubst < AgroConecta.Presentation/AgroConecta.Presentation/docker-compose.tmpl > docker-compose.yml
     # start ssh-agent and import ssh private key
     - eval `ssh-agent`
     - ssh-add <(echo "$SSH_PRIVATE_KEY")
