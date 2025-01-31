@@ -13,7 +13,7 @@ build:
     - dind
   image: docker:latest
   services:
-    - docker:latest-dind
+    - docker:latest
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
