@@ -2,7 +2,7 @@ services:
   agroconecta-app:
     image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     networks:
-      - home_proxy_network
+      - enviroment_default
     environment:
       ConnectionStrings__DefaultConnection: Host=$POSTGRESQL_HOST;Database=$POSTGRESQL_DATABASE;Username=$POSTGRESQL_USER;Password=$POSTGRESQL_PASSWORD
       VIRTUAL_HOST: agroconecta.elimeletca.com
@@ -13,5 +13,5 @@ services:
       context: .
       dockerfile: AgroConecta.Presentation/AgroConecta.Presentation/Dockerfile
 networks:
-  home_proxy_network:
+  enviroment_default:
     external: true
