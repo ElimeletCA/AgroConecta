@@ -45,9 +45,9 @@ deploy:
     - chmod 600 ~/.ssh/known_hosts
     - echo $SSH_HOST_KEY >> ~/.ssh/known_hosts
     # Use ssh with StrictHostKeyChecking=no to skip host key verification
-    - scp -o StrictHostKeyChecking=no docker-compose.yml gitlab-deploy@104.234.67.129:/home/agroconecta/
+    - scp -o StrictHostKeyChecking=no docker-compose.yml gitlab-deploy@23.171.9.126:/home/agroconecta/
     # docker login and restart services
-    - ssh gitlab-deploy@104.234.67.129 "cd /home/agroconecta;
+    - ssh gitlab-deploy@23.171.9.126 "cd /home/agroconecta;
       docker login -u $CI_REGISTRY_USER
       -p $CI_REGISTRY_PASSWORD $CI_REGISTRY;
       docker compose up -d"
