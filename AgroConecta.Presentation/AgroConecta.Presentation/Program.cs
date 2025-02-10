@@ -1,3 +1,5 @@
+using AgroConecta.Presentation.Client.Agents.Interfaces;
+using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,19 +10,32 @@ using AgroConecta.Presentation.Components.Account;
 using AgroConecta.Presentation.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add MudBlazor services
 builder.Services.AddMudServices();
+builder.Services.AddHttpClient<IInitialAgent, InitialAgent>(client =>
+{
+    // Configurar un servicio de URL base en tiempo de ejecución.
+    var httpContextAccessor = builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>();
+    var request = httpContextAccessor.HttpContext?.Request;
 
+    if (request != null)
+    {
+        var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
+        client.BaseAddress = new Uri(baseUrl);
+    }
+    else
+    {
+        throw new InvalidOperationException("No se pudo determinar la URL base.");
+    }
+});
+builder.Services.AddHttpContextAccessor();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
-
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>();
-
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(options =>
     {
@@ -42,7 +57,11 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+    });;
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
@@ -79,6 +98,7 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(AgroConecta.Presentation.Client._Imports).Assembly);
+app.MapControllers();
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
