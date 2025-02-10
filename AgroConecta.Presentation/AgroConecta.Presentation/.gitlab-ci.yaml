@@ -14,7 +14,6 @@ build:
   image: docker:stable
   services:
     - name: docker:stable
-      privileged: true
   variables:
     DOCKER_TLS_CERTDIR: ""
   before_script:
