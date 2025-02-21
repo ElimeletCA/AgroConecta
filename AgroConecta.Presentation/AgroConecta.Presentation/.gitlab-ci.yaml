@@ -11,11 +11,11 @@ build:
   ## Run on a gitlab-runner that is configured with docker-in-docker
   tags:
     - dind
-  image: docker:stable
+  image: docker:latest
   services:
-    - name: docker:stable
+    - docker:latest
   variables:
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - docker login -u $CI_REGISTRY_USER
       -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
