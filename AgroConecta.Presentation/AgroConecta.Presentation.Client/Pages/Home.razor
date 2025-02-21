@@ -1,5 +1,96 @@
 ﻿@page "/"
 
 
-<PageTitle>Home</PageTitle>
+<PageTitle>AgroConecta</PageTitle>
 
+<MudContainer MaxWidth="MaxWidth.Large">
+      
+      <!-- Sección Hero -->
+      <MudPaper Class="pa-6" Elevation="2" 
+                Style="background-image: url('../images/hero-placeholder.jpg'); background-size: cover; background-position: center; color: white; margin-top:20px;">
+        <MudText Typo="Typo.h2">Bienvenido a AgroConecta</MudText>
+        <MudText Typo="Typo.h6">Conectando propietarios, agricultores e inversionistas para impulsar la agricultura en la Republica Dominicana</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" Style="display:block; margin: 0 auto;">
+          Descubre Más
+        </MudButton>
+      </MudPaper>
+      
+      <MudGrid Class="mt-8" Spacing="3">
+        <!-- Propietarios -->
+        <MudItem xs="12" sm="4">
+          <MudPaper Elevation="3" Class="pa-4" Style="text-align: center;">
+            <!-- Imagen de Propietarios -->
+            <div style="width: 100%; height: 200px; overflow: hidden;">
+              <img src="/images/inicio-propietario.jpg" alt="Propietarios" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <MudText Typo="Typo.h5" Class="mt-2">Propietarios</MudText>
+            <MudText>Registra y administra tus propiedades y contratos de arrendamiento.</MudText>
+          </MudPaper>
+        </MudItem>
+        <!-- Agricultores -->
+        <MudItem xs="12" sm="4">
+          <MudPaper Elevation="3" Class="pa-4" Style="text-align: center;">
+            <!-- Imagen de Agricultores -->
+            <div style="width: 100%; height: 200px; overflow: hidden;">
+              <img src="/images/inicio-agricultor.jpg" alt="Agricultores" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <MudText Typo="Typo.h5" Class="mt-2">Agricultores</MudText>
+            <MudText>Crea tu perfil agrícola, busca terrenos y gestiona proyectos de cultivo.</MudText>
+          </MudPaper>
+        </MudItem>
+        <!-- Inversionistas -->
+        <MudItem xs="12" sm="4">
+          <MudPaper Elevation="3" Class="pa-4" Style="text-align: center;">
+            <!-- Imagen de Inversionistas -->
+            <div style="width: 100%; height: 200px; overflow: hidden;">
+              <img src="/images/inicio-inversionista.jpg" alt="Inversionistas" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <MudText Typo="Typo.h5" Class="mt-2">Inversionistas</MudText>
+            <MudText>Explora y financia proyectos agrícolas innovadores.</MudText>
+          </MudPaper>
+        </MudItem>
+      </MudGrid>
+
+      
+      <!-- Sección de Características del Sistema -->
+      <MudDivider Class="my-6" />
+      <MudText Typo="Typo.h4" >Características del Sistema</MudText>
+      <MudGrid Class="mt-4" Spacing="3">
+        <MudItem xs="12" sm="6">
+          <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.subtitle1"><strong>Gestión Integral de Propiedades</strong></MudText>
+            <MudText>Administra detalles, ubicaciones y condiciones de arrendamiento de terrenos.</MudText>
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.subtitle1"><strong>Contratos Digitales</strong></MudText>
+            <MudText>Genera y firma acuerdos digitales de manera segura.</MudText>
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.subtitle1"><strong>Gestión de Proyectos Agrícolas</strong></MudText>
+            <MudText>Crea, monitorea y evalúa planes de siembra y cultivos.</MudText>
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.subtitle1"><strong>Financiamiento e Inversión</strong></MudText>
+            <MudText>Solicita y gestiona financiamiento, y monitoriza tus inversiones.</MudText>
+          </MudPaper>
+        </MudItem>
+      </MudGrid>
+      <MudContainer Class="d-flex align-center justify-center mud-width-full">
+
+      <!-- Sección de Llamado a la Acción -->
+      <MudPaper Class="pa-6 mt-8" Elevation="1" Style="background-color: #e0f7fa;">
+        <MudText Typo="Typo.h5" >¡Únete a la revolución agrícola con AgroConecta!</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" Style="display:block; margin: 0 auto;">
+          Regístrate Ahora
+        </MudButton>
+      </MudPaper>
+      </MudContainer>
+      <div style="height: 120px;"></div>
+
+    </MudContainer>
