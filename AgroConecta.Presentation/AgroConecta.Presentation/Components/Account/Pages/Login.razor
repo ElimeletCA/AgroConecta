@@ -10,9 +10,9 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Log in</PageTitle>
+<PageTitle>Iniciar sesión</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Log in</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">Iniciar sesión</MudText>
 
 <MudGrid>
     <MudItem md="6">
@@ -20,38 +20,45 @@
         <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
             <DataAnnotationsValidator/>
 
-            <MudText GutterBottom="true" Typo="Typo.body1">Agroconecta is working</MudText>
 
             <MudGrid>
                 <MudItem md="12">
                     <MudStaticTextField For="@(() => Input.Email)" @bind-Value="Input.Email"
-                                        Label="Email" Placeholder="name@example.com"
+                                        Label="Correo electrónico" Placeholder="nombre@ejemplo.com"
                                         UserAttributes="@(new() { { "autocomplete", "true" }, { "aria-required", "true" } })"/>
                 </MudItem>
                 <MudItem md="12">
                     <MudStaticTextField For="@(() => Input.Password)" @bind-Value="Input.Password"
-                                        Label="Password" InputType="InputType.Password" Placeholder="password"
+                                        Label="Contraseña" InputType="InputType.Password" Placeholder="contraseña"
                                         UserAttributes="@(new() { { "autocomplete", "current-password" }, { "aria-required", "true" } })"/>
                 </MudItem>
                 <MudItem md="12">
-                    <MudStaticCheckBox For="@(() => Input.RememberMe)" @bind-Value="Input.RememberMe">Remember me</MudStaticCheckBox>
+                    <MudStaticCheckBox For="@(() => Input.RememberMe)" @bind-Value="Input.RememberMe">
+                        Recuérdame
+                    </MudStaticCheckBox>
                 </MudItem>
                 <MudItem md="12">
-                    <MudStaticButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" FormAction="FormAction.Submit">Log in</MudStaticButton>
+                    <MudStaticButton Variant="Variant.Filled" Color="Color.Primary" FullWidth="true" FormAction="FormAction.Submit">
+                        Iniciar sesión
+                    </MudStaticButton>
                 </MudItem>
             </MudGrid>
         </EditForm>
 
         <MudGrid Class="mt-4">
             <MudItem md="12">
-                <MudLink Href="Account/ForgotPassword">Forgot your password?</MudLink><br/>
-                <MudLink Href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</MudLink><br/>
-                <MudLink Href="Account/ResendEmailConfirmation">Resend email confirmation</MudLink>
+                <MudLink Href="Account/ForgotPassword">¿Olvidaste tu contraseña?</MudLink><br/>
+                <MudLink Href="@(NavigationManager.GetUriWithQueryParameters("Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">
+                    Regístrate como nuevo usuario
+                </MudLink><br/>
+                <MudLink Href="Account/ResendEmailConfirmation">Reenviar confirmación de correo</MudLink>
             </MudItem>
         </MudGrid>
     </MudItem>
     <MudItem md="6">
-        <MudText GutterBottom="true" Typo="Typo.body1">Use another service to log in.</MudText>
+        <MudText GutterBottom="true" Typo="Typo.body1">
+            Utiliza otro servicio para iniciar sesión.
+        </MudText>
 
         <ExternalLoginPicker/>
     </MudItem>
@@ -70,19 +77,19 @@
     {
         if (HttpMethods.IsGet(HttpContext.Request.Method))
         {
-            // Clear the existing external cookie to ensure a clean login process
+            // Limpiar la cookie externa existente para asegurar un proceso de inicio de sesión limpio
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         }
     }
 
     public async Task LoginUser()
     {
-        // This doesn't count login failures towards account lockout
-        // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+        // Esto no cuenta los intentos fallidos de inicio de sesión para bloquear la cuenta.
+        // Para habilitar el bloqueo tras fallos de contraseña, establece lockoutOnFailure: true.
         var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
         if (result.Succeeded)
         {
-            Logger.LogInformation("User logged in.");
+            Logger.LogInformation("El usuario ha iniciado sesión.");
             RedirectManager.RedirectTo(ReturnUrl);
         }
         else if (result.RequiresTwoFactor)
@@ -93,24 +100,26 @@
         }
         else if (result.IsLockedOut)
         {
-            Logger.LogWarning("User account locked out.");
+            Logger.LogWarning("La cuenta del usuario está bloqueada.");
             RedirectManager.RedirectTo("Account/Lockout");
         }
         else
         {
-            errorMessage = "Error: Invalid login attempt.";
+            errorMessage = "Error: Intento de inicio de sesión inválido.";
         }
     }
 
     private sealed class InputModel
     {
-        [Required] [EmailAddress] public string Email { get; set; } = "";
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = "";
 
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = "";
 
-        [Display(Name = "Remember me?")] public bool RememberMe { get; set; }
+        [Display(Name = "¿Recordarme?")]
+        public bool RememberMe { get; set; }
     }
-
 }
