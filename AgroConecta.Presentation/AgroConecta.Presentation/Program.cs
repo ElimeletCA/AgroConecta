@@ -46,7 +46,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes("AGROCONECTA")),
+                .GetBytes("4u4LqxA2IaMZQs9c9AP77fMdcV3YxzVm8EUcqvaw5VR7JA4ZcwrDGITVPajPvfRa")),
             ValidateIssuer = false,
             ValidateAudience = false
         };

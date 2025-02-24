@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces
+@using AgroConecta.Presentation.Client.Components.Cuenta
 @inject HttpClient Http
 @*
 @inject IInitialAgent initialAgent
@@ -17,7 +18,7 @@ Welcome to your new app.
 <Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
     <Authorized>
         <p>Bienvenido @context.User.Identity?.Name!</p>
-        <CerrarSesion />
+        <BtnCerrarSesion />
     </Authorized>
     <NotAuthorized>
         <p>No estas autorizado</p>

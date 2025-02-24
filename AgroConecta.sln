@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroConecta.Presentation.Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroConecta.Shared", "AgroConecta.Shared\AgroConecta.Shared.csproj", "{A5C1618D-1BEC-4741-BBBF-3AF3860BC6D7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroConecta.Domain", "AgroConecta.Domain\AgroConecta.Domain.csproj", "{14DDB551-DA4D-4717-BFD5-BA2EA8A7BA6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{A5C1618D-1BEC-4741-BBBF-3AF3860BC6D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5C1618D-1BEC-4741-BBBF-3AF3860BC6D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5C1618D-1BEC-4741-BBBF-3AF3860BC6D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14DDB551-DA4D-4717-BFD5-BA2EA8A7BA6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14DDB551-DA4D-4717-BFD5-BA2EA8A7BA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14DDB551-DA4D-4717-BFD5-BA2EA8A7BA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14DDB551-DA4D-4717-BFD5-BA2EA8A7BA6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

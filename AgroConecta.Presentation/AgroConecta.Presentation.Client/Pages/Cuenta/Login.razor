@@ -8,12 +8,13 @@
 
 <h3>Login</h3>
 <br />
-<label>Usuario</label>
-<input type="text" class="form-control" @bind-value=usuario.Email />
-<label>Clave</label>
-<input type="password" class="form-control" @bind-value=usuario.Password />
+<MudText Typo="Typo.h6">Usuario</MudText>
+<MudTextField @bind-Value="usuario.Email" Label="Correo electronico" Variant="Variant.Outlined"></MudTextField>
+<MudText Typo="Typo.h6">Clave</MudText>
+<MudTextField @bind-Value="usuario.Password" Label="Password" Variant="Variant.Outlined"></MudTextField>
 <br />
-<button class="btn btn-success" @onclick=IniciarSesion>Ingresar</button>
+<MudButton Variant="Variant.Filled" @onclick=IniciarSesion Color="Color.Primary">Ingresar</MudButton>
+No esta registrado?<MudLink Href="/Cuenta/Registro">Crear una cuenta</MudLink>
 
 @code {
     string token = null;
