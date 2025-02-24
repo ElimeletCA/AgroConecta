@@ -1,25 +1,25 @@
-﻿@implements IDisposable
+﻿@using AgroConecta.Presentation.Client.Components.Cuenta
+@implements IDisposable
 
 @inject NavigationManager NavigationManager
 
 <MudNavMenu>
+    @*
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
-    <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>
+    *@
+    @*<MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
+    <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>*@
     <AuthorizeView>
         <Authorized>
+            <MudNavLink Href="Inicio" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Inicio</MudNavLink>
+            @*
             <MudNavLink Href="Cuenta/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
-            <form action="Cuenta/Logout" method="post">
-                <AntiforgeryToken/>
-                <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
-                <button type="submit" class="mud-nav-link mud-ripple">
-                    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Logout
-                </button>
-            </form>
+            *@
+            <BtnCerrarSesion/>
         </Authorized>
         <NotAuthorized>
-            <MudNavLink Href="Cuenta/Registro" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Register</MudNavLink>
-            <MudNavLink Href="Cuenta/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Login</MudNavLink>
+            <MudNavLink Href="Cuenta/Registro" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Registrar</MudNavLink>
+            <MudNavLink Href="Cuenta/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Iniciar sesion </MudNavLink>
         </NotAuthorized>
     </AuthorizeView>
 </MudNavMenu>

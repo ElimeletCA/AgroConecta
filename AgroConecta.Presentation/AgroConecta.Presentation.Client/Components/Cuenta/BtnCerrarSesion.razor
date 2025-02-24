@@ -2,8 +2,9 @@
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<button class="btn btn-primary" @onclick=Salir>Cerrar Sesion</button>
-
+<button @onclick=Salir class="mud-nav-link mud-ripple">
+    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Cerrar Sesion
+</button>
 @code {
     async Task Salir()
     {
