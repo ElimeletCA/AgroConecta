@@ -21,4 +21,8 @@
       <ProjectReference Include="..\..\AgroConecta.Shared\AgroConecta.Shared.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\images\landing\" />
+    </ItemGroup>
+
 </Project>
