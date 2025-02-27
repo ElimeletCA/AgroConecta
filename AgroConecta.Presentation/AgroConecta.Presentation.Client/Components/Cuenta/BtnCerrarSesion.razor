@@ -1,0 +1,14 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IJSRuntime JS
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<button @onclick=Salir class="mud-nav-link mud-ripple">
+    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Cerrar Sesion
+</button>
+@code {
+    async Task Salir()
+    {
+        await JS.InvokeVoidAsync("localStorage.removeItem", "Token");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
+}

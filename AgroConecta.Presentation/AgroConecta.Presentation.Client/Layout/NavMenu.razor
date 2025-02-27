@@ -1,59 +1,28 @@
-﻿@implements IDisposable
+﻿@using AgroConecta.Presentation.Client.Components.Cuenta
+@implements IDisposable
 
 @inject NavigationManager NavigationManager
 
-<MudContainer Class="d-flex align-center justify-center mud-width-full">
+<MudNavMenu>
+    @*
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+    *@
+    @*<MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
+    <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>*@
     <AuthorizeView>
         <Authorized>
-            <MudNavLink Href="auth" Match="NavLinkMatch.Prefix">
-                <MudStack Direction="Column" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
-                    <MudIcon Icon="@Icons.Material.Filled.Work" Size="Size.Large"/>
-                    <MudText Typo="Typo.h6">Proyectos</MudText>
-                </MudStack>
-            </MudNavLink>
-            <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix">
-                <MudStack Direction="Column" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
-                    <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Large"/>
-                    <MudText Typo="Typo.h6">@context.User.Identity?.Name</MudText>
-                </MudStack>
-            </MudNavLink>
-            <form action="Account/Logout" method="post">
-                <AntiforgeryToken/>
-                <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
-                <MudNavLink>
-                    <button type="submit">
-                        <MudStack Direction="Column" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
-                            <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Large"/>
-                            <MudText Typo="Typo.h6">Salir</MudText>
-                        </MudStack>
-                    </button>
-                </MudNavLink>
-
-            </form>
+            <MudNavLink Href="Inicio" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Inicio</MudNavLink>
+            @*
+            <MudNavLink Href="Cuenta/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
+            *@
+            <BtnCerrarSesion/>
         </Authorized>
         <NotAuthorized>
-            <MudNavLink Href="" Match="NavLinkMatch.All">
-                <MudStack Direction="Column" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
-                    <MudIcon Icon="@Icons.Material.Filled.Home" Size="Size.Large"/>
-                    <MudText Typo="Typo.h6">Inicio</MudText>
-                </MudStack>
-            </MudNavLink>
-            <MudNavLink Href="Account/Register" Match="NavLinkMatch.Prefix" >
-                <MudStack Direction="Column" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
-                    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Large"/>
-                    <MudText Typo="Typo.h6">Registrarse</MudText>
-                </MudStack>
-            </MudNavLink>
-            <MudNavLink Href="Account/Login" Match="NavLinkMatch.Prefix">
-                <MudStack Direction="Column" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
-                    <MudIcon Icon="@Icons.Material.Filled.Password" Size="Size.Large"/>
-                    <MudText Typo="Typo.h6">Login</MudText>
-                </MudStack>
-            </MudNavLink>
+            <MudNavLink Href="Cuenta/Registro" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Registrar</MudNavLink>
+            <MudNavLink Href="Cuenta/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Iniciar sesion </MudNavLink>
         </NotAuthorized>
     </AuthorizeView>
-
-</MudContainer >
+</MudNavMenu>
 
 
 @code {

@@ -1,13 +1,19 @@
 ﻿@inherits LayoutComponentBase
 
 <MudThemeProvider Theme="MyCustomTheme" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 <MudLayout>
-    <MudAppBar Bottom="true" Fixed="true" Color="Color.Primary" Elevation="1">
-        <NavMenu></NavMenu>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <MudText Typo="Typo.h5" Class="ml-3">AgroConecta</MudText>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
     </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu/>
+    </MudDrawer>
     <MudMainContent Class="mt-16 pa-4">
         @Body
     </MudMainContent>
@@ -21,6 +27,7 @@
 </div>
 
 @code {
+
     MudTheme MyCustomTheme = new MudTheme()
     {
         PaletteLight = new PaletteLight()
@@ -40,6 +47,7 @@
             DrawerWidthRight = "300px"
         }
     };
+
     private bool _drawerOpen = true;
 
     private void DrawerToggle()
