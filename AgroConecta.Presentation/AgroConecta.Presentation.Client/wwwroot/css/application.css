@@ -1,3 +1,32 @@
 :root {
     
 }
+body {
+    overflow-x: hidden;
+}
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+.animated-section-from-right {
+    animation: slideInFromRight 3s ease-out forwards;
+}
+.animated-section-from-left {
+    animation: slideInFromLeft 3s ease-out forwards; 
+}
