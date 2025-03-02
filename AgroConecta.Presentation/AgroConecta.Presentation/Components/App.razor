@@ -26,6 +26,10 @@
 <script src="js/aos/aos.js"></script>
 <script>
     AOS.init();
+    function checkIfAsideIsOpen() {
+        var aside = document.getElementById('drawer-navigation');
+        return aside.classList.contains('transform-none');
+    }
 </script>
 </body>
 
