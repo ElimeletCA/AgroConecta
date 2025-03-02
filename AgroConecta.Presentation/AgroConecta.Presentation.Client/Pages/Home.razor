@@ -9,6 +9,15 @@
 
 <PageTitle>Bienvenido - AgroConecta</PageTitle>
 <MudButton Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+<br/>
+<br/>
+<br/>
+<MudText Class="pb-1" HtmlTag="label" for="input_prueba"  Color="Color.Tertiary" >First name</MudText>
+<MudTextField Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined">  </MudTextField>
+
+<MudTextField Class="flow-input" InputId="" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined">
+
+  </MudTextField>
 
 @*
 <MudContainer MaxWidth="MaxWidth.Large">
@@ -163,5 +172,9 @@ else
     }
 }
 *@
+@code{
 
+  private string Prueba;
+
+}
 
