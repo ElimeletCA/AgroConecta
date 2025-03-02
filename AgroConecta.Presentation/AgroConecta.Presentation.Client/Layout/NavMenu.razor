@@ -18,8 +18,20 @@
             <BtnCerrarSesion/>
         </Authorized>
         <NotAuthorized>
-            <MudNavLink Href="Cuenta/Registro" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Registrar</MudNavLink>
-            <MudNavLink Href="Cuenta/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Iniciar sesion </MudNavLink>
+            <MudPaper Width="250px" Elevation="0" Class="py-3">
+                <MudNavMenu Class="pa-2" Rounded="true" Margin="Margin.Dense" Color="Color.Success">
+                    <MudNavLink Href="Home" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+                    <MudNavLink Href="Bla" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Storage">Servers</MudNavLink>
+                    <MudNavLink Href="" Disabled="true">Billing</MudNavLink>
+                    <MudNavGroup Title="Settings" Expanded="true">
+                        <MudNavLink Href="">Users</MudNavLink>
+                        <MudNavLink Href="">Security</MudNavLink>
+                    </MudNavGroup>
+                    <MudNavLink Href="">About</MudNavLink>
+                </MudNavMenu>
+            </MudPaper>
+            @*<MudNavLink Href="Cuenta/Registro" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Registrar</MudNavLink>
+            <MudNavLink Href="Cuenta/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Iniciar sesion </MudNavLink>*@
         </NotAuthorized>
     </AuthorizeView>
 </MudNavMenu>
