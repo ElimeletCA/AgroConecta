@@ -1,9 +1,18 @@
 :root {
 
 }
-.mud-input-outlined-border { border-radius: 14px !important; }
+.mud-input-outlined-border { border-radius: 16px !important; }
 .flow-input{
     background-color: rgb(249, 250, 251); border-radius: 16px;
+}
+.flow-select{
+    background-color: rgb(249, 250, 251); border-radius: 16px;
+}
+.flow-button{
+    border-radius: 8px !important;
+}
+.mud-popover-open{
+    top: 395px !important;
 }
 body {
     overflow-x: hidden;

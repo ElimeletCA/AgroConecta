@@ -2,22 +2,29 @@
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces
 @using AgroConecta.Presentation.Client.Components.Cuenta
 @inject HttpClient Http
-@*
-@inject IInitialAgent initialAgent
-*@
 @inject IJSRuntime JS
 
 <PageTitle>Bienvenido - AgroConecta</PageTitle>
-<MudButton Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+<MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+<MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
+
 <br/>
 <br/>
 <br/>
 <MudText Class="pb-1" HtmlTag="label" for="input_prueba"  Color="Color.Tertiary" >First name</MudText>
 <MudTextField Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined">  </MudTextField>
-
-<MudTextField Class="flow-input" InputId="" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined">
-
-  </MudTextField>
+<br/>
+<br/>
+<br/>
+<MudText Class="pb-1" HtmlTag="label" for="select_prueba"  Color="Color.Tertiary" >Select</MudText>
+<div style="max-width: 300px;">
+<MudSelect Class="flow-select"  @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"  TransformOrigin="Origin.TopCenter">
+  @foreach (var state in _states)
+  {
+    <MudSelectItem Value="state">@state</MudSelectItem>
+  }
+</MudSelect>
+</div>
 
 @*
 <MudContainer MaxWidth="MaxWidth.Large">
@@ -175,6 +182,21 @@ else
 @code{
 
   private string Prueba;
+  string _value;
+
+  private string[] _states =
+  {
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+    "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+    "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
+    "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
+    "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana",
+    "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
+    "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
+    "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+    "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
+    "Washington", "West Virginia", "Wisconsin", "Wyoming"
+  };
 
 }
 
