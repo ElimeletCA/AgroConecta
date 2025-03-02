@@ -6,21 +6,46 @@
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
-<MudLayout>
+@*<MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        <MudText Typo="Typo.h5" Class="ml-3">AgroConecta</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Tertiary" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        $1$
+        <img src="/images/landing/LOGO-AGROCONECTA.png" class="mr-3 h-8" alt="AgroConecta Logo" />
+        #1#
+        <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
+        <MudText Color="Color.Tertiary" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConecta</MudText>
         <MudSpacer/>
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Tertiary" Edge="Edge.End"/>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
         <NavMenu/>
     </MudDrawer>
-    <MudMainContent Class="mt-16 pa-4">
-        @Body
+    <MudMainContent Class="pt-16 px-16">
+        <MudContainer Class="mt-6">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>*@
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Tertiary" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+        <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
+        <MudText Color="Color.Tertiary" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConecta</MudText>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Tertiary" Edge="Edge.End"/>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">My App</MudText>
+        </MudDrawerHeader>
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent Class="pt-16 px-16">
+        <MudContainer Class="mt-6">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
-
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -36,11 +61,19 @@
         {
             Primary = Colors.Green.Default,
             Secondary = Colors.Shades.White,
-            AppbarBackground = Colors.Green.Default,
+            Tertiary = Colors.Shades.Black,
+            AppbarBackground = Colors.Shades.White,
         },
         PaletteDark = new PaletteDark()
         {
             Primary = Colors.Green.Lighten1
+        },
+        Typography = new Typography()
+        {
+            Default = new Default()
+            {
+                FontFamily = new[] { "Inter", "sans-serif" }
+            }
         },
 
         LayoutProperties = new LayoutProperties()
