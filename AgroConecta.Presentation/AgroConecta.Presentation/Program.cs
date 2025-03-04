@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using AgroConecta.Presentation.Client.Pages;
 using AgroConecta.Presentation.Components;
-using AgroConecta.Presentation.Components.Account;
 using AgroConecta.Presentation.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
