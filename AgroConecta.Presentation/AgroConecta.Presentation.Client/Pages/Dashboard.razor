@@ -12,13 +12,13 @@
 <br/>
 <br/>
 <MudText Class="pb-1" HtmlTag="label" for="input_prueba"  Color="Color.Tertiary" >First name</MudText>
-<MudTextField Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined">  </MudTextField>
+<MudTextField Margin="Margin.Dense"  Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined">  </MudTextField>
 <br/>
 <br/>
 <br/>
-<MudText Class="pb-1" HtmlTag="label" for="select_prueba"  Color="Color.Tertiary" >Select</MudText>
+<MudText Margin="Margin.Dense"  Class="pb-1" HtmlTag="label" for="select_prueba"  Color="Color.Tertiary" >Select</MudText>
 <div style="max-width: 300px;">
-<MudSelect Class="flow-select"  @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"  TransformOrigin="Origin.TopCenter">
+<MudSelect Margin="Margin.Dense"  Class="flow-select"  @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"  TransformOrigin="Origin.TopCenter">
   @foreach (var state in _states)
   {
     <MudSelectItem Value="state">@state</MudSelectItem>

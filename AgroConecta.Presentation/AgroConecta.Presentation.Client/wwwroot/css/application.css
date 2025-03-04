@@ -11,8 +11,9 @@
 .flow-button{
     border-radius: 8px !important;
 }
+
 .mud-popover-open{
-    top: 450px !important;
+    max-height: 200px !important;
 }
 body {
     overflow-x: hidden;
