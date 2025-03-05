@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using AgroConecta.Presentation.Client.Pages;
 using AgroConecta.Presentation.Components;
-using AgroConecta.Presentation.Data;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.EntityFrameworkCore;
-using AgroConecta.Presentation.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AgroConecta.Infrastructure.Repositorio.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add MudBlazor services
@@ -32,7 +32,7 @@ builder.Services.AddHttpContextAccessor();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
     {
         options.UseNpgsql(connectionString);
     }
@@ -65,7 +65,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
+        var context = services.GetRequiredService<AppDbContext>();
         context.Database.Migrate(); // Aplica migraciones pendientes
     }
     catch (Exception ex)

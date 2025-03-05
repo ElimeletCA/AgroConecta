@@ -7,8 +7,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using AgroConecta.Domain.Security;
-using AgroConecta.Presentation.Data;
+using AgroConecta.Domain.System.Seguridad;
+using AgroConecta.Infrastructure.Repositorio.Data;
 using AgroConecta.Shared.Security;
 
 namespace AgroConecta.Presentation.Controllers;
@@ -17,8 +17,8 @@ namespace AgroConecta.Presentation.Controllers;
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        public UsuarioController(ApplicationDbContext context)
+        private readonly AppDbContext _context;
+        /*public UsuarioController(ApplicationDbContext context)
         {
 
             _context = context;
@@ -121,7 +121,7 @@ namespace AgroConecta.Presentation.Controllers;
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
-        }
+        }*/
 
 
 
