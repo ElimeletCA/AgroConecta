@@ -12,7 +12,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AgroConecta.Application.Seeds;
+using AgroConecta.Application.Servicios.Interfaces.Seguridad;
+using AgroConecta.Application.Servicios.Seguridad;
+using AgroConecta.Domain.System.Seguridad;
 using AgroConecta.Infrastructure.Repositorio.Data;
+using AgroConecta.Presentation.Seguridad;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +36,7 @@ builder.Services.AddCascadingAuthenticationState();//Agregado
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -38,18 +45,47 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     }
 
 );
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 8;
+    options.SignIn.RequireConfirmedEmail = true;
+    options.Lockout.AllowedForNewUsers = false;
+
+}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+}).AddJwtBearer(options =>
+{   options.TokenValidationParameters = new TokenValidationParameters()
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        ValidateActor = true,
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        RequireExpirationTime=true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = ctx =>
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                .GetBytes("4u4LqxA2IaMZQs9c9AP77fMdcV3YxzVm8EUcqvaw5VR7JA4ZcwrDGITVPajPvfRa")),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
-    });//agregado
+            ctx.Request.Cookies.TryGetValue("tokenacceso", out var accessToken);
+            if (!string.IsNullOrEmpty(accessToken))
+                ctx.Token = accessToken;
+            return Task.CompletedTask;
+        }
+    };
+});
+
+builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermisoPolicyProvider>();
+builder.Services.AddScoped<IAuthorizationHandler, AutorizacionPermisoHandler>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -63,6 +99,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+    var logger = loggerFactory.CreateLogger("app");
     try
     {
         var context = services.GetRequiredService<AppDbContext>();
@@ -70,8 +108,23 @@ using (var scope = app.Services.CreateScope())
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+    }
+    try
+    {
+        logger.LogInformation("Comenzando seed de datos iniciales");
+
+        var userManager = services.GetRequiredService<UserManager<Usuario>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        await DefaultRoles.SembrarAsync(userManager, roleManager);
+        await DefaultUsers.SembrarUsuarioAdministradorAsync(userManager, roleManager, builder.Configuration["DefaultUser:Password"]);
+        logger.LogInformation("Seed de datos iniciales terminado");
+        logger.LogInformation("Iniciando Aplicacicon...");
+    }
+    catch (Exception ex)
+    {
+        logger.LogWarning(ex, "Error al enviar los datos seed a la DB");
+
     }
 }
 // Configure the HTTP request pipeline.
@@ -93,7 +146,9 @@ app.UseAntiforgery();
 app.MapControllers();//agregado
 app.UseAuthentication();
 app.UseAuthorization();
-
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller=Auth}/{action=Login}/{id?}");
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(AgroConecta.Presentation.Client._Imports).Assembly);
