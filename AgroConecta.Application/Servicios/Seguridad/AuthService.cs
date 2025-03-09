@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Domain.System.Seguridad;
+using AgroConecta.Shared.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -30,7 +31,7 @@ public class AuthService : IAuthService
             var result = await _userManager.CreateAsync(usuario, usuario.pasword_without_hash);
             return result.Succeeded;
         }
-        public async Task<bool> LoginUsuario(Usuario usuario)
+        public async Task<bool> LoginUsuario(UsuarioDTO usuario)
         {
             try
             {

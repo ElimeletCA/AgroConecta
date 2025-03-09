@@ -29,7 +29,8 @@ public class EmailHelper
 
             try
             {
-                client.Send(mailMessage);
+                var mensaje = mailMessage;
+                //client.Send(mailMessage);
                 return true;
             }
             catch (Exception ex)
@@ -55,7 +56,8 @@ public class EmailHelper
 
             try
             {
-                client.Send(mailMessage);
+                var mensaje = mailMessage;
+                //client.Send(mailMessage);
                 return true;
             }
             catch (Exception ex)

@@ -1,10 +1,25 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace AgroConecta.Shared.Security;
 
 public class UsuarioDTO
 {
+    public string nombre_completo { get; set; } = string.Empty;
+    public DateTime fecha_nacimiento { get; set; }
+    public string UserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    //Aqui se colocan todos los demas datos que tenga el usuario como nombres, direcciones, fechas, edad, estados etc
+    public string pasword_without_hash { get; set; }
+    public int[]? perfiles_id { get; set; }
+    public string two_factor_code { get; set; }
+    
+    //Propiedades navigacionales
 
-    public string Username { get; set; } = string.Empty;
+    // public ICollection<Terreno>? terrenos { get; set; }
+    //
+    // public ICollection<Arrendamiento>? arrendamientos { get; set; }
+    //
+    // public ICollection<Proyecto>? proyectos { get; set; }
+    // public ICollection<Perfil>? perfiles { get; set; }
+    
+
 }

@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AgroConecta.Domain\AgroConecta.Domain.csproj" />
+      <ProjectReference Include="..\AgroConecta.Shared\AgroConecta.Shared.csproj" />
     </ItemGroup>
 
 </Project>

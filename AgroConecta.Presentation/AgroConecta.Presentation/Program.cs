@@ -27,11 +27,13 @@ builder.Services.AddMudServices();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
-// builder.Services.AddAuthorizationCore();//Agregado
-// builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();//Agregado
+builder.Services.AddAuthorizationCore();//Agregado
+builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();//Agregado
+
 builder.Services.AddControllers();//agregado
 builder.Services.AddHttpClient();//Agregado
-// builder.Services.AddCascadingAuthenticationState();//Agregado
+builder.Services.AddCascadingAuthenticationState();//Agregado
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
@@ -52,40 +54,21 @@ builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
     options.Lockout.AllowedForNewUsers = false;
 
 }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-}).AddJwtBearer(options =>
-{   options.TokenValidationParameters = new TokenValidationParameters()
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        ValidateActor = true,
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        RequireExpirationTime=true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = ctx =>
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            ctx.Request.Cookies.TryGetValue("tokenacceso", out var accessToken);
-            if (!string.IsNullOrEmpty(accessToken))
-                ctx.Token = accessToken;
-            return Task.CompletedTask;
-        }
-    };
-});
-
-builder.Services.AddTransient<IAuthService, AuthService>();
-builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermisoPolicyProvider>();
-builder.Services.AddScoped<IAuthorizationHandler, AutorizacionPermisoHandler>();
-
+            ValidateActor = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            RequireExpirationTime=true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });//agregado
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
@@ -94,6 +77,9 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
+builder.Services.AddTransient<IAuthService, AuthService>();
+// builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermisoPolicyProvider>();
+// builder.Services.AddScoped<IAuthorizationHandler, AutorizacionPermisoHandler>();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -146,9 +132,7 @@ app.UseAntiforgery();
 app.MapControllers();//agregado
 app.UseAuthentication();
 app.UseAuthorization();
-// app.MapControllerRoute(
-//     name: "default",
-//     pattern: "{controller=Auth}/{action=Login}/{id?}");
+
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(AgroConecta.Presentation.Client._Imports).Assembly);
