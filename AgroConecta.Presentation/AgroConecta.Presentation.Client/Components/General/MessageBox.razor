@@ -1,0 +1,13 @@
+@using AgroConecta.Presentation.Client.Components.General.Alertas
+@inject IDialogService DialogService
+
+<MudButton OnClick="OpenDialogAsync" Variant="Variant.Filled" Color="Color.Primary">
+    Options Dialog
+</MudButton>
+@code {
+
+    private Task OpenDialogAsync()
+    {
+        return DialogService.ShowAsync<BaseMessageBox>("Options Dialog");
+    }
+}

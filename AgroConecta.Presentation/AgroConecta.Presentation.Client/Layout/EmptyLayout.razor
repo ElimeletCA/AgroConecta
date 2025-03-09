@@ -1,14 +1,18 @@
+@using AgroConecta.Presentation.Client.Constantes
 @inherits LayoutComponentBase
 @inject IJSRuntime JS
-
-
 <HeadContent>
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
 </HeadContent>
+<MudThemeProvider Theme="temaActual" />
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 <div class="auth-page">
     @Body
 </div>
 @code {
+    public TemaGeneral temaActual=new();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)

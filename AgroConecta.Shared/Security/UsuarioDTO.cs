@@ -8,9 +8,11 @@ public class UsuarioDTO
     public DateTime fecha_nacimiento { get; set; }
     public string UserName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+    public bool remember_me { get; set; }
     public string pasword_without_hash { get; set; } = string.Empty;
     public int[]? perfiles_id { get; set; }
     public string two_factor_code { get; set; } = string.Empty;
+    
     
     //Propiedades navigacionales
 

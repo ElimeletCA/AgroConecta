@@ -5,7 +5,7 @@
 @inject IJSRuntime JS
 @inject HttpClient Http
 
-@page "/Cuenta/Login"
+@page "/Seguridad/Login"
 @layout EmptyLayout
 
 
@@ -14,13 +14,15 @@
 
 
 <br />
-<MudText Typo="Typo.h6">Usuario</MudText>
-<MudTextField @bind-Value="usuario.UserName" Label="Correo electronico" Variant="Variant.Outlined"></MudTextField>
-<MudText Typo="Typo.h6">Clave</MudText>
-<MudTextField @bind-Value="usuario.pasword_without_hash" Label="Password" Variant="Variant.Outlined"></MudTextField>
+<MudText Class="pb-1" HtmlTag="label" for="txtEmail"  Color="Color.Dark" >Correo electronico</MudText>
+<MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtEmail" @bind-Value="usuario.UserName" Label="" Variant="Variant.Outlined">  </MudTextField>
+
+<MudText Class="pb-1" HtmlTag="label" for="txtPassword"  Color="Color.Dark" >Contraseña</MudText>
+<MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtPassword" @bind-Value="usuario.pasword_without_hash" Label="" Variant="Variant.Outlined">  </MudTextField>
+
 <br />
 <MudButton Variant="Variant.Filled" @onclick=IniciarSesion Color="Color.Primary">Ingresar</MudButton>
-No esta registrado?<MudLink Href="/Cuenta/Registro">Crear una cuenta</MudLink>
+No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink>
 
 @code {
     string token = null;
