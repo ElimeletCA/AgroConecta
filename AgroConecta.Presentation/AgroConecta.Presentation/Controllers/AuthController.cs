@@ -28,7 +28,7 @@ namespace AgroConecta.Presentation.Controllers;
             _config = config;
             _signInManager = signInManager;
         }
-        /*[HttpPost]
+        [HttpPost]
         public async Task<IActionResult> RegistrarUsuario(Usuario usuario)
         {
             try
@@ -105,8 +105,8 @@ namespace AgroConecta.Presentation.Controllers;
                 return BadRequest(new { success = false, message = ex });
             }
 
-        }*/
-        /*[HttpPost("Login")]
+        }
+        [HttpPost("Login")]
         public async Task<IActionResult>Login([FromBody]UsuarioDTO usuario)
         {
             try {
@@ -143,8 +143,8 @@ namespace AgroConecta.Presentation.Controllers;
                 return BadRequest(new  { success = false, message = "ERROR" });
             }
 
-        }*/
-        [HttpPost("Login")]
+        }
+        /*[HttpPost("Login")]
         public async Task<ActionResult<string>> InicioSesion(UsuarioDTO objeto)
         {
             var cvc = "df";
@@ -160,7 +160,7 @@ namespace AgroConecta.Presentation.Controllers;
             // string token = CreateToken(cuanta);
             return Ok("token");
 
-        }
+        }*/
         private async Task<bool> EnviarCodigo2FA(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

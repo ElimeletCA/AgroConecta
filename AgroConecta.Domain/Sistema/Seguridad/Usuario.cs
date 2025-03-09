@@ -10,10 +10,10 @@ public class Usuario : IdentityUser
     
 
     [NotMapped]
-    public string pasword_without_hash { get; set; }
+    public string pasword_without_hash { get; set; }= string.Empty;
 
     [NotMapped]
-    public string two_factor_code { get; set; }
+    public string two_factor_code { get; set; }= string.Empty;
     
     //Propiedades navigacionales
 

@@ -15,9 +15,10 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-
+        //TODO: Validar que exista un token en local storage antes de intentar obtenerlo
         //Aqui va el token que creamos desde el api
-        string token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "Token");
+        //string token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "Token");
+        string token = "";
         var identity = new ClaimsIdentity();
 
         if (!string.IsNullOrEmpty(token))

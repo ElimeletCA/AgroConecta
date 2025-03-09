@@ -29,6 +29,7 @@ public class EmailHelper
 
             try
             {
+                //TODO: Mejorar mensajes de confirmacion
                 var mensaje = mailMessage;
                 //client.Send(mailMessage);
                 return true;
@@ -56,6 +57,7 @@ public class EmailHelper
 
             try
             {
+                //TODO: Mejorar mensajes de confirmacion
                 var mensaje = mailMessage;
                 //client.Send(mailMessage);
                 return true;
