@@ -1,4 +1,4 @@
-namespace AgroConecta.Application.Modelos;
+namespace AgroConecta.Application.ViewModels;
 
 public class UserRolesViewModel
 {

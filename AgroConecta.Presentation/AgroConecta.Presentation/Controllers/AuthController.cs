@@ -7,8 +7,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AgroConecta.Application.Helpers;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
-using AgroConecta.Domain.System.Seguridad;
-using AgroConecta.Shared.Security;
+using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Shared.Seguridad;
+using AgroConecta.Shared.Seguridad.Mensajes;
 
 namespace AgroConecta.Presentation.Controllers;
 
@@ -114,53 +115,35 @@ namespace AgroConecta.Presentation.Controllers;
 
                 if (usuarioexistente is null)
                 {
-                    usuarioexistente = await _userManager.FindByEmailAsync(usuario.UserName);
+                    usuarioexistente = await _userManager.FindByEmailAsync(usuario.Email);
                 }
 
                 if (usuarioexistente is null)
                 {
-                    return BadRequest(new  { success = false, message = "No existe el usuario en nuestro sistema, por favor verifique los datos e intente de nuevo." });
+                    return Ok(new ApiResponse{ success = false, message = BackendMessages.MessageS001 });
                 }
                 if (!await _userManager.IsEmailConfirmedAsync(usuarioexistente))
                 {
-                    return BadRequest(new  { success = false, message = "El correo electrónico del usuario aún no ha sido verificado, realice la verificación o contacte a soporte técnico" });
+                    return  Ok(new ApiResponse{ success = false, message = BackendMessages.MessageS002 });
                 }
 
                 if (await _authService.LoginUsuario(usuario))
                 {
                     bool confirmacionenvio = await EnviarCodigo2FA(usuarioexistente.Email);
                     
-                    return  confirmacionenvio? Ok(new { success = confirmacionenvio, message = "2FA" }): BadRequest(new { success = confirmacionenvio, message = "2FA" });
+                    return  confirmacionenvio
+                        ?  Ok(new ApiResponse{ success = true, message = BackendMessages.MessageS003 })
+                        :  Ok(new ApiResponse{  success = false, message = BackendMessages.MessageS004});
 
                 }
-                else
-                {
-                    return BadRequest(new  { success = false, message = "Usuario o contraseña incorrectos, por favor verifique los datos e intente de nuevo." });
+                return  Ok(new ApiResponse{ success = false, message = BackendMessages.MessageS005 });
 
-                }
-            } catch
-            {
-                return BadRequest(new  { success = false, message = "ERROR" });
             }
-
+            catch( Exception e)
+            {
+                return StatusCode(500, new { success = false, message=e  });
+            }
         }
-        /*[HttpPost("Login")]
-        public async Task<ActionResult<string>> InicioSesion(UsuarioDTO objeto)
-        {
-            var cvc = "df";
-            // var cuanta = await _context.Usuarios.Where(x => x.Email == objeto.Email).FirstOrDefaultAsync();
-            // if (cuanta == null)
-            // {
-            //     return BadRequest("Usuario no encontrado");
-            // }
-            // if (!VerifyPasswordHash(objeto.Password, cuanta.PasswordHash, cuanta.PasswordSalt))
-            // {
-            //     return BadRequest("Contraseña incorrecta");
-            // }
-            // string token = CreateToken(cuanta);
-            return Ok("token");
-
-        }*/
         private async Task<bool> EnviarCodigo2FA(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -175,8 +158,7 @@ namespace AgroConecta.Presentation.Controllers;
             
             return emailResponse;
         }
-        /*[AllowAnonymous]
-        [HttpPost]
+        [HttpPost("Verificar2FA")]
         public async Task<IActionResult> Verificar2FA(UsuarioDTO usuario)
         {
             try
@@ -185,40 +167,29 @@ namespace AgroConecta.Presentation.Controllers;
 
                 if (usuarioexistente is null)
                 {
-                    usuarioexistente = await _userManager.FindByEmailAsync(usuario.UserName);
+                    usuarioexistente = await _userManager.FindByEmailAsync(usuario.Email);
                 }
 
                 if (usuarioexistente is null || usuario.two_factor_code is null)
                 {
-                    return BadRequest(new  { success = false, message = "ERROR" });
+                    Ok(new { success = false, message = "ERROR" });
                 }
 
                 var result = await _userManager.VerifyTwoFactorTokenAsync(usuarioexistente, "Email", usuario.two_factor_code);
                 if (result)
                 {
                     var token = await _authService.GenerarTokenString(usuarioexistente);
-                    //_authService.ColocarJwtTokenEnCookie(token , HttpContext);
-                    return Ok (new  { success = true, message = "VERIFICADO" , token_generado = token});
+                    return Ok (new  { success = true, message = new BackendMessage(){Codigo = "CODE-JWT", Descripcion = token}});
 
                 }
-                else
-                {
-                    return BadRequest(new  { success = false, message = "ERROR" });
+                return Ok(new { success = false, message = "ERROR" });
 
-                }
             }
-            catch(Exception ex)
+            catch( Exception e)
             {
-                return BadRequest(new  { success = false, message = ex });
+                return StatusCode(500, new { success = false, message=e  });
             }
 
-        }*/
-
-        // [HttpPost]
-        // public async Task<IActionResult> CerrarSesion()
-        // {
-        //     _authService.EliminarJwtTokenDeCookie(HttpContext);
-        //     return Ok (new  { success = true });
-        // }
+        }
 
     }

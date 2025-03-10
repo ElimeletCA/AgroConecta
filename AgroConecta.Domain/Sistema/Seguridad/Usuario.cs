@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
-namespace AgroConecta.Domain.System.Seguridad;
+namespace AgroConecta.Domain.Sistema.Seguridad;
 
 public class Usuario : IdentityUser 
 {

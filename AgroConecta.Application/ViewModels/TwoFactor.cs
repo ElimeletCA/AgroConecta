@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-namespace AgroConecta.Application.Modelos;
+
+namespace AgroConecta.Application.ViewModels;
 
 public class TwoFactor
 {

@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace AgroConecta.Shared.Security;
+namespace AgroConecta.Shared.Seguridad;
 
 public class UsuarioDTO
 {

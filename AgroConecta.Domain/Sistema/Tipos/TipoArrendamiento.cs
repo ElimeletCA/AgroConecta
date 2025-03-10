@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace AgroConecta.Domain.System;
+
+namespace AgroConecta.Domain.Sistema.Tipos;
 
 public class TipoArrendamiento
 {

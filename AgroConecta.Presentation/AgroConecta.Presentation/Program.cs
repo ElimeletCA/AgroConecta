@@ -1,5 +1,3 @@
-using AgroConecta.Presentation.Client.Agents.Interfaces;
-using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +13,7 @@ using System.Text;
 using AgroConecta.Application.Seeds;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Application.Servicios.Seguridad;
-using AgroConecta.Domain.System.Seguridad;
+using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Infrastructure.Repositorio.Data;
 using AgroConecta.Presentation.Seguridad;
 using Microsoft.AspNetCore.Authorization;
@@ -77,7 +75,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
-builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 // builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermisoPolicyProvider>();
 // builder.Services.AddScoped<IAuthorizationHandler, AutorizacionPermisoHandler>();
 

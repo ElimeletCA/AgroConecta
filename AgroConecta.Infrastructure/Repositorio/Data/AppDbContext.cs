@@ -1,7 +1,8 @@
 using System.Diagnostics;
-using AgroConecta.Domain.System;
-using AgroConecta.Domain.System.Extras;
-using AgroConecta.Domain.System.Seguridad;
+using AgroConecta.Domain.Sistema;
+using AgroConecta.Domain.Sistema.Extras;
+using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Domain.Sistema.Tipos;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;

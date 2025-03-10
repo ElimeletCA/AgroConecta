@@ -1,24 +1,23 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.JSInterop;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 
-namespace AgroConecta.Presentation.Client;
+namespace AgroConecta.Presentation.Client.Helpers.Seguridad;
 public class CustomAuthenticationStateProvider : AuthenticationStateProvider
 {
     private readonly IJSRuntime _jsRuntime;
-
+    private readonly TokenManager _tokenManager;
     public CustomAuthenticationStateProvider(IJSRuntime jsRuntime)
     {
         _jsRuntime = jsRuntime;
+        _tokenManager = new TokenManager(jsRuntime);
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         //TODO: Validar que exista un token en local storage antes de intentar obtenerlo
-        //Aqui va el token que creamos desde el api
-        //string token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "Token");
-        string token = "";
+        string token = await _tokenManager.GetTokenAsync();
         var identity = new ClaimsIdentity();
 
         if (!string.IsNullOrEmpty(token))

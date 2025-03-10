@@ -19,7 +19,8 @@ public class TemaGeneral : MudTheme
         };
         Typography = new Typography()
         {
-            Default = new Default()
+            
+            Default = new DefaultTypography()
             {
                 FontFamily = new[] { "Inter", "sans-serif" }
             }

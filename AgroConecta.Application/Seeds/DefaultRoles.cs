@@ -1,8 +1,8 @@
 
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using AgroConecta.Application.Constantes.Seguridad;
-using AgroConecta.Domain.System.Seguridad;
+using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Shared.Constantes.Seguridad;
 
 namespace AgroConecta.Application.Seeds;
 

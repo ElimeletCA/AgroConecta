@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using System.Security.Claims;
-using AgroConecta.Application.Modelos;
+using AgroConecta.Application.ViewModels;
 
 namespace AgroConecta.Application.Helpers;
 

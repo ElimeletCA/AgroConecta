@@ -6,8 +6,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
-using AgroConecta.Domain.System.Seguridad;
-using AgroConecta.Shared.Security;
+using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Shared.Seguridad;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -39,7 +39,7 @@ public class AuthService : IAuthService
 
                 if (usuarioexistente is null)
                 {
-                    usuarioexistente = await _userManager.FindByEmailAsync(usuario.UserName);
+                    usuarioexistente = await _userManager.FindByEmailAsync(usuario.Email);
                 }
 
                 if (usuarioexistente is null)

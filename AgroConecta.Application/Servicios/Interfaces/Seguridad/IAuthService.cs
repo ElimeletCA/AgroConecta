@@ -1,5 +1,5 @@
-using AgroConecta.Domain.System.Seguridad;
-using AgroConecta.Shared.Security;
+using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Shared.Seguridad;
 using Microsoft.AspNetCore.Http;
 
 namespace AgroConecta.Application.Servicios.Interfaces.Seguridad;

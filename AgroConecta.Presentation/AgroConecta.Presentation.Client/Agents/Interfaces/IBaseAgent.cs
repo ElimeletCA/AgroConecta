@@ -1,4 +1,4 @@
-namespace AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
+namespace AgroConecta.Presentation.Client.Agents.Interfaces;
 
 public interface IBaseAgent
 {

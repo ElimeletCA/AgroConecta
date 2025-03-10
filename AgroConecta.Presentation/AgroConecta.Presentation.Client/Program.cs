@@ -1,13 +1,14 @@
 using AgroConecta.Presentation.Client;
-using AgroConecta.Presentation.Client.Agents.Interfaces;
-using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
+using AgroConecta.Presentation.Client.Helpers.Seguridad;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Identity;
 using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });//AGREGADO
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();//Agregado
+
 builder.Services.AddMudServices();
 builder.Services.AddAuthorizationCore();//Agregado
 builder.Services.AddCascadingAuthenticationState();//Agregado	

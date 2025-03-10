@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using AgroConecta.Domain.System.Seguridad;
+using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Domain.Sistema.Tipos;
 
-namespace AgroConecta.Domain.System;
+namespace AgroConecta.Domain.Sistema;
 
 public class Arrendamiento
 {

@@ -1,6 +1,6 @@
-using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
+using AgroConecta.Presentation.Client.Agents.Interfaces;
 
-namespace AgroConecta.Presentation.Client.Agents.Interfaces;
+namespace AgroConecta.Presentation.Client.Agents;
 
 public class BaseAgent : IBaseAgent
 {

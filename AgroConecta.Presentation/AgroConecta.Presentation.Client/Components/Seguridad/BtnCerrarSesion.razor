@@ -1,14 +1,21 @@
+@using AgroConecta.Presentation.Client.Helpers.Seguridad
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <button @onclick=Salir class="mud-nav-link mud-ripple">
-    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Cerrar Sesion
+    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Cerrar Sesión
 </button>
 @code {
+    private TokenManager _tokenManager;    
+    protected override Task OnInitializedAsync()
+    {
+        _tokenManager = new TokenManager(JS);
+        return base.OnInitializedAsync();
+    }
     async Task Salir()
     {
-        await JS.InvokeVoidAsync("localStorage.removeItem", "Token");
+        await _tokenManager.RemoveTokenAsync();
         await AuthenticationStateProvider.GetAuthenticationStateAsync();
     }
 }

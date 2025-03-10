@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AgroConecta.Domain.System.Seguridad;
+namespace AgroConecta.Domain.Sistema.Seguridad;
 
 public class Perfil
 {
