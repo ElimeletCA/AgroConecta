@@ -16,7 +16,6 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        //TODO: Validar que exista un token en local storage antes de intentar obtenerlo
         string token = await _tokenManager.GetTokenAsync();
         var identity = new ClaimsIdentity();
 

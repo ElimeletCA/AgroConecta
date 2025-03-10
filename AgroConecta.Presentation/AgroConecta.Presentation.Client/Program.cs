@@ -9,9 +9,10 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });//AGREGADO
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();//Agregado
 
-builder.Services.AddMudServices();
 builder.Services.AddAuthorizationCore();//Agregado
 builder.Services.AddCascadingAuthenticationState();//Agregado	
+builder.Services.AddMudServices();
+
 
 await builder.Build().RunAsync();
 

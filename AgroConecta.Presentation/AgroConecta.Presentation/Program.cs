@@ -26,10 +26,13 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 builder.Services.AddAuthorizationCore();//Agregado
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();//Agregado
 
 builder.Services.AddControllers();//agregado
 builder.Services.AddHttpClient();//Agregado
+
 builder.Services.AddCascadingAuthenticationState();//Agregado
 
 
@@ -75,7 +78,6 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
-builder.Services.AddScoped<IAuthService, AuthService>();
 // builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermisoPolicyProvider>();
 // builder.Services.AddScoped<IAuthorizationHandler, AutorizacionPermisoHandler>();
 

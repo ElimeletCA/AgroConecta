@@ -13,11 +13,11 @@
     *@
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="css/application.css" rel="stylesheet"/>
-    <HeadOutlet @rendermode="RenderModeForPage"/>
+    <HeadOutlet @rendermode="InteractiveWebAssembly"/>
 </head>
 
 <body>
-<Routes @rendermode="RenderModeForPage"/>
+<Routes @rendermode="InteractiveWebAssembly"/>
 <script src="_framework/blazor.web.js"></script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="_content/Extensions.MudBlazor.StaticInput/NavigationObserver.js"></script>
@@ -34,12 +34,3 @@
 </body>
 
 </html>
-
-@code {
-    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
-
-    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
-        ? null
-        : InteractiveWebAssembly;
-
-}
