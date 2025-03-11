@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using AgroConecta.Application.Helpers;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Presentation.Seguridad;
+using AgroConecta.Shared.Constantes.Seguridad;
 using AgroConecta.Shared.Seguridad;
 using AgroConecta.Shared.Seguridad.Mensajes;
 
@@ -190,6 +192,13 @@ namespace AgroConecta.Presentation.Controllers;
                 return StatusCode(500, new { success = false, message=e  });
             }
 
+        }
+        [HttpGet("GetTerrenos")]
+        [RequierePermiso(Permisos.Terrenos.Ver)]
+        public async Task<IActionResult> GetTerrenos()
+        {
+            // Lógica para obtener terrenos...
+            return Ok(new { Mensaje = "Acceso permitido para ver terrenos" });
         }
 
     }

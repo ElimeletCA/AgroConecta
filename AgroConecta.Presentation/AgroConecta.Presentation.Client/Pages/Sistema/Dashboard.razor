@@ -1,5 +1,7 @@
 ﻿@page "/sistema/dashboard"
+@using System.Security.Claims
 @using AgroConecta.Presentation.Client.Components.Seguridad
+@using AgroConecta.Presentation.Client.Helpers.Seguridad
 @using AgroConecta.Shared.Constantes.Seguridad
 @using Microsoft.AspNetCore.Authorization
 @inject HttpClient Http
@@ -24,10 +26,11 @@
   }
   <MudText Class="mb-4">Hello @userName!</MudText>
 
-  @if((authService.AuthorizeAsync(context.User, Permisos.Terrenos.Ver).Result.Succeeded))
+  @if(PermissionCheker.TienePermiso(@context.User, Permisos.Terrenos.Ver))
   {
     <MudText Class="mb-4">Tienes permiso para ver los terrenos</MudText>
   }
+
   <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
   <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
 
@@ -205,6 +208,7 @@ else
 }
 *@
 @code{
+
 
   private string Prueba;
   string _value;
