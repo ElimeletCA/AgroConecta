@@ -66,7 +66,7 @@ public class AuthService : IAuthService
 
 
             var roles = await _userManager.GetRolesAsync(usuarioexistente);
-            claims.AddRange(roles.Select(rol => new Claim("roles", rol)));
+            claims.AddRange(roles.Select(rol => new Claim(ClaimTypes.Role, rol)));
 
             var roleClaims = new List<Claim>();
             foreach (var role in roles)
