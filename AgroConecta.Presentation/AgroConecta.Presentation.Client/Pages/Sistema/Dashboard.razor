@@ -6,51 +6,79 @@
 @using Microsoft.AspNetCore.Authorization
 @inject HttpClient Http
 @inject IJSRuntime JS
-@inject IAuthorizationService authService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <PageTitle>Dashboard - AgroConecta</PageTitle>
-
 <AuthorizeView>
-  
-  @{
-    string userName = "Invitado";
 
-    if (@context.User.Identity?.IsAuthenticated ?? false)
-    {
-      // Busca el claim con el tipo "name"
-      var nameClaim = @context.User.Claims.FirstOrDefault(c => c.Type == "name");
-      if (nameClaim != null)
+  <NotAuthorized>
+    @{
+      Console.WriteLine("No autorizado");
+      string userName = "Invitado";
+
+      if (@context.User.Identity?.IsAuthenticated ?? false)
       {
-        userName = nameClaim.Value;
+        // Busca el claim con el tipo "name"
+        var nameClaim = @context.User.Claims.FirstOrDefault(c => c.Type == "name");
+        if (nameClaim != null)
+        {
+          userName = nameClaim.Value;
+        }
       }
+      else
+      {
+
+      }
+
     }
-  }
-  <MudText Class="mb-4">Hello @userName!</MudText>
+  </NotAuthorized>
+  <Authorized>
 
-  @if(PermissionCheker.TienePermiso(@context.User, Permisos.Terrenos.Ver))
-  {
-    <MudText Class="mb-4">Tienes permiso para ver los terrenos</MudText>
-  }
+    @{
+      Console.WriteLine("Autorizado");
 
-  <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
-  <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
+      string userName = "Invitado";
 
-  <br/>
-  <br/>
-  <br/>
-  <MudText Class="pb-1" HtmlTag="label" for="input_prueba" Color="Color.Tertiary">First name</MudText>
-  <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined"> </MudTextField>
-  <br/>
-  <br/>
-  <br/>
-  <MudText Margin="Margin.Dense" Class="pb-1" HtmlTag="label" for="select_prueba" Color="Color.Tertiary">Select</MudText>
-  <div style="max-width: 300px;">
-    <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
-      @foreach (var state in _states)
+      if (@context.User.Identity?.IsAuthenticated ?? false)
       {
-        <MudSelectItem Value="state">@state</MudSelectItem>
+        // Busca el claim con el tipo "name"
+        var nameClaim = @context.User.Claims.FirstOrDefault(c => c.Type == "name");
+        if (nameClaim != null)
+        {
+          userName = nameClaim.Value;
+        }
       }
-    </MudSelect>
-  </div>
+
+    }
+    <MudText Class="mb-4">Hello @userName!</MudText>
+
+    @if (PermissionCheker.TienePermiso(@context.User, Permisos.Terrenos.Ver))
+    {
+      <MudText Class="mb-4">Tienes permiso para ver los terrenos</MudText>
+    }
+
+    <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+    <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
+
+    <br/>
+    <br/>
+    <br/>
+    <MudText Class="pb-1" HtmlTag="label" for="input_prueba" Color="Color.Tertiary">First name</MudText>
+    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined"> </MudTextField>
+    <br/>
+    <br/>
+    <br/>
+    <MudText Margin="Margin.Dense" Class="pb-1" HtmlTag="label" for="select_prueba" Color="Color.Tertiary">Select</MudText>
+    <div style="max-width: 300px;">
+      <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+        @foreach (var state in _states)
+        {
+          <MudSelectItem Value="state">@state</MudSelectItem>
+        }
+      </MudSelect>
+    </div>
+  </Authorized>
 </AuthorizeView>
 
 
@@ -209,7 +237,9 @@ else
 *@
 @code{
 
-
+  private bool isAuthenticated;
+  private string userName = "Invitado";
+  
   private string Prueba;
   string _value;
 

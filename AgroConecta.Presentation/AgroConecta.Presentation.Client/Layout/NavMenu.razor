@@ -3,21 +3,20 @@
 
 @inject NavigationManager NavigationManager
 
-<MudNavMenu>
-    @*
+
+<AuthorizeView>
+    <Authorized>
+        <MudNavMenu>
+            @*
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     *@
-    @*<MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
+            @*<MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
     <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>*@
-    <AuthorizeView>
-        <Authorized>
             <MudNavLink Href="Inicio" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Inicio</MudNavLink>
             @*
             <MudNavLink Href="Cuenta/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
             *@
             <BtnCerrarSesion/>
-        </Authorized>
-        <NotAuthorized>
             <MudPaper Width="250px" Elevation="0" Class="py-3">
                 <MudNavMenu Class="pa-2" Rounded="true" Margin="Margin.Dense" Color="Color.Success">
                     <MudNavLink Href="Home" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
@@ -32,10 +31,10 @@
             </MudPaper>
             @*<MudNavLink Href="Cuenta/Registro" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Registrar</MudNavLink>
             <MudNavLink Href="Cuenta/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Iniciar sesion </MudNavLink>*@
-        </NotAuthorized>
-    </AuthorizeView>
-</MudNavMenu>
+        </MudNavMenu>
+    </Authorized>
 
+</AuthorizeView>
 
 @code {
     private string? currentUrl;

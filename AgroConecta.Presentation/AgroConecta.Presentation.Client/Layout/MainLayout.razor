@@ -7,6 +7,9 @@
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
+@inject NavigationManager NavigationManager
+
+
 @*<MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Tertiary" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
@@ -30,7 +33,7 @@
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton Icon="@( _drawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu)" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        
+
         <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
         <MudText Color="Color.Dark" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConectados</MudText>
         <MudSpacer/>

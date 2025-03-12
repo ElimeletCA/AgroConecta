@@ -3,8 +3,8 @@
         <Found Context="routeData">
             <Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
                 <NotAuthorized>
-                    No tienes acceso
-                </NotAuthorized>
+                    <RedirectToLogin />
+                    </NotAuthorized>
             </Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView>
             
             <FocusOnNavigate RouteData="routeData" Selector="h1" />

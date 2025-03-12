@@ -14,7 +14,6 @@ namespace AgroConecta.Presentation.Client.Helpers.Seguridad
             _jsRuntime = jsRuntime;
             _tokenManager = new TokenManager(jsRuntime);
         }
-
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             string token = await _tokenManager.GetTokenAsync();
@@ -25,21 +24,43 @@ namespace AgroConecta.Presentation.Client.Helpers.Seguridad
                 try
                 {
                     var claims = ParseClaimsFromJwt(token);
-                    identity = new ClaimsIdentity(claims, "jwt");
+
+                    // Buscar el claim "exp"
+                    var expClaim = claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+                    if (expClaim != null && long.TryParse(expClaim, out long expSeconds))
+                    {
+                        // Convertir el tiempo de expiración de Unix time a DateTime (UTC)
+                        var expirationTime = DateTimeOffset.FromUnixTimeSeconds(expSeconds).UtcDateTime;
+                        if (expirationTime < DateTime.UtcNow)
+                        {
+                            // Token expirado: opcionalmente, elimina el token del almacenamiento local
+                            await _tokenManager.RemoveTokenAsync();
+                            // Puedes dejar identity vacío para que el usuario no esté autenticado
+                            identity = new ClaimsIdentity();
+                        }
+                        else
+                        {
+                            identity = new ClaimsIdentity(claims, "jwt");
+                        }
+                    }
+                    else
+                    {
+                        // Si no hay claim de expiración, asumimos token inválido o mal formado
+                        identity = new ClaimsIdentity();
+                    }
                 }
                 catch (Exception ex)
                 {
                     // Manejo de error: token inválido o mal formado
                     Console.WriteLine($"Error al parsear el JWT: {ex.Message}");
-                    // Opcional: remover token almacenado o registrar el error
+                    identity = new ClaimsIdentity();
                 }
             }
 
             var user = new ClaimsPrincipal(identity);
             var state = new AuthenticationState(user);
 
-            // Notificar el cambio de estado solo si realmente hay un cambio,
-            // de lo contrario se puede llamar a NotifyAuthenticationStateChanged en el lugar donde se actualice el token.
+            // Notifica el cambio de estado de autenticación (opcional)
             NotifyAuthenticationStateChanged(Task.FromResult(state));
 
             return state;

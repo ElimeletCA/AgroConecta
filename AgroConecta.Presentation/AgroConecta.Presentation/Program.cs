@@ -132,10 +132,10 @@ app.UseAntiforgery();
 app.MapControllers();//agregado
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowAllOrigins");
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(AgroConecta.Presentation.Client._Imports).Assembly);
-app.UseCors("AllowAllOrigins");
 
 app.Run();

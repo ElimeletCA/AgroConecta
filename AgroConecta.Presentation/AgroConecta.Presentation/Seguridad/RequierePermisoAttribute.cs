@@ -16,7 +16,7 @@ public class RequierePermisoAttribute : Attribute, IAuthorizationFilter
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         // Si el usuario no está autenticado, se devuelve un resultado no autorizado.
-        if (!context.HttpContext.User.Identity.IsAuthenticated)
+        if (!context.HttpContext.User.Identity!.IsAuthenticated)
         {
             context.Result = new UnauthorizedResult();
             return;

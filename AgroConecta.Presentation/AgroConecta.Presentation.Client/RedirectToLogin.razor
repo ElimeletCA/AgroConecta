@@ -2,9 +2,9 @@
 
 @code {
     
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        NavigationManager.NavigateTo($"Cuenta/Login", forceLoad: true);
+        NavigationManager.NavigateTo($"Account/Login", forceLoad: true);
 
     }
 
