@@ -8,33 +8,18 @@
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
 <PageTitle>Dashboard - AgroConecta</PageTitle>
 <AuthorizeView>
-
-  <NotAuthorized>
-    @{
-      Console.WriteLine("No autorizado");
-      string userName = "Invitado";
-
-      if (@context.User.Identity?.IsAuthenticated ?? false)
-      {
-        // Busca el claim con el tipo "name"
-        var nameClaim = @context.User.Claims.FirstOrDefault(c => c.Type == "name");
-        if (nameClaim != null)
-        {
-          userName = nameClaim.Value;
-        }
-      }
-      else
-      {
-
-      }
-
-    }
-  </NotAuthorized>
   <Authorized>
-
+    <MudText Margin="Margin.Dense" Class="pb-1" HtmlTag="label" for="select_prueba" Color="Color.Tertiary">Select</MudText>
+    <div style="max-width: 300px;">
+      <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+        @foreach (var state in _states)
+        {
+          <MudSelectItem Value="state">@state</MudSelectItem>
+        }
+      </MudSelect>
+    </div>
     @{
       Console.WriteLine("Autorizado");
 

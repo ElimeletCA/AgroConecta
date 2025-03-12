@@ -1,4 +1,6 @@
-﻿@using AgroConecta.Presentation.Client.Constantes
+﻿@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Presentation.Client.Constantes
+@using AgroConecta.Shared.Seguridad.Mensajes
 @inherits LayoutComponentBase
 <HeadContent>
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
@@ -9,49 +11,38 @@
 <MudSnackbarProvider/>
 @inject NavigationManager NavigationManager
 
+<Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+    <Authorized>
+        <MudLayout>
+            <MudAppBar Elevation="1">
+                <MudIconButton Icon="@( _drawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu)" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
 
-@*<MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Tertiary" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-        $1$
-        <img src="/images/landing/LOGO-AGROCONECTA.png" class="mr-3 h-8" alt="AgroConecta Logo" />
-        #1#
-        <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
-        <MudText Color="Color.Tertiary" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConecta</MudText>
-        <MudSpacer/>
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Tertiary" Edge="Edge.End"/>
-    </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
-        <NavMenu/>
-    </MudDrawer>
-    <MudMainContent Class="pt-16 px-16">
-        <MudContainer Class="mt-6">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>*@
-<MudLayout>
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@( _drawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu)" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
-
-        <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
-        <MudText Color="Color.Dark" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConectados</MudText>
-        <MudSpacer/>
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Dark" Edge="Edge.End"/>
-    </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
-        @*<MudDrawerHeader>
+                <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
+                <MudText Color="Color.Dark" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConectados</MudText>
+                <MudSpacer/>
+                <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Dark" Edge="Edge.End"/>
+            </MudAppBar>
+            <MudDrawer @bind-Open="@_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
+                @*<MudDrawerHeader>
             <MudText Typo="Typo.h6">Menú principal</MudText>
         </MudDrawerHeader>*@
-        <NavMenu/>
-    </MudDrawer>
-    <MudMainContent Class="pt-16 px-16">
-        <MudContainer Class="mt-6">
-            @Body
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
-
+                <NavMenu/>
+            </MudDrawer>
+            <MudMainContent Class="pt-16 px-16">
+                <MudContainer Class="mt-6">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    </Authorized>
+    <NotAuthorized>
+        <MudIcon Icon="@Icons.Material.Filled.GppBad"
+                 Color="Color.Error"
+                 Style="font-size: 4rem;"/>
+        <MudText>No esta autenticado en el sistema....</MudText>
+        <MudButton Variant="Variant.Filled" @onclick=RedirectToLogin Color="Color.Primary">Ir al inicio de sesión</MudButton>
+    </NotAuthorized>
+</Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
@@ -59,7 +50,8 @@
 </div>
 
 @code {
-
+    private MessageBox _messageBox;
+    private bool isNotAuthenticated;
     public TemaGeneral temaActual=new();
 
 
@@ -70,5 +62,15 @@
         _drawerOpen = !_drawerOpen;
         StateHasChanged();
     }
+
+    private async Task RedirectToLogin()
+    {
+        {
+            NavigationManager.NavigateTo("/Account/Login", forceLoad: true);
+        }
+    }
+
+
+
 
 }

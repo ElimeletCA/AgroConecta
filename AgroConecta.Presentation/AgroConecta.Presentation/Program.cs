@@ -73,14 +73,7 @@ builder.Services.AddAuthentication(options =>
         };
 
     });
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Events.OnRedirectToLogin = context =>
-    {
-        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-        return Task.CompletedTask;
-    };
-});
+
 
 
 var app = builder.Build();

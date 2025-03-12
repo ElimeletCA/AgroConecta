@@ -6,44 +6,37 @@
 @inject IJSRuntime JS
 @inject HttpClient Http
 
-<AuthorizeView>
-    <NotAuthorized>
-    </NotAuthorized>
-    <Authorized>
-        @{
-            _usuario = context.User;
+@{
+    //_usuario = context.User;
+}
+<h3>Demo componentes</h3>
+
+<h5>Botones</h5>
+<MudButton OnClick="PruebaT" Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+<MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
+<MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Tertiary">Tertiary</MudButton>
+
+<br/>
+<br/>
+<br/>
+<h5>Textbox</h5>
+<MudText Class="pb-1" HtmlTag="label" for="input_prueba" Color="Color.Dark">First name</MudText>
+<MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined"> </MudTextField>
+
+<br/>
+<br/>
+<br/>
+<h5>Select</h5>
+
+<MudText Class="pb-1" HtmlTag="label" for="select_prueba" Color="Color.Dark">Select</MudText>
+<div style="max-width: 300px;">
+    <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+        @foreach (var state in _states)
+        {
+            <MudSelectItem Value="state">@state</MudSelectItem>
         }
-        <h3>Demo componentes</h3>
-
-        <h5>Botones</h5>
-        <MudButton OnClick="PruebaT" Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
-        <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
-        <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Tertiary">Tertiary</MudButton>
-
-        <br/>
-        <br/>
-        <br/>
-        <h5>Textbox</h5>
-        <MudText Class="pb-1" HtmlTag="label" for="input_prueba" Color="Color.Dark">First name</MudText>
-        <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined"> </MudTextField>
-
-        <br/>
-        <br/>
-        <br/>
-        <h5>Select</h5>
-
-        <MudText Class="pb-1" HtmlTag="label" for="select_prueba" Color="Color.Dark">Select</MudText>
-        <div style="max-width: 300px;">
-            <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
-                @foreach (var state in _states)
-                {
-                    <MudSelectItem Value="state">@state</MudSelectItem>
-                }
-            </MudSelect>
-        </div>
-    </Authorized>
-</AuthorizeView>
-
+    </MudSelect>
+</div>
 
 
 
