@@ -12,7 +12,7 @@
 @inject IDialogService DialogS
 @inject NavigationManager NavigationManager
 
-@page "/Account/Login"
+@page "/Seguridad/Login"
 @layout EmptyLayout
 
 
@@ -30,7 +30,7 @@
 
 <br />
 <MudButton Variant="Variant.Filled" @onclick=IniciarSesion Color="Color.Primary">Ingresar</MudButton>
-No esta registrado?<MudLink Href="/Account/Registro">Crear una cuenta</MudLink>
+No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink>
 
 <MessageBox @ref="_messageBox"/>
 <MessageBox2FA @ref="_messageBox2Fa"/>
