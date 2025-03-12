@@ -193,12 +193,13 @@ namespace AgroConecta.Presentation.Controllers;
             }
 
         }
-        [HttpGet("GetTerrenos")]
+        [HttpGet("GetTerrenos"), Authorize]
         [RequierePermiso(Permisos.Terrenos.Ver)]
         public async Task<IActionResult> GetTerrenos()
         {
             // Lógica para obtener terrenos...
-            return Ok(new { Mensaje = "Acceso permitido para ver terrenos" });
+            return Ok (new  { success = true, message = new BackendMessage(){Codigo = "CODE-AUTHORIZE", Descripcion = "Acceso permitido para ver terrenos"}});
+
         }
 
     }

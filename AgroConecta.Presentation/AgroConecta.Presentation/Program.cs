@@ -25,20 +25,18 @@ builder.Services.AddMudServices();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+
 builder.Services.AddAuthorizationCore();//Agregado
-builder.Services.AddScoped<IAuthService, AuthService>();
-
 builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();//Agregado
-
 builder.Services.AddControllers();//agregado
 builder.Services.AddHttpClient();//Agregado
-
 builder.Services.AddCascadingAuthenticationState();//Agregado
 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -55,7 +53,11 @@ builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
     options.Lockout.AllowedForNewUsers = false;
 
 }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -69,17 +71,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
-    });//agregado
-builder.Services.AddCors(options =>
+
+    });
+builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
-        builder => builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
 });
 
-// builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermisoPolicyProvider>();
-// builder.Services.AddScoped<IAuthorizationHandler, AutorizacionPermisoHandler>();
 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
@@ -132,7 +134,6 @@ app.UseAntiforgery();
 app.MapControllers();//agregado
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowAllOrigins");
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()

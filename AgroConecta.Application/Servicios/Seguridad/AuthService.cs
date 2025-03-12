@@ -81,17 +81,13 @@ public class AuthService : IAuthService
             claims.AddRange(roleClaims);
 
             var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var signingcred = new SigningCredentials
-                (
-                securitykey,
-                SecurityAlgorithms.HmacSha512Signature
-                );
+            var signingcred = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha512Signature);
 
             var securityToken = new JwtSecurityToken(
                 claims: claims,
-                expires: System.DateTime.Now.AddMinutes(10),
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
+                expires: System.DateTime.Now.AddMinutes(10),
                 signingCredentials: signingcred);
                 
             string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);

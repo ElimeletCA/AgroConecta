@@ -73,8 +73,11 @@
     };
     public async Task  PruebaT(){
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
-        Http.
-        var response2FA = (await Http.GetAsync("api/Auth/GetTerrenos")).Content.ReadFromJsonAsync<ApiResponse>().Result;
+        //var response2FA = (await Http.GetAsync("api/Auth/GetTerrenos")).Content.ReadFromJsonAsync<ApiResponse>().Result;
+        var response2FA = (await Http.GetStringAsync("api/Auth/GetTerrenos"));
+
+        //var response2F = (await Http.GetAsync("api/Auth/GetTerrenos")).Content
+
         Console.WriteLine(response2FA);
     }
 }
