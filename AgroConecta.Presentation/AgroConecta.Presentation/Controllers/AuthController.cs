@@ -122,11 +122,11 @@ namespace AgroConecta.Presentation.Controllers;
 
                 if (usuarioexistente is null)
                 {
-                    return Ok(new ApiResponse{ success = false, message = BackendMessages.MessageS001 });
+                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS001 });
                 }
                 if (!await _userManager.IsEmailConfirmedAsync(usuarioexistente))
                 {
-                    return  Ok(new ApiResponse{ success = false, message = BackendMessages.MessageS002 });
+                    return  Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS002 });
                 }
 
                 if (await _authService.LoginUsuario(usuario))
@@ -134,11 +134,11 @@ namespace AgroConecta.Presentation.Controllers;
                     bool confirmacionenvio = await EnviarCodigo2FA(usuarioexistente.Email);
                     
                     return  confirmacionenvio
-                        ?  Ok(new ApiResponse{ success = true, message = BackendMessages.MessageS003 })
-                        :  Ok(new ApiResponse{  success = false, message = BackendMessages.MessageS004});
+                        ?  Ok(new ApiResponse<BackendMessage>{ success = true, message = BackendMessages.MessageS003 })
+                        :  Ok(new ApiResponse<BackendMessage>{  success = false, message = BackendMessages.MessageS004});
 
                 }
-                return  Ok(new ApiResponse{ success = false, message = BackendMessages.MessageS005 });
+                return  Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS005 });
 
             }
             catch( Exception e)

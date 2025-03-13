@@ -1,5 +1,6 @@
 using AgroConecta.Presentation.Client;
 using AgroConecta.Presentation.Client.Helpers.Seguridad;
+using AgroConecta.Presentation.Client.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStat
 
 builder.Services.AddAuthorizationCore();//Agregado
 builder.Services.AddCascadingAuthenticationState();//Agregado	
+builder.Services.AddAgents();
 
 
 await builder.Build().RunAsync();

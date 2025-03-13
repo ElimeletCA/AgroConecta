@@ -38,4 +38,5 @@ public class BackendMessage
     public int Tipo{ get; set; }
     public string Codigo{ get; set; }
     public string Descripcion{ get; set; }
+    
 }

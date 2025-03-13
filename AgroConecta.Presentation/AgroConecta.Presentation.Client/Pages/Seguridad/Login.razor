@@ -64,7 +64,7 @@ No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink
 
     private async Task IniciarSesion()
     {
-        var response = (await Http.PostAsJsonAsync("api/Auth/Login", usuario)).Content.ReadFromJsonAsync<ApiResponse>().Result;
+        var response = (await Http.PostAsJsonAsync("api/Auth/Login", usuario)).Content.ReadFromJsonAsync<ApiResponse<BackendMessage>>().Result;
         if (response.success)
         {
             var dialog = await DialogS.ShowAsync<MessageBox2FA>("Verificación 2FA", _backdropClick);
@@ -73,7 +73,7 @@ No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink
             {
                 
                 usuario.two_factor_code = (string)result.Data!;
-                var response2FA = (await Http.PostAsJsonAsync("api/Auth/Verificar2FA", usuario)).Content.ReadFromJsonAsync<ApiResponse>().Result;
+                var response2FA = (await Http.PostAsJsonAsync("api/Auth/Verificar2FA", usuario)).Content.ReadFromJsonAsync<ApiResponse<BackendMessage>>().Result;
                 if (response2FA.success)
                 {
                     DialogS.Close(dialog);
