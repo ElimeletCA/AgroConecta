@@ -1,7 +1,11 @@
 ﻿@using AgroConecta.Presentation.Client.Components.General.Alertas
 @using AgroConecta.Presentation.Client.Constantes
 @using AgroConecta.Shared.Seguridad.Mensajes
+@using AgroConecta.Presentation.Client.Pages.Seguridad
+@using AgroConecta.Presentation.Client.Components.Seguridad
 @inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
 <HeadContent>
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
 </HeadContent>
@@ -9,13 +13,23 @@
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
-@inject NavigationManager NavigationManager
-
-<Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+<AuthorizeView>
+    <Authorizing>
+        <!-- Contenido que se muestra mientras se verifica la autenticación -->
+        <MudText>Verificando estado de autenticación...</MudText>
+    </Authorizing>
+    <NotAuthorized>
+        <MudIcon Icon="@Icons.Material.Filled.GppBad"
+                 Color="Color.Error"
+                 Style="font-size: 4rem;"/>
+        <MudText>No está autenticado en el sistema....</MudText>
+        <MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
+            Ir al inicio de sesión
+        </MudButton> </NotAuthorized>
     <Authorized>
         <MudLayout>
             <MudAppBar Elevation="1">
-                <MudIconButton Icon="@( _drawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu)" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
+                <MudIconButton Icon="@(_drawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu)" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
 
                 <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
                 <MudText Color="Color.Dark" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConectados</MudText>
@@ -35,14 +49,8 @@
             </MudMainContent>
         </MudLayout>
     </Authorized>
-    <NotAuthorized>
-        <MudIcon Icon="@Icons.Material.Filled.GppBad"
-                 Color="Color.Error"
-                 Style="font-size: 4rem;"/>
-        <MudText>No esta autenticado en el sistema....</MudText>
-        <MudButton Variant="Variant.Filled" @onclick=RedirectToLogin Color="Color.Primary">Ir al inicio de sesión</MudButton>
-    </NotAuthorized>
-</Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+</AuthorizeView>
+
 <div id="blazor-error-ui">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
@@ -53,7 +61,7 @@
     private MessageBox _messageBox;
     private bool isNotAuthenticated;
     public TemaGeneral temaActual=new();
-
+    
 
     private bool _drawerOpen = true;
 
