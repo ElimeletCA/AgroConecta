@@ -1,3 +1,4 @@
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Seguridad
 @using AgroConecta.Presentation.Client.Constantes
 @using AgroConecta.Presentation.Client.Layout
 @using AgroConecta.Shared.Seguridad
@@ -11,7 +12,7 @@
 @inject HttpClient Http
 @inject IDialogService DialogS
 @inject NavigationManager NavigationManager
-
+@inject ISeguridadAgent seguridadAgent
 @page "/Seguridad/Login"
 @layout EmptyLayout
 
@@ -64,7 +65,7 @@ No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink
 
     private async Task IniciarSesion()
     {
-        var response = (await Http.PostAsJsonAsync("api/Auth/Login", usuario)).Content.ReadFromJsonAsync<ApiResponse<BackendMessage>>().Result;
+        var response = await seguridadAgent.LoginUser(usuario);
         if (response.success)
         {
             var dialog = await DialogS.ShowAsync<MessageBox2FA>("Verificación 2FA", _backdropClick);
@@ -73,7 +74,8 @@ No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink
             {
                 
                 usuario.two_factor_code = (string)result.Data!;
-                var response2FA = (await Http.PostAsJsonAsync("api/Auth/Verificar2FA", usuario)).Content.ReadFromJsonAsync<ApiResponse<BackendMessage>>().Result;
+                var response2FA = await seguridadAgent.Verificar2FA(usuario);
+                
                 if (response2FA.success)
                 {
                     DialogS.Close(dialog);
