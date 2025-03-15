@@ -1,0 +1,59 @@
+@page "/sistema/seguridad/usuarios"
+@layout MainLayout
+
+@using System.Security.Claims
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Seguridad
+@using AgroConecta.Presentation.Client.Components.Seguridad
+@using AgroConecta.Presentation.Client.Helpers.Seguridad
+@using AgroConecta.Presentation.Client.Layout
+@using AgroConecta.Shared.Constantes.Seguridad
+@using AgroConecta.Shared.Seguridad
+@using Microsoft.AspNetCore.Authorization
+@inject HttpClient Http
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IUsuarioAgent UsuarioAgent
+<PageTitle>Usuarios - AgroConecta</PageTitle>
+<AuthorizeView Context="authContext">
+    <Authorized>
+        <h1>Lista de usuarios</h1>
+        <MudDataGrid Items="@listaUsuarios">
+            <Columns>
+                <PropertyColumn Property="x => x.nombre_completo" Title="Nombre completo"/>
+                <PropertyColumn Property="x => x.Email" Title="Correo electrónico"/>
+                <TemplateColumn Hidden="@(_isCellEditMode || _readOnly || _editTriggerRowClick)" CellClass="d-flex justify-end">
+                    <CellTemplate>
+                        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private ClaimsPrincipal _usuarioActual;
+    private IEnumerable<UsuarioDTO> listaUsuarios = new List<UsuarioDTO>();
+    private bool _readOnly;
+    private bool _isCellEditMode;
+    private bool _editTriggerRowClick;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authestate =  await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _usuarioActual = authestate.User;
+        await GetAllUsers();
+    }
+
+    private async Task GetAllUsers()
+    {
+        var emailUsuario = _usuarioActual.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+        if (!String.IsNullOrEmpty(emailUsuario))
+        {
+            listaUsuarios = await UsuarioAgent.GetAllExcept(emailUsuario);
+            StateHasChanged();
+        }
+    }
+
+}

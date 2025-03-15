@@ -15,6 +15,7 @@
 @inject ISeguridadAgent seguridadAgent
 @page "/Seguridad/Login"
 @layout EmptyLayout
+<PageTitle>Iniciar sesión - AgroConecta</PageTitle>
 
 <div class="login-container">
     <div class="left-section">
@@ -28,6 +29,7 @@
             <img src="images/pepper.svg" style="max-width: 300px;" alt="Pepper" class="character-image" />
         </div>
     </div>
+
 
     <div class="right-section">
         <div class="login-box">
@@ -53,9 +55,10 @@
     private TokenManager _tokenManager;
     UsuarioDTO usuario = new();
     private MessageBox _messageBox;
-
+    
     private MessageBox2FA _messageBox2Fa;
     private readonly DialogOptions _backdropClick = new() { BackdropClick = false };
+    
 
     protected override Task OnInitializedAsync()
     {
@@ -63,35 +66,50 @@
         return base.OnInitializedAsync();
     }
 
+
     private async Task IniciarSesion()
     {
         var response = await seguridadAgent.LoginUser(usuario);
         if (response.success)
         {
-            var dialog = await DialogS.ShowAsync<MessageBox2FA>("Verificación 2FA", _backdropClick);
-            var result = await dialog.Result;
-            if (!result.Canceled)
+            if (response.message.Codigo == TipoCodigo.Skip2FA)
             {
-                usuario.two_factor_code = (string)result.Data!;
-                var response2FA = await seguridadAgent.Verificar2FA(usuario);
-
-                if (response2FA.success)
-                {
-                    DialogS.Close(dialog);
-                    _tokenManager.SetTokenAsync(response2FA.message.Descripcion);
-                    await AuthenticationStateProvider.GetAuthenticationStateAsync();
-                    await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito", "Será redirigido al sistema...", (int)TipoMensaje.Exito);
-                    NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad: true);
-                }
-                else
-                {
-                    await _messageBox.OpenDialogAsync(response2FA.message.Codigo, response2FA.message.Descripcion, (int)TipoMensaje.Error);
-                }
+                _tokenManager.SetTokenAsync(response.message.Descripcion);
+                await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
+                NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);   
             }
+            else
+            {
+                var dialog = await DialogS.ShowAsync<MessageBox2FA>("Verificación 2FA", _backdropClick);
+                var result = await dialog.Result;
+                if (!result.Canceled)
+                {
+                
+                    usuario.two_factor_code = (string)result.Data!;
+                    var response2FA = await seguridadAgent.Verificar2FA(usuario);
+                
+                    if (response2FA.success)
+                    {
+                        DialogS.Close(dialog);
+                        _tokenManager.SetTokenAsync(response2FA.message.Descripcion);
+                        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                        await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
+                        NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);  
+                    }
+                    else
+                    {
+                        await _messageBox.OpenDialogAsync(response2FA.message.Codigo,response2FA.message.Descripcion, (int)TipoMensaje.Error );
+
+                    }
+                } 
+            }
+
+            
         }
         else
         {
-            await _messageBox.OpenDialogAsync(response.message.Codigo, response.message.Descripcion, (int)TipoMensaje.Error);
+           await _messageBox.OpenDialogAsync(response.message.Codigo,response.message.Descripcion, (int)TipoMensaje.Error );
         }
     }
 }

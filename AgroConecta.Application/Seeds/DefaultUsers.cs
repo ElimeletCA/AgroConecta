@@ -54,4 +54,32 @@ public static class DefaultUsers
                 }
             }
         }
+        public static async Task SembrarUsuariosDummyAsync(
+            UserManager<Usuario> userManager, int cantidad)
+        {
+            for (int i = 1; i <= cantidad; i++)
+            {
+                string username = $"dummy{i}";
+                string email = $"{username}@example.com";
+                string password = email; 
+
+                var dummyUser = new Usuario()
+                {
+                    UserName = username,
+                    nombre_completo = username,
+                    Email = email,
+                    EmailConfirmed = true,
+                    TwoFactorEnabled = false
+                };
+
+                if (userManager.Users.All(u => u.Email != dummyUser.Email))
+                {
+                    var user = await userManager.FindByEmailAsync(dummyUser.Email);
+                    if (user == null)
+                    {
+                        await userManager.CreateAsync(dummyUser, password);
+                    }
+                }
+            }
+        }
     }
