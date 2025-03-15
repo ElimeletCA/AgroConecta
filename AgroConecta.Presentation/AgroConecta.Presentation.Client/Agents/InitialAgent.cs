@@ -1,9 +1,8 @@
-using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
+using AgroConecta.Presentation.Client.Agents.Interfaces;
 
-namespace AgroConecta.Presentation.Client.Agents.Interfaces;
+namespace AgroConecta.Presentation.Client.Agents;
 
-public class InitialAgent: BaseAgent, IInitialAgent
-{
+/*public class InitialAgent
     public InitialAgent(HttpClient _httpClient) : base(_httpClient) { }
 
     
@@ -17,4 +16,4 @@ public class InitialAgent: BaseAgent, IInitialAgent
     }
 
 
-}
+}*/

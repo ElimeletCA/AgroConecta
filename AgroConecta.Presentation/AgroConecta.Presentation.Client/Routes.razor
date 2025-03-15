@@ -1,10 +1,25 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
-            <NotAuthorized>
-                <RedirectToLogin/>
-            </NotAuthorized>
-        </AuthorizeRouteView>
-        <FocusOnNavigate RouteData="routeData" Selector="h1"/>
-    </Found>
-</Router>
+﻿@using AgroConecta.Presentation.Client.Components.General
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Routing
+<Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
+
+    <Router AppAssembly="typeof(Program).Assembly">
+        <Found Context="routeData">
+            <Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+                <NotAuthorized>
+                    <RedirectToLogin />
+                </NotAuthorized>
+            </Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView>
+
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+
+    </Router>
+</Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
+
+<style>
+    .loader {
+        display:none;
+        max-height:0;
+    }
+</style>

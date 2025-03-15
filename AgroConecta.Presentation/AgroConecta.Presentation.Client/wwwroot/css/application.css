@@ -1,0 +1,98 @@
+:root {
+
+}
+.mud-input-outlined-border { border-radius: 8px !important; }
+.flow-input{
+    background-color: rgb(249, 250, 251); border-radius: 8px;
+}
+.flow-select{
+    background-color: rgb(249, 250, 251); border-radius: 8px;
+}
+.flow-button{
+    border-radius: 8px !important;
+}
+
+.mud-popover-open{
+    max-height: 200px !important;
+}
+body {
+    overflow-x: hidden;
+}
+
+/* Estilo inicial para ocultar las secciones */
+.section {
+    opacity: 0; /* Ocultar inicialmente */
+    transition: opacity 0.5s ease; /* Transición suave */
+}
+
+/* Definición de la animación desde la derecha */
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Definición de la animación desde la izquierda */
+@keyframes slideInFromLeft {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Definición de la animación desde arriba */
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Definición de la animación desde abajo */
+@keyframes slideInFromBottom {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Aplicar la animación al div que entra desde la derecha */
+.animated-section-from-right.visible {
+    opacity: 1; /* Mostrar el elemento */
+    animation: slideInFromRight 2.5s ease-out forwards; /* Animación */
+}
+
+/* Aplicar la animación al div que entra desde la izquierda */
+.animated-section-from-left.visible {
+    opacity: 1; /* Mostrar el elemento */
+    animation: slideInFromLeft 2.5s ease-out forwards; /* Animación */
+}
+
+/* Aplicar la animación al div que entra desde arriba */
+.animated-section-from-top.visible {
+    opacity: 1; /* Mostrar el elemento */
+    animation: slideInFromTop 2.5s ease-out forwards; /* Animación */
+}
+
+/* Aplicar la animación al div que entra desde abajo */
+.animated-section-from-bottom.visible {
+    opacity: 1; /* Mostrar el elemento */
+    animation: slideInFromBottom 2.5s ease-out forwards; /* Animación */
+}

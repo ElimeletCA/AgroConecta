@@ -1,87 +1,128 @@
-using AgroConecta.Presentation.Client.Agents.Interfaces;
-using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using AgroConecta.Presentation.Client.Pages;
 using AgroConecta.Presentation.Components;
-using AgroConecta.Presentation.Components.Account;
-using AgroConecta.Presentation.Data;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using AgroConecta.Application.Seeds;
+using AgroConecta.Application.Servicios.Interfaces.Seguridad;
+using AgroConecta.Application.Servicios.Seguridad;
+using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Infrastructure.Repositorio.Data;
+using AgroConecta.Presentation.Seguridad;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Add MudBlazor services
 builder.Services.AddMudServices();
-builder.Services.AddHttpClient<IInitialAgent, InitialAgent>(client =>
-{
-    // Configurar un servicio de URL base en tiempo de ejecución.
-    var httpContextAccessor = builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>();
-    var request = httpContextAccessor.HttpContext?.Request;
-
-    if (request != null)
-    {
-        var baseUrl = $"{request.Scheme}://{request.Host}{request.PathBase}";
-        client.BaseAddress = new Uri(baseUrl);
-    }
-    else
-    {
-        throw new InvalidOperationException("No se pudo determinar la URL base.");
-    }
-});
-builder.Services.AddHttpContextAccessor();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<IdentityUserAccessor>();
-builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, PersistingServerAuthenticationStateProvider>();
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
-    .AddIdentityCookies();
+
+builder.Services.AddAuthorizationCore();//Agregado
+builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();//Agregado
+builder.Services.AddControllers();//agregado
+builder.Services.AddHttpClient();//Agregado
+builder.Services.AddCascadingAuthenticationState();//Agregado
+
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
-
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
     {
-        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
-    });;
+        options.UseNpgsql(connectionString);
+    }
+
+);
+
+builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.SignIn.RequireConfirmedEmail = true;
+    options.Lockout.AllowedForNewUsers = false;
+
+}).AddEntityFrameworkStores<AppDbContext>() 
+    .AddDefaultTokenProviders();
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateActor = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            RequireExpirationTime=true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+
+    });
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+    var logger = loggerFactory.CreateLogger("app");
     try
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
+        var context = services.GetRequiredService<AppDbContext>();
         context.Database.Migrate(); // Aplica migraciones pendientes
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+    }
+    try
+    {
+        logger.LogInformation("Comenzando seed de datos iniciales");
+
+        var userManager = services.GetRequiredService<UserManager<Usuario>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        await DefaultRoles.SembrarAsync(userManager, roleManager);
+        await DefaultUsers.SembrarUsuarioAdministradorAsync(
+            userManager, 
+            roleManager, 
+            builder.Configuration["DefaultUser:Email"],
+            builder.Configuration["DefaultUser:Password"]);
+        logger.LogInformation("Seed de datos iniciales terminado");
+        logger.LogInformation("Iniciando Aplicacicon...");
+    }
+    catch (Exception ex)
+    {
+        logger.LogWarning(ex, "Error al enviar los datos seed a la DB");
+
     }
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
-    app.UseMigrationsEndPoint();
 }
 else
 {
@@ -93,14 +134,16 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
+
 app.UseAntiforgery();
+
+app.MapControllers();//agregado
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(AgroConecta.Presentation.Client._Imports).Assembly);
-app.MapControllers();
-
-// Add additional endpoints required by the Identity /Account Razor components.
-app.MapAdditionalIdentityEndpoints();
 
 app.Run();

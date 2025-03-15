@@ -7,6 +7,11 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["AgroConecta.Shared/AgroConecta.Shared.csproj", "AgroConecta.Shared/"]
+COPY ["AgroConecta.Domain/AgroConecta.Domain.csproj", "AgroConecta.Domain/"]
+COPY ["AgroConecta.Application/AgroConecta.Application.csproj", "AgroConecta.Application/"]
+COPY ["AgroConecta.Infrastructure/AgroConecta.Infrastructure.csproj", "AgroConecta.Infrastructure/"]
+
 COPY ["AgroConecta.Presentation/AgroConecta.Presentation/AgroConecta.Presentation.csproj", "AgroConecta.Presentation/AgroConecta.Presentation/"]
 COPY ["AgroConecta.Presentation/AgroConecta.Presentation.Client/AgroConecta.Presentation.Client.csproj", "AgroConecta.Presentation/AgroConecta.Presentation.Client/"]
 RUN dotnet restore "AgroConecta.Presentation/AgroConecta.Presentation/AgroConecta.Presentation.csproj"
