@@ -1,4 +1,4 @@
-namespace AgroConecta.Application.Constantes.Seguridad;
+namespace AgroConecta.Shared.Constantes.Seguridad;
 
 public class Permisos
 {

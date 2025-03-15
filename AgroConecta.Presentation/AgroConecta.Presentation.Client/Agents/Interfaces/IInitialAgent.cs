@@ -1,6 +1,6 @@
-namespace AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
+namespace AgroConecta.Presentation.Client.Agents.Interfaces;
 
-public interface IInitialAgent: IBaseAgent
+public interface IInitialAgent
 {
     public Task<string> GetDocument();
    

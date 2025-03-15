@@ -1,22 +1,24 @@
+@using AgroConecta.Presentation.Client.Constantes
 @inherits LayoutComponentBase
 @inject IJSRuntime JS
-
-
 <HeadContent>
-    <link href="css/flowbite/flowbite.min.css" rel="stylesheet"/>
-    <script src="js/flowbite/flowbite.min.js" defer></script>
-
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
 </HeadContent>
-<div class="landing-page">
+<MudThemeProvider Theme="temaActual" />
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<div class="auth-page">
     @Body
 </div>
 @code {
+    public TemaGeneral temaActual=new();
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JS.InvokeVoidAsync("window.initializeFlowbite");
-            await JS.InvokeVoidAsync("initcustomjs");
+            // await JS.InvokeVoidAsync("window.initializeFlowbite");
+            // await JS.InvokeVoidAsync("initcustomjs");
         }
     }
 }

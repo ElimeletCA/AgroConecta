@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using AgroConecta.Presentation.Client.Components
+@using AgroConecta.Presentation.Client.Components.General
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -13,16 +15,21 @@
     *@
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="css/application.css" rel="stylesheet"/>
-    <HeadOutlet @rendermode="RenderModeForPage"/>
+    <HeadOutlet @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)"/>
 </head>
 
 <body>
-<Routes @rendermode="RenderModeForPage"/>
+<div class="[&>*:last-child:not(:first-child)]:hidden">
+    <Routes @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)"/>
+    <div class="loader" >
+        <PantallaCarga/>
+
+    </div>
+</div>
 <script src="_framework/blazor.web.js"></script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="_content/Extensions.MudBlazor.StaticInput/NavigationObserver.js"></script>
 <script src="js/FileUtil.js"></script>
-<script src="js/flowbite/custom.js"></script>
 <script src="js/aos/aos.js"></script>
 <script>
     AOS.init();
@@ -30,16 +37,10 @@
         var aside = document.getElementById('drawer-navigation');
         return aside.classList.contains('transform-none');
     }
+    window.initializeFlowbite = () => {
+        initFlowbite();
+    }
 </script>
 </body>
 
 </html>
-
-@code {
-    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
-
-    private IComponentRenderMode? RenderModeForPage => HttpContext.Request.Path.StartsWithSegments("/Account")
-        ? null
-        : InteractiveWebAssembly;
-
-}

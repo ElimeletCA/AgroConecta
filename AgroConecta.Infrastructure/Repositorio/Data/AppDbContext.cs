@@ -1,7 +1,8 @@
 using System.Diagnostics;
-using AgroConecta.Domain.System;
-using AgroConecta.Domain.System.Extras;
-using AgroConecta.Domain.System.Seguridad;
+using AgroConecta.Domain.Sistema;
+using AgroConecta.Domain.Sistema.Extras;
+using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Domain.Sistema.Tipos;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -139,6 +140,13 @@ public class AppDbContext : IdentityDbContext<Usuario>
             .HasMany(usuarios => usuarios.perfiles)
             .WithMany("usuarios")
             .UsingEntity(join => join.ToTable("UsuarioPerfil"));
+        
+        //Conversion a UTC debido a Postgresql
+        modelbuilder.Entity<Usuario>()
+            .Property(u => u.fecha_nacimiento)
+            .HasConversion(
+                v => v.ToUniversalTime(),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
         
         var listaperfiles = new Perfil[]
         {
