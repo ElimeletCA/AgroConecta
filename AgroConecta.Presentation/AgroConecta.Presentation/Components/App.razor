@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <base href="/"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link href="css/aos/aos.css" rel="stylesheet">
+    @*<link href="css/aos/aos.css" rel="stylesheet">*@
 
     @*
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
@@ -31,13 +31,15 @@
 <script src="_content/Extensions.MudBlazor.StaticInput/NavigationObserver.js"></script>
 <script src="js/FileUtil.js"></script>
 <script src="js/aos/aos.js"></script>
+<script src="js/flowbite/flowbite.min.js" defer></script>
+
 <script>
-    AOS.init();
     function checkIfAsideIsOpen() {
         var aside = document.getElementById('drawer-navigation');
         return aside.classList.contains('transform-none');
     }
     window.initializeFlowbite = () => {
+        AOS.init();
         initFlowbite();
     }
 </script>

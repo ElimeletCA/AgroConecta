@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AgroConecta.Application.Seeds;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
+using AgroConecta.Application.Servicios.Interfaces.Sistema.Seguridad;
 using AgroConecta.Application.Servicios.Seguridad;
+using AgroConecta.Application.Servicios.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Infrastructure.Repositorio.Data;
 using AgroConecta.Presentation.Seguridad;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +41,27 @@ builder.Services.AddCascadingAuthenticationState();//Agregado
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<IAuthService, AuthService>();
+#region Carga de servicios de lógica de negocio
+var serviceAssembly = Assembly.Load("AgroConecta.Application"); 
+var baseServiceType = typeof(IBaseService);
+// Busca todas las clases concretas en el ensamblado de servicios
+var serviceTypes = serviceAssembly.GetTypes()
+    .Where(type => type.IsClass && !type.IsAbstract) // Filtra solo clases concretas
+    .Select(type => new
+    {
+        Implementation = type,
+        Interface = type.GetInterfaces()
+            .FirstOrDefault(i => i != baseServiceType && baseServiceType.IsAssignableFrom(i)) // Busca la interfaz específica
+    })
+    .Where(t => t.Interface != null) // Solo toma las que tienen una interfaz válida
+    .ToList();
+// Registra cada servicio encontrado
+foreach (var service in serviceTypes)
+{
+    builder.Services.AddScoped(service.Interface!, service.Implementation);
+}
+#endregion
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -110,6 +134,9 @@ using (var scope = app.Services.CreateScope())
             roleManager, 
             builder.Configuration["DefaultUser:Email"],
             builder.Configuration["DefaultUser:Password"]);
+        
+        await DefaultUsers.SembrarUsuariosDummyAsync(userManager, 10);
+
         logger.LogInformation("Seed de datos iniciales terminado");
         logger.LogInformation("Iniciando Aplicacicon...");
     }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace AgroConecta.Application.Servicios.Interfaces.Seguridad;
 
-public interface IAuthService
+public interface IAuthService : IBaseService
 {
     Task<bool> RegistrarUsuario(UsuarioDTO usuario);
     Task<bool> GenerarCorreoDeConfirmacion(UsuarioDTO usuario);
@@ -15,7 +15,6 @@ public interface IAuthService
 
     Task<bool> LoginUsuario(UsuarioDTO usuario);
 
-    public void ColocarJwtTokenEnCookie(string token, HttpContext context);
     public bool ExisteTokenValido(HttpContext context);
     public void EliminarJwtTokenDeCookie(HttpContext context);
 

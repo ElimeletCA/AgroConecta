@@ -123,6 +123,8 @@ public class AuthService : IAuthService
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuarioexistente.Id),
                 new Claim(JwtRegisteredClaimNames.Name, usuarioexistente.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, usuarioexistente.Email),
+
                 //new Claim(ClaimTypes.Role, "Admin")
             };
 
@@ -149,30 +151,11 @@ public class AuthService : IAuthService
                 claims: claims,
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
-                expires: System.DateTime.Now.AddMinutes(30),
+                expires: System.DateTime.Now.AddMinutes(60),
                 signingCredentials: signingcred);
                 
             string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
             return tokenString;
-        }
-        public void ColocarJwtTokenEnCookie(string token, HttpContext context)
-        {
-            try
-            {
-                context.Response.Cookies.Append("tokenacceso", token,
-                    new CookieOptions
-                    {
-                        Expires = DateTimeOffset.UtcNow.AddMinutes(30),
-                        HttpOnly = true,
-                        IsEssential = true,
-                        Secure = true,
-                        SameSite = SameSiteMode.None
-                    });
-            }
-            catch {
-
-            }
-
         }
         public bool ExisteTokenValido(HttpContext context)
         {

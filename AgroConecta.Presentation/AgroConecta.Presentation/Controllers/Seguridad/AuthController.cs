@@ -144,11 +144,25 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
 
                 if (await _authService.LoginUsuario(usuario))
                 {
-                    bool confirmacionenvio = await EnviarCodigo2FA(usuarioexistente.Email);
                     
-                    return  confirmacionenvio
-                        ?  Ok(new ApiResponse<BackendMessage>{ success = true, message = BackendMessages.MessageS003 })
-                        :  Ok(new ApiResponse<BackendMessage>{  success = false, message = BackendMessages.MessageS004});
+                    var enable2FA = _config["Security:Enable2FA"];
+                    if (!String.IsNullOrEmpty(enable2FA))
+                    {
+                        if (bool.Parse(enable2FA))
+                        {
+                            bool confirmacionenvio = await EnviarCodigo2FA(usuarioexistente.Email);
+                    
+                            return  confirmacionenvio
+                                ?  Ok(new ApiResponse<BackendMessage>{ success = true, message = BackendMessages.MessageS003 })
+                                :  Ok(new ApiResponse<BackendMessage>{  success = false, message = BackendMessages.MessageS004});
+                        }
+                        var token = await _authService.GenerarTokenString(usuarioexistente);
+
+                        return Ok(new ApiResponse<BackendMessage>
+                            { success = true, message = new BackendMessage() { Codigo = TipoCodigo.Skip2FA, Descripcion = token} });
+
+                    }
+
 
                 }
                 return  Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS005 });
@@ -185,19 +199,32 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
                     usuarioexistente = await _userManager.FindByEmailAsync(usuario.Email);
                 }
 
-                if (usuarioexistente is null || usuario.two_factor_code is null)
+                if (usuarioexistente is not null)
                 {
-                    Ok(new { success = false, message = "ERROR" });
-                }
+                    var enable2FA = _config["Security:Enable2FA"];
+                    if (!String.IsNullOrEmpty(enable2FA))
+                    {
+                        if (bool.Parse(enable2FA))
+                        {
+                            var result = await _userManager.VerifyTwoFactorTokenAsync(usuarioexistente, "Email", usuario.two_factor_code);
+                            if (result)
+                            {
+                                var token = await _authService.GenerarTokenString(usuarioexistente);
+                                return Ok (new  { success = true, message = new BackendMessage(){Codigo = "CODE-JWT", Descripcion = token}});
 
-                var result = await _userManager.VerifyTwoFactorTokenAsync(usuarioexistente, "Email", usuario.two_factor_code);
-                if (result)
-                {
-                    var token = await _authService.GenerarTokenString(usuarioexistente);
-                    return Ok (new  { success = true, message = new BackendMessage(){Codigo = "CODE-JWT", Descripcion = token}});
+                            }
+                        }
+                        else
+                        {
+                            var token = await _authService.GenerarTokenString(usuarioexistente);
+                            return Ok (new  { success = true, message = new BackendMessage(){Codigo = "CODE-JWT", Descripcion = token}});
 
+                        }      
+                    }
                 }
                 return Ok(new { success = false, message = "ERROR" });
+
+               
 
             }
             catch( Exception e)
