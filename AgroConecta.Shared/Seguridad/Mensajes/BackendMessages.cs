@@ -31,6 +31,15 @@ public static class BackendMessages
     /// </summary>
     public static BackendMessage MessageS005 = new(){Tipo=(int)TipoMensaje.Error, Codigo= "CODE-S005", Descripcion = "Usuario o contraseña incorrectos, por favor verifique los datos e intente de nuevo."};
 
+    /// <summary>
+    /// CODE-S006: Se ha enviado un enlace de verificación a su correo electrónico. Por favor, revise su bandeja de entrada y verifique su correo para completar la creación de su cuenta.
+    /// </summary>
+    public static BackendMessage MessageS006 = new(){Tipo=(int)TipoMensaje.Error, Codigo= "CODE-S006", Descripcion = "Se ha enviado un enlace de verificación a su correo electrónico. Por favor, revise su bandeja de entrada y verifique su correo para completar la creación de su cuenta."};
+    /// <summary>
+    /// CODE-S007: Nombre de usuario no disponible, favor verificar e intentar de nuevo
+    /// </summary>
+    public static BackendMessage MessageS007 = new(){Tipo=(int)TipoMensaje.Error, Codigo= "CODE-S007", Descripcion = "Nombre de usuario no disponible, favor verificar e intentar de nuevo"};
+
 }
 
 public class BackendMessage

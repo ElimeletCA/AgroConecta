@@ -13,22 +13,24 @@
     *@
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="css/application.css" rel="stylesheet"/>
-    <HeadOutlet @rendermode="InteractiveWebAssembly"/>
+    <HeadOutlet @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)"/>
 </head>
 
 <body>
-<Routes @rendermode="InteractiveWebAssembly"/>
+<Routes @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)"/>
 <script src="_framework/blazor.web.js"></script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="_content/Extensions.MudBlazor.StaticInput/NavigationObserver.js"></script>
 <script src="js/FileUtil.js"></script>
-<script src="js/flowbite/custom.js"></script>
 <script src="js/aos/aos.js"></script>
 <script>
     AOS.init();
     function checkIfAsideIsOpen() {
         var aside = document.getElementById('drawer-navigation');
         return aside.classList.contains('transform-none');
+    }
+    window.initializeFlowbite = () => {
+        initFlowbite();
     }
 </script>
 </body>

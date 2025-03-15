@@ -7,34 +7,39 @@
 <AuthorizeView>
     <Authorized>
         <MudNavMenu>
-            @*
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    *@
-            @*<MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
-    <MudNavLink Href="auth" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Lock">Auth Required</MudNavLink>*@
+            <!-- Sección de Inicio -->
             <MudNavLink Href="Inicio" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Inicio</MudNavLink>
-            @*
-            <MudNavLink Href="Cuenta/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
-            *@
+
+            <!-- Sección de Gestión de Entidades -->
+            <MudNavGroup Title="Gestión de Entidades" Expanded="true">
+                <MudNavLink Href="Terrenos" Icon="@Icons.Material.Filled.Landscape">Terrenos</MudNavLink>
+                <MudNavLink Href="Arrendamientos" Icon="@Icons.Material.Filled.Assignment">Arrendamientos</MudNavLink>
+                <MudNavLink Href="Proyectos" Icon="@Icons.Material.Filled.BusinessCenter">Proyectos</MudNavLink>
+                <MudNavLink Href="Archivos" Icon="@Icons.Material.Filled.AttachFile">Archivos</MudNavLink>
+            </MudNavGroup>
+
+            <!-- Sección de Configuración -->
+            <MudNavGroup Title="Configuración" Expanded="true">
+                <MudNavLink Href="Parametros" Icon="@Icons.Material.Filled.Settings">Parámetros del Sistema</MudNavLink>
+                <MudNavLink Href="Notificaciones" Icon="@Icons.Material.Filled.Notifications">Notificaciones</MudNavLink>
+            </MudNavGroup>
+
+            <!-- Sección de Usuarios y Roles -->
+            <MudNavGroup Title="Usuarios y Roles" Expanded="true">
+                <MudNavLink Href="Usuarios" Icon="@Icons.Material.Filled.People">Usuarios</MudNavLink>
+                <MudNavLink Href="Roles" Icon="@Icons.Material.Filled.Security">Roles</MudNavLink>
+                <MudNavLink Href="Permisos" Icon="@Icons.Material.Filled.VerifiedUser">Permisos</MudNavLink>
+            </MudNavGroup>
+
+            <!-- Sección de Acerca de -->
+            <MudNavLink Href="AcercaDe" Icon="@Icons.Material.Filled.Info">Acerca de</MudNavLink>
+
+            <!-- Botón para Cerrar Sesión -->
             <BtnCerrarSesion/>
-            <MudPaper Width="250px" Elevation="0" Class="py-3">
-                <MudNavMenu Class="pa-2" Rounded="true" Margin="Margin.Dense" Color="Color.Success">
-                    <MudNavLink Href="Home" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-                    <MudNavLink Href="Bla" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Storage">Servers</MudNavLink>
-                    <MudNavLink Href="" Disabled="true">Billing</MudNavLink>
-                    <MudNavGroup Title="Settings" Expanded="true">
-                        <MudNavLink Href="">Users</MudNavLink>
-                        <MudNavLink Href="">Security</MudNavLink>
-                    </MudNavGroup>
-                    <MudNavLink Href="">About</MudNavLink>
-                </MudNavMenu>
-            </MudPaper>
-            @*<MudNavLink Href="Cuenta/Registro" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Registrar</MudNavLink>
-            <MudNavLink Href="Cuenta/Login" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Password">Iniciar sesion </MudNavLink>*@
         </MudNavMenu>
     </Authorized>
-
 </AuthorizeView>
+
 
 @code {
     private string? currentUrl;

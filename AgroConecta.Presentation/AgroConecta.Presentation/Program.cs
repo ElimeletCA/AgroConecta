@@ -17,6 +17,7 @@ using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Infrastructure.Repositorio.Data;
 using AgroConecta.Presentation.Seguridad;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,13 +47,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     }
 
 );
+
 builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
     options.SignIn.RequireConfirmedEmail = true;
     options.Lockout.AllowedForNewUsers = false;
 
-}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+}).AddEntityFrameworkStores<AppDbContext>() 
+    .AddDefaultTokenProviders();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -74,6 +80,7 @@ builder.Services.AddAuthentication(options =>
 
     });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 var app = builder.Build();

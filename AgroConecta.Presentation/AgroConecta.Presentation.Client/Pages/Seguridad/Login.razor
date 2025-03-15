@@ -42,12 +42,8 @@ No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink
 
 
 @code {
-    private TokenManager _tokenManager;    
-    UsuarioDTO usuario = new UsuarioDTO()
-    {
-        
-    };
-    
+    private TokenManager _tokenManager;
+    UsuarioDTO usuario = new();
     private MessageBox _messageBox;
     
     private MessageBox2FA _messageBox2Fa;

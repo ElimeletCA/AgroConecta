@@ -12,7 +12,12 @@ public class SeguridadAgent : BaseAgent<UsuarioDTO>, ISeguridadAgent
         : base(httpClient, "api/Auth")
     {
     }
-
+    public async Task<ApiResponse<BackendMessage>> RegisterUser(UsuarioDTO usuario)
+    {
+        var apiResponse = (await _httpClient.PostAsJsonAsync($"{_endpoint}/Registro", usuario)).Content
+            .ReadFromJsonAsync<ApiResponse<BackendMessage>>().Result;
+        return apiResponse ?? new ApiResponse<BackendMessage>();
+    }
     public async Task<ApiResponse<BackendMessage>> LoginUser(UsuarioDTO usuario)
     {
         var apiResponse = (await _httpClient.PostAsJsonAsync($"{_endpoint}/Login", usuario)).Content

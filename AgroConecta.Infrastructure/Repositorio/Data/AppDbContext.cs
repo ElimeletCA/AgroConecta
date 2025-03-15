@@ -141,6 +141,13 @@ public class AppDbContext : IdentityDbContext<Usuario>
             .WithMany("usuarios")
             .UsingEntity(join => join.ToTable("UsuarioPerfil"));
         
+        //Conversion a UTC debido a Postgresql
+        modelbuilder.Entity<Usuario>()
+            .Property(u => u.fecha_nacimiento)
+            .HasConversion(
+                v => v.ToUniversalTime(),
+                v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+        
         var listaperfiles = new Perfil[]
         {
             new Perfil {id= 1, nombre_perfil = "Propietario", descripcion_perfil= "Propietario"},

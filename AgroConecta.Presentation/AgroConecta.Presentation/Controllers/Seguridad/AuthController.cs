@@ -1,10 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using AgroConecta.Application.Helpers;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
@@ -12,8 +6,11 @@ using AgroConecta.Presentation.Seguridad;
 using AgroConecta.Shared.Constantes.Seguridad;
 using AgroConecta.Shared.Seguridad;
 using AgroConecta.Shared.Seguridad.Mensajes;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
-namespace AgroConecta.Presentation.Controllers;
+namespace AgroConecta.Presentation.Controllers.Seguridad;
 
     [Route("api/[controller]")]
     [ApiController]
@@ -31,8 +28,8 @@ namespace AgroConecta.Presentation.Controllers;
             _config = config;
             _signInManager = signInManager;
         }
-        [HttpPost]
-        public async Task<IActionResult> RegistrarUsuario(Usuario usuario)
+        [HttpPost("Registro")]
+        public async Task<IActionResult>Registro([FromBody]UsuarioDTO usuario)
         {
             try
             {
@@ -40,75 +37,91 @@ namespace AgroConecta.Presentation.Controllers;
                 (
                     usuario.UserName is null
                     || usuario.pasword_without_hash is null
-                    || usuario.nombre_completo is null
                     || usuario.Email is null
-                    || usuario.PhoneNumber is null
+                    //|| usuario.PhoneNumber is null
                 )
                 {
-                    return BadRequest(new{ success = false, message = "ERROR-101" });
+                    //return BadRequest(new{ success = false, message = "ERROR-101" });
+                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+
                 }
                 if (!Regex.IsMatch(usuario.UserName, @"^[a-zA-Z]{1,15}$", RegexOptions.IgnoreCase))
                 {
-                    return BadRequest(new { success = false, message = "ERROR-102" });
+                    //return BadRequest(new { success = false, message = "ERROR-102" });
+                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+
                 }
                 if (!Regex.IsMatch(usuario.pasword_without_hash, @"^.{1,25}$", RegexOptions.IgnoreCase))
                 {
-                    return BadRequest(new{ success = false, message = "ERROR-103" });
+                    //return BadRequest(new{ success = false, message = "ERROR-103" });
+                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+
                 }
                 if (!Regex.IsMatch(usuario.nombre_completo, @"^[a-zA-ZáéíóúÁÉÍÓÚüÜ ]{1,50}$", RegexOptions.IgnoreCase))
                 {
-                    return BadRequest(new{ success = false, message = "ERROR-104" });
+                    //return BadRequest(new{ success = false, message = "ERROR-104" });
+                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+
                 }
                 // linux @"^\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}$"
                 // windows @"^\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2}:\d{2} (AM|PM)$"
-                if (!Regex.IsMatch(usuario.fecha_nacimiento.ToString(), @"^\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}$", RegexOptions.IgnoreCase))
-                {
-                    return BadRequest(new{ success = false, message = $"{usuario.fecha_nacimiento.ToString()} ERROR-105" });
-                }
-                if (!Regex.IsMatch(usuario.PhoneNumber, @"^\(\d{3}\) \d{3}-\d{4}$", RegexOptions.IgnoreCase))
+                // if (!Regex.IsMatch(usuario.fecha_nacimiento.ToString(), @"^\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2}:\d{2} (AM|PM)$", RegexOptions.IgnoreCase))
+                // {
+                //     //return BadRequest(new{ success = false, message = $"{usuario.fecha_nacimiento.ToString()} ERROR-105" });
+                //     return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                //
+                // }
+                /*if (!Regex.IsMatch(usuario.PhoneNumber, @"^\(\d{3}\) \d{3}-\d{4}$", RegexOptions.IgnoreCase))
                 {
                     return BadRequest(new{ success = false, message = "ERROR-106" });
-                }
+                }*/
                 if (!Regex.IsMatch(usuario.Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", RegexOptions.IgnoreCase))
                 {
-                    return BadRequest(new{ success = false, message = "ERROR-107" });
+                    //return BadRequest(new{ success = false, message = "ERROR-107" });
+                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+
                 }
                 if (!(await _userManager.FindByNameAsync(usuario.UserName) is null))
                 {
-                    return BadRequest(new{ success = false, message = "Ya existe una cuenta con ese nombre de usuario, favor verificar e intentar de nuevo" });
+                    //return BadRequest(new{ success = false, message = "Ya existe una cuenta con ese nombre de usuario, favor verificar e intentar de nuevo" });
+                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
 
                 }
                 if (!(await _userManager.FindByEmailAsync(usuario.Email) is null))
                 {
-                    return BadRequest(new { success = false, message = "Ya existe una cuenta con ese correo electrónico, favor verificar e intentar de nuevo" });
+                    //return BadRequest(new { success = false, message = "Ya existe una cuenta con ese correo electrónico, favor verificar e intentar de nuevo" });
+                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
 
                 }
                 if (await _authService.RegistrarUsuario(usuario))
                 {
-                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(usuario);
+                    /*var token = await _userManager.GenerateEmailConfirmationTokenAsync(usuario);
                     var confirmationLink = Url.Action("ConfirmarCorreo", "Email", new { token, email = usuario.Email }, Request.Scheme);
                     EmailHelper emailHelper = new EmailHelper(_config);
-                    bool emailResponse = emailHelper.EnviarCorreo(usuario.Email, confirmationLink);
+                    bool emailResponse = emailHelper.EnviarCorreo(usuario.Email, confirmationLink);*/
 
-                    if (emailResponse)
+                    if (await _authService.GenerarCorreoDeConfirmacion(usuario))
                     {
-                        return BadRequest(new { success = true , message = "Correo de confirmación enviado"});
+                        //return BadRequest(new { success = true , message = "Correo de confirmación enviado"});
+                        return Ok(new ApiResponse<BackendMessage>{ success = true, message = BackendMessages.MessageS006 });
+
                     }
                     else
                     {
-                        return BadRequest(new { success = false, message = "ERROR-108" });
+                        return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
                     }
 
 
                 }
-                return BadRequest(new { success = false, message = "ERROR-109" });
+                return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { success = false, message = ex });
+                return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
             }
 
         }
+        
         [HttpPost("Login")]
         public async Task<IActionResult>Login([FromBody]UsuarioDTO usuario)
         {
@@ -193,6 +206,7 @@ namespace AgroConecta.Presentation.Controllers;
             }
 
         }
+        
         [HttpGet("GetTerrenos"), Authorize]
         [RequierePermiso(Permisos.Terrenos.Ver)]
         public async Task<IActionResult> GetTerrenos()

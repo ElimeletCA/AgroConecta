@@ -5,10 +5,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AgroConecta.Application.Helpers;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Shared.Seguridad;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 
 namespace AgroConecta.Application.Servicios.Seguridad;
@@ -18,19 +22,77 @@ public class AuthService : IAuthService
         private readonly UserManager<Usuario> _userManager;
         private readonly RoleManager<IdentityRole> _rolManager;
         private readonly IConfiguration _config;
-
-        public AuthService(UserManager<Usuario> userManager, RoleManager<IdentityRole> rolManager, IConfiguration config)
+        private readonly IMapper _mapper;
+        private readonly LinkGenerator _linkGenerator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AuthService
+        (
+            LinkGenerator linkGenerator,
+            IHttpContextAccessor httpContextAccessor,
+            UserManager<Usuario> userManager,
+            RoleManager<IdentityRole> rolManager,
+            IConfiguration config,
+            IMapper mapper
+        )
         {
             _userManager = userManager;
             _rolManager = rolManager;
+            _linkGenerator = linkGenerator;
+            _httpContextAccessor = httpContextAccessor;
             _config = config;
+            _mapper = mapper;
+
         }
 
-        public async Task<bool> RegistrarUsuario(Usuario usuario)
+        public async Task<bool> RegistrarUsuario(UsuarioDTO usuarioDto)
         {
+            var usuario = _mapper.Map<Usuario>(usuarioDto);
             var result = await _userManager.CreateAsync(usuario, usuario.pasword_without_hash);
             return result.Succeeded;
         }
+
+        public async Task<bool> GenerarCorreoDeConfirmacion(UsuarioDTO usuarioDto)
+        {
+            //var usuarioEn = _mapper.Map<Usuario>(usuarioDto);
+            var usuario = await _userManager.FindByEmailAsync(usuarioDto.Email);
+            
+            if (usuario == null)
+                return false;
+            
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(usuario);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            
+            
+            var httpContext = _httpContextAccessor.HttpContext;
+            var scheme = httpContext?.Request.Scheme ?? "https";
+            var confirmationLink = _linkGenerator.GetUriByAction(
+                httpContext, 
+                action: "ConfirmarCorreo", 
+                controller: "Email", 
+                values: new { encodedToken, email = usuario.Email }, 
+                scheme: scheme);
+            
+            EmailHelper emailHelper = new EmailHelper(_config);
+            return emailHelper.EnviarCorreo(usuario.Email, confirmationLink);
+        }
+        public async Task<bool> ConfirmarCorreo(string token, string email)
+        {
+            var usuario = await _userManager.FindByEmailAsync(email);
+            if (usuario == null)
+                return false;
+            
+            var decodedToken = Encoding.UTF8.GetString( WebEncoders.Base64UrlDecode(token));
+            
+            var result = await _userManager.ConfirmEmailAsync(usuario, decodedToken);
+             if (result.Succeeded)
+             {
+                 var result2fa = _userManager.SetTwoFactorEnabledAsync(usuario, true);
+             }
+
+            return result.Succeeded;
+        }
+
+
         public async Task<bool> LoginUsuario(UsuarioDTO usuario)
         {
             try
