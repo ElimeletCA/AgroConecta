@@ -6,8 +6,8 @@ services:
       - enviroment_default
     environment:
       ConnectionStrings__DefaultConnection: Host=$POSTGRESQL_HOST;Database=$POSTGRESQL_DATABASE;Username=$POSTGRESQL_USER;Password=$POSTGRESQL_PASSWORD
-      DefaultUser__Email: $ADMIN_EMAIL
-      DefaultUser__Password: $ADMIN_PASSWORD
+      DefaultUser__Email: "$ADMIN_EMAIL"
+      DefaultUser__Password: "$ADMIN_PASSWORD"
       VIRTUAL_HOST: agroconecta.elimeletca.com
       LETSENCRYPT_HOST: agroconecta.elimeletca.com
       LETSENCRYPT_EMAIL: elimelet.dev@gmail.com
