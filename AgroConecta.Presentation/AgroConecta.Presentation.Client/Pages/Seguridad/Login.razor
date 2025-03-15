@@ -52,8 +52,6 @@ No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink
 
     protected override Task OnInitializedAsync()
     {
-        usuario.Email = "elimelet.dev@gmail.com";
-        usuario.pasword_without_hash = "@Elimelet123";
         _tokenManager = new TokenManager(JS);
         return base.OnInitializedAsync();
     }
