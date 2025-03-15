@@ -105,7 +105,10 @@ using (var scope = app.Services.CreateScope())
         var userManager = services.GetRequiredService<UserManager<Usuario>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         await DefaultRoles.SembrarAsync(userManager, roleManager);
-        await DefaultUsers.SembrarUsuarioAdministradorAsync(userManager, roleManager, builder.Configuration["DefaultUser:Password"]);
+        await DefaultUsers.SembrarUsuarioAdministradorAsync(
+            userManager, 
+            roleManager, 
+            builder.Configuration["DefaultUser:Password"]);
         logger.LogInformation("Seed de datos iniciales terminado");
         logger.LogInformation("Iniciando Aplicacicon...");
     }
@@ -130,7 +133,10 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
+
 app.UseAntiforgery();
+
 app.MapControllers();//agregado
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using AgroConecta.Presentation.Client.Components
+@using AgroConecta.Presentation.Client.Components.General
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -17,7 +19,13 @@
 </head>
 
 <body>
-<Routes @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)"/>
+<div class="[&>*:last-child:not(:first-child)]:hidden">
+    <Routes @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)"/>
+    <div class="loader" >
+        <PantallaCarga/>
+
+    </div>
+</div>
 <script src="_framework/blazor.web.js"></script>
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <script src="_content/Extensions.MudBlazor.StaticInput/NavigationObserver.js"></script>

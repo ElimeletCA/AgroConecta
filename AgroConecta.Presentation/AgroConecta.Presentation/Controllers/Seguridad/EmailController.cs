@@ -31,7 +31,7 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
             var result = await _authService.ConfirmarCorreo(encodedToken, email);
             if (result)
             {
-                return Redirect("/CorreoConfirmado");
+                return Redirect("/Seguridad/CorreoConfirmado");
 
             }
             return Redirect("/Error");

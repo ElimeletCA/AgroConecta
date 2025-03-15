@@ -149,7 +149,7 @@ public class AuthService : IAuthService
                 claims: claims,
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
-                expires: System.DateTime.Now.AddMinutes(10),
+                expires: System.DateTime.Now.AddMinutes(30),
                 signingCredentials: signingcred);
                 
             string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
@@ -162,7 +162,7 @@ public class AuthService : IAuthService
                 context.Response.Cookies.Append("tokenacceso", token,
                     new CookieOptions
                     {
-                        Expires = DateTimeOffset.UtcNow.AddMinutes(10),
+                        Expires = DateTimeOffset.UtcNow.AddMinutes(30),
                         HttpOnly = true,
                         IsEssential = true,
                         Secure = true,
