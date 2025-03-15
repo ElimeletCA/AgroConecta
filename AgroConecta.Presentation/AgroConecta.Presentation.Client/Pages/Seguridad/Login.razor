@@ -62,29 +62,39 @@ No esta registrado?<MudLink Href="/Seguridad/Registro">Crear una cuenta</MudLink
         var response = await seguridadAgent.LoginUser(usuario);
         if (response.success)
         {
-            var dialog = await DialogS.ShowAsync<MessageBox2FA>("Verificación 2FA", _backdropClick);
-            var result = await dialog.Result;
-            if (!result.Canceled)
+            if (response.message.Codigo == TipoCodigo.Skip2FA)
             {
-                
-                usuario.two_factor_code = (string)result.Data!;
-                var response2FA = await seguridadAgent.Verificar2FA(usuario);
-                
-                if (response2FA.success)
-                {
-                    DialogS.Close(dialog);
-                    _tokenManager.SetTokenAsync(response2FA.message.Descripcion);
-                    await AuthenticationStateProvider.GetAuthenticationStateAsync();
-                    await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
-                    NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);
-
-                }
-                else
-                {
-                    await _messageBox.OpenDialogAsync(response2FA.message.Codigo,response2FA.message.Descripcion, (int)TipoMensaje.Error );
-
-                }
+                _tokenManager.SetTokenAsync(response.message.Descripcion);
+                await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
+                NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);   
             }
+            else
+            {
+                var dialog = await DialogS.ShowAsync<MessageBox2FA>("Verificación 2FA", _backdropClick);
+                var result = await dialog.Result;
+                if (!result.Canceled)
+                {
+                
+                    usuario.two_factor_code = (string)result.Data!;
+                    var response2FA = await seguridadAgent.Verificar2FA(usuario);
+                
+                    if (response2FA.success)
+                    {
+                        DialogS.Close(dialog);
+                        _tokenManager.SetTokenAsync(response2FA.message.Descripcion);
+                        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                        await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
+                        NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);  
+                    }
+                    else
+                    {
+                        await _messageBox.OpenDialogAsync(response2FA.message.Codigo,response2FA.message.Descripcion, (int)TipoMensaje.Error );
+
+                    }
+                } 
+            }
+
             
         }
         else
