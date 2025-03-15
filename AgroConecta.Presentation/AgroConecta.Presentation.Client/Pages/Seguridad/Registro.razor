@@ -40,48 +40,108 @@
 <MudButton Variant="Variant.Filled" @onclick=Registrar Color="Color.Primary">Registrar</MudButton>
 Ya tienes una cuenta?<MudLink Href="/Seguridad/Login">Iniciar sesión</MudLink>
 *@
+<style>
+    body {
+        background-color: #04682d;
+    }
+    .mud-left-section {
+        background-color: #04682d;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
 
-<MudForm @ref="form" @bind-IsValid="isValid">
-    <!-- Nombre completo -->
-    <MudText Class="pb-1" HtmlTag="label" For="txtNombreCompleto" Color="Color.Dark">Nombre completo</MudText>
-    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtNombreCompleto" 
-                  @bind-Value="_usuario.nombre_completo" Label="" Variant="Variant.Outlined"
-                  Immediate="true" Validation="ValidateNombreCompleto" />
+    .mud-left-content {
+        text-align: center;
+        max-width: 80%;
+    }
 
-    <!-- Fecha de nacimiento -->
-    <MudText Class="pb-1" HtmlTag="label" For="txtFechaNacimiento" Color="Color.Dark">Fecha de nacimiento</MudText>
-    <MudDatePicker Color="Color.Primary" Class="flow-input" 
-                   @bind-Date="_usuario.fecha_nacimiento" ShowToolbar="false"
-                   Validation="ValidateFechaNacimiento" />
+    .description {
+        margin-top: 10px;
+    }
 
-    <!-- Correo electrónico -->
-    <MudText Class="pb-1" HtmlTag="label" For="txtEmail" Color="Color.Dark">Correo electrónico</MudText>
-    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtEmail" 
-                  @bind-Value="_usuario.Email" Label="" Variant="Variant.Outlined"
-                  Immediate="true" Validation="ValidateEmail" />
+    .character-image {
+        margin-top: 20px;
+        width: 150px;
+    }
 
-    <!-- Usuario -->
-    <MudText Class="pb-1" HtmlTag="label" For="txtUserName" Color="Color.Dark">Usuario</MudText>
-    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtUserName" 
-                  @bind-Value="_usuario.UserName" Label="" Variant="Variant.Outlined"
-                  Immediate="true" Validation="ValidateUserName" />
+    .mud-right-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
 
-    <!-- Contraseña -->
-    <MudText Class="pb-1" HtmlTag="label" For="txtPassword" Color="Color.Dark">Contraseña</MudText>
-    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtPassword" 
-                  @bind-Value="_usuario.pasword_without_hash" Label="" Variant="Variant.Outlined"
-                  Immediate="true" InputType="InputType.Password" Validation="ValidatePassword" />
+    .mud-login-box {
+        padding: 2rem;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+</style>
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="6" Class="mud-left-section">
+            <MudContainer Class="mud-left-content">
+                <img src="images/agroconectawhite.svg" style="max-width: 300px;" alt="logo" class="logowhite" />
+                <MudText Typo="Typo.h4">Conecta con oportunidades agropecuarias.</MudText>
+                <MudText Class="description" Typo="Typo.body1">
+                    Una plataforma digital que facilita la conexión entre propietarios de tierras, agricultores e inversionistas.
+                </MudText>
+                <img src="images/pepper.svg" style="max-width: 300px;" alt="Pepper" class="character-image" />
+            </MudContainer>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="mud-right-section">
+            <MudPaper Class="mud-login-box">
+                <MudForm @ref="form" @bind-IsValid="isValid">
+                    <!-- Nombre completo -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtNombreCompleto" Color="Color.Dark">Nombre completo</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtNombreCompleto"
+                                  @bind-Value="_usuario.nombre_completo" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" Validation="ValidateNombreCompleto" />
 
-    <!-- Repetir contraseña -->
-    <MudText Class="pb-1" HtmlTag="label" For="txtRepeatedPassword" Color="Color.Dark">Repetir contraseña</MudText>
-    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtRepeatedPassword" 
-                  @bind-Value="repeatedPassword" Label="" Variant="Variant.Outlined"
-                  Immediate="true" InputType="InputType.Password" Validation="ValidateRepeatedPassword" />
+                    <!-- Fecha de nacimiento -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtFechaNacimiento" Color="Color.Dark">Fecha de nacimiento</MudText>
+                    <MudDatePicker Color="Color.Primary" Class="flow-input"
+                                   @bind-Date="_usuario.fecha_nacimiento" ShowToolbar="false"
+                                   Validation="ValidateFechaNacimiento" />
 
-    <MudButton OnClick="Submit" Disabled="!isValid" Variant="Variant.Filled" Color="Color.Primary">
-        Registrar
-    </MudButton>
-</MudForm>
+                    <!-- Correo electrónico -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtEmail" Color="Color.Dark">Correo electrónico</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtEmail"
+                                  @bind-Value="_usuario.Email" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" Validation="ValidateEmail" />
+
+                    <!-- Usuario -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtUserName" Color="Color.Dark">Usuario</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtUserName"
+                                  @bind-Value="_usuario.UserName" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" Validation="ValidateUserName" />
+
+                    <!-- Contraseña -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtPassword" Color="Color.Dark">Contraseña</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtPassword"
+                                  @bind-Value="_usuario.pasword_without_hash" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" InputType="InputType.Password" Validation="ValidatePassword" />
+
+                    <!-- Repetir contraseña -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtRepeatedPassword" Color="Color.Dark">Repetir contraseña</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtRepeatedPassword"
+                                  @bind-Value="repeatedPassword" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" InputType="InputType.Password" Validation="ValidateRepeatedPassword" />
+                                  <br/>
+
+                    <MudButton Class="login-button" OnClick="Submit" Disabled="!isValid" Variant="Variant.Filled" Color="Color.Primary">
+                        Registrar
+                    </MudButton>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
 <MessageBox @ref="_messageBox"/>
 
 @code {
