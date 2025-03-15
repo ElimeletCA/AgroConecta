@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using AgroConecta.Domain.System.Extras;
+using AgroConecta.Domain.Sistema.Extras;
 
-namespace AgroConecta.Domain.System;
+namespace AgroConecta.Domain.Sistema.Tipos;
 
 public class TipoArchivo
 {

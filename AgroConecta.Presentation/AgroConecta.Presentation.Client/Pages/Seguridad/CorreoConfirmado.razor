@@ -1,0 +1,22 @@
+@page "/CorreoConfirmado"
+@page "/Seguridad/CorreoConfirmado"
+@using AgroConecta.Presentation.Client.Layout
+@layout EmptyLayout
+@inject NavigationManager NavigationManager
+
+<MudIcon Icon="@Icons.Material.Filled.MarkEmailRead"
+         Color="Color.Success"
+         Style="font-size: 4rem;"/>
+<MudText>Su correo electrónico ha sido verificado con éxito, ya puede iniciar sesión.</MudText>
+<MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
+    Ir al inicio de sesión
+</MudButton>
+
+@code {
+    private async Task RedirectToLogin()
+    {
+        {
+            NavigationManager.NavigateTo("/Seguridad/Login", forceLoad: true);
+        }
+    }
+}

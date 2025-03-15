@@ -7,9 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using AgroConecta.Domain.System.Seguridad;
 using AgroConecta.Infrastructure.Repositorio.Data;
-using AgroConecta.Shared.Security;
 
 namespace AgroConecta.Presentation.Controllers;
 

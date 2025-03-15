@@ -1,0 +1,73 @@
+<MudMessageBox @ref="_mudMessageBox" Title="@Titulo">
+    <MessageContent>
+
+        <MudStack Class="d-flex justify-center">
+            <MudPaper Elevation="0" Class="d-flex justify-center pa-1">
+                @switch (Tipo)
+                {
+                    case 0:
+                        <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                                 Color="Color.Success"
+                                 Style="font-size: 4rem;"/>
+                        break;
+                    case 1:
+                        <MudIcon Icon="@Icons.Material.Filled.Error"
+                                 Color="Color.Error"
+                                 Style="font-size: 4rem;"/>
+                        break;
+                    default:
+                        <MudIcon Icon="@Icons.Material.Filled.Info"
+                                 Color="Color.Info"
+                                 Style="font-size: 4rem;"/>
+                        break;
+                }
+            </MudPaper>
+            <MudPaper Elevation="0" Class="d-flex justify-center pa-1">
+                @Titulo
+            </MudPaper>
+
+            <MudPaper Elevation="0" Style="max-width: 400px;text-wrap: wrap;" Class="d-flex justify-center pa-1">
+                @Mensaje
+            </MudPaper>
+        </MudStack>
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary">Ok</MudButton>
+    </YesButton>
+</MudMessageBox>
+@code {
+    [Inject]
+    private IDialogService DialogService { get; set; }
+
+    [Parameter]
+    public string Titulo { get; set; }
+    [Parameter]
+    public string Mensaje { get; set; }
+    /// <summary>
+    /// Tipo de alerta
+    /// 0: Éxito
+    /// 1: Error
+    /// 2: Información
+    /// </summary>
+    [Parameter]
+    public int Tipo { get; set; }
+    
+    private MudMessageBox _mudMessageBox;
+    
+    private string _state = "Message box hasn't been opened yet";
+    
+    private bool _isInline = true;
+    
+    private readonly DialogOptions _backdropClick = new() { BackdropClick = false };
+    public async Task OpenDialogAsync(string titulo, string mensaje, int tipo)
+    {
+        Titulo = titulo;
+        Mensaje = mensaje;
+        Tipo = tipo;
+        bool? result;
+        result = await _mudMessageBox.ShowAsync(_backdropClick);
+        _state = result is null ? "Canceled" : "Deleted!";
+        StateHasChanged();
+
+    }
+}
