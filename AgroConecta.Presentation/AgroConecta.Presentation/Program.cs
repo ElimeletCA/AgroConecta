@@ -108,6 +108,7 @@ using (var scope = app.Services.CreateScope())
         await DefaultUsers.SembrarUsuarioAdministradorAsync(
             userManager, 
             roleManager, 
+            builder.Configuration["DefaultUser:Email"],
             builder.Configuration["DefaultUser:Password"]);
         logger.LogInformation("Seed de datos iniciales terminado");
         logger.LogInformation("Iniciando Aplicacicon...");

@@ -7,13 +7,17 @@ namespace AgroConecta.Application.Seeds;
 
 public static class DefaultUsers
     {
-        public static async Task SembrarUsuarioAdministradorAsync(UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager, string passworddefaultuser)
+        public static async Task SembrarUsuarioAdministradorAsync(
+            UserManager<Usuario> userManager,
+            RoleManager<IdentityRole> roleManager,
+            string emaildefaultuser,
+            string passworddefaultuser)
         {
             var defaultUser = new Usuario()
             {
-                UserName = "Elimelet",
-                nombre_completo = "Elimelet Caraballo Abad",
-                Email = "elimelet.dev@gmail.com",
+                UserName = "Administrador",
+                nombre_completo = "Administrador",
+                Email = emaildefaultuser,
                 EmailConfirmed = true,
                 TwoFactorEnabled = true
             };
