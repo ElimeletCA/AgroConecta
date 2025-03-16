@@ -1,0 +1,80 @@
+@page "/sistema/seguridad/roles"
+@using System.Security.Claims
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Seguridad
+@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Shared.DTO
+@using AgroConecta.Shared.Seguridad
+@using AgroConecta.Shared.Seguridad.Mensajes
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
+
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IUsuarioAgent UsuarioAgent
+<PageTitle>Lista de Roles</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">Lista de Roles</MudText>
+
+<!-- Contenedor desplazable -->
+<MudPaper Style="max-height:500px; overflow-y:auto;">
+    <MudTable Items="listaRoles" Dense="true">
+        <HeaderContent>
+            <MudTh>Nombre</MudTh>
+            <MudTh>Acciones</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                <MudText>@context.Name</MudText>
+                <MudText Typo="Typo.caption">@context.Id</MudText>
+            </MudTd>
+            <MudTd>
+                <MudTooltip Text="Eliminar">
+                    <MudIconButton 
+                        OnClick="@(() => EliminarRol(@context.Id))"
+                        Icon="@Icons.Material.Filled.Delete"
+                        Color="Color.Error"/>
+                </MudTooltip>
+                <MudTooltip Text="Administrar permisos">
+                    <MudIconButton 
+                        OnClick="@(() => AdministrarPermisos(@context.Id))"
+                        Icon="@Icons.Material.Filled.Build" 
+                        Color="Color.Tertiary"/>
+                </MudTooltip>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>
+
+<MessageBox @ref="_messageBox" />
+
+@code {
+    private IEnumerable<RolDTO> listaRoles = new List<RolDTO>();
+    private MessageBox _messageBox;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllRoles();
+    }
+    private async Task GetAllRoles()
+    {
+        listaRoles = await UsuarioAgent.GetAllRolesAsync();
+        
+        StateHasChanged();
+    }
+
+    private async Task EliminarRol(string rolId)
+    {
+        if (await UsuarioAgent.DeleteRoleAsync(rolId))
+        {
+            Snackbar.Add("Rol eliminado correctamente", Severity.Success);
+            await GetAllRoles();
+
+        }
+    }
+
+    private void AdministrarPermisos(string rolId)
+    {
+        NavigationManager.NavigateTo($"/sistema/seguridad/permisosrol/{rolId}");
+    }
+}

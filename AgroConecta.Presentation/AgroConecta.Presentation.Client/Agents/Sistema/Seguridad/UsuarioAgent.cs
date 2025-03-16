@@ -70,4 +70,58 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
 
         return eliminado?.success ?? false;
     }
+
+    #region Gestión roles
+
+     public async Task<IEnumerable<RolDTO>> GetAllRolesAsync()
+    {
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
+
+        var listaRoles = 
+            (await _httpClient.GetAsync($"api/Roles/GetAll"))
+            .Content.ReadFromJsonAsync<ApiResponse<IEnumerable<RolDTO>>>().Result;
+
+        return listaRoles?.message ?? new List<RolDTO>();
+    }
+     
+    public async Task<ApiResponse<bool>> AddRoleAsync(RolDTO rol)
+    {
+        var apiResponse = (await _httpClient.PostAsJsonAsync($"api/Roles/Add", rol)).Content
+            .ReadFromJsonAsync<ApiResponse<bool>>().Result;
+        return apiResponse ?? new ApiResponse<bool>();
+    }
+    public async Task<bool> DeleteRoleAsync(string rolId)
+    {
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
+
+        var eliminado = 
+            (await _httpClient.DeleteAsync($"api/Roles/Delete?rolId={rolId}"))
+            .Content.ReadFromJsonAsync<ApiResponse<bool>>().Result;
+
+        return eliminado?.success ?? false;
+    }
+
+    #endregion
+
+    #region Permisos
+
+    public async Task<PermisoDTO> GetAllPermisosByRolIdAsync(string rolId)
+    {
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
+
+        var allPermisos = 
+            (await _httpClient.GetAsync($"api/Permisos/GetALlPermisosByRolId?rolId={rolId}"))
+            .Content.ReadFromJsonAsync<ApiResponse<PermisoDTO>>().Result;
+
+        return allPermisos?.message ?? new PermisoDTO();
+    }
+     
+    public async Task<ApiResponse<bool>> UpdatePermisosAsync(PermisoDTO permisosRol)
+    {
+        var apiResponse = (await _httpClient.PutAsJsonAsync($"api/Permisos/UpdatePermisos", permisosRol)).Content
+            .ReadFromJsonAsync<ApiResponse<bool>>().Result;
+        return apiResponse ?? new ApiResponse<bool>();
+    }
+
+    #endregion
 }

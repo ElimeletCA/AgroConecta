@@ -3,6 +3,8 @@ namespace AgroConecta.Shared.DTO;
 public class PermisoDTO
 {
     public string RolId { get; set; }
+    public string NombreRol { get; set; }
+
     public IList<FuncionesRolDTO> FuncionesRol { get; set; }
 }
 public class FuncionesRolDTO

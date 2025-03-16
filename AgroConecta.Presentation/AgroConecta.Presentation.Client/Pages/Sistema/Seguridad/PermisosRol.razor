@@ -1,7 +1,8 @@
-@page "/sistema/seguridad/rolesusuario/{UserId}"
+@page "/sistema/seguridad/permisosrol/{rolId}"
 @using System.Security.Claims
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Seguridad
 @using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Presentation.Client.Helpers
 @using AgroConecta.Shared.DTO
 @using AgroConecta.Shared.Seguridad
 @using AgroConecta.Shared.Seguridad.Mensajes
@@ -10,32 +11,36 @@
 @inject IUsuarioAgent UsuarioAgent
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
-
-<PageTitle>Administrar Roles</PageTitle>
+<style>
+    .custom-table .mud-table-container {
+        min-height: 0;
+        max-height: 100%;
+    }
+</style>
+<PageTitle>Administrar Permisos</PageTitle>
 
 <MudText Typo="Typo.h5" Class="mb-4">
-    <MudLink Href="/sistema/seguridad/usuarios/">
+    <MudLink Href="/sistema/seguridad/roles/">
         <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Tertiary"/>
     </MudLink>
-    Administrar roles para @_usuarioActual.Email
+    Administrar permisos para el rol @_permisosRol.NombreRol
 </MudText>
 <!-- Contenedor desplazable -->
 
-<MudPaper Style="max-height:500px; overflow-y:auto;">
-
-<MudTable Items="_rolesUsuario.RolesUsuario" Dense="true">
+<MudTable  Height="500px" Class="custom-table" Items="_permisosRol.FuncionesRol" Dense="true">
     <HeaderContent>
-        <MudTh>Rol</MudTh>
+        <MudTh>Tipo</MudTh>
+        <MudTh>Permiso</MudTh>
         <MudTh>Estatus</MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd>@context.NombreRol</MudTd>
+        <MudTd>@context.Tipo</MudTd>
+        <MudTd>@FormatStrings.VisualizarPermiso(@context.Valor)</MudTd>
         <MudTd>
-            <MudCheckBox @bind-Value="context.Asignado" />
+            <MudCheckBox @bind-Value="context.Asignada" />
         </MudTd>
     </RowTemplate>
 </MudTable>
-</MudPaper>
 
 <br/>
 <MudPaper Class="mt-4 d-flex flex-row-reverse flex-grow-1 gap-4" Elevation="0">
@@ -49,31 +54,31 @@
 
 @code {
     [Parameter] 
-    public string UserId { get; set; }
+    public string rolId { get; set; }
     
-    private UsuarioDTO _usuarioActual = new();
+    private RolDTO _rolActual = new();
 
-    private AdministrarRolesUsuarioDTO _rolesUsuario = new AdministrarRolesUsuarioDTO();
+    private PermisoDTO _permisosRol = new PermisoDTO();
     private MessageBox _messageBox;
 
     protected override async Task OnInitializedAsync()
     {
-        _usuarioActual = await UsuarioAgent.GetByIdAsync(UserId);
-        await GetAllRoles();
+        await GetAllPermisos();
     }
-    private async Task GetAllRoles()
+    private async Task GetAllPermisos()
     {
-        _rolesUsuario = await UsuarioAgent.GetAllRolesByIdAsync(UserId);
+        
+        _permisosRol = await UsuarioAgent.GetAllPermisosByRolIdAsync(rolId);
         StateHasChanged();
     }
 
     private async Task Guardar()
     {
-        var actualizacionCorrecta = await UsuarioAgent.UpdateRolesById(UserId, _rolesUsuario);
-        if (actualizacionCorrecta)
+        var actualizacionCorrecta = await UsuarioAgent.UpdatePermisosAsync(_permisosRol);
+        if (actualizacionCorrecta.success)
         {
-            Snackbar.Add("Roles modificados correctamente", Severity.Success);
-            await GetAllRoles();
+            Snackbar.Add("Permisos modificados correctamente", Severity.Success);
+            await GetAllPermisos();
         }
     }
 }
