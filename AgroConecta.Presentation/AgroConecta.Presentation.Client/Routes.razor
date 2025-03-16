@@ -1,6 +1,7 @@
 ﻿@using AgroConecta.Presentation.Client.Components.General
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Routing
+@using AgroConecta.Presentation.Client.Pages.Seguridad
 <Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
 
     <Router AppAssembly="typeof(Program).Assembly">
@@ -13,7 +14,11 @@
 
             <FocusOnNavigate RouteData="routeData" Selector="h1" />
         </Found>
-
+        <NotFound>
+            <LayoutView Layout="@typeof(Layout.MainLayout)">
+                <NotFoundPage/>
+            </LayoutView>
+        </NotFound>
     </Router>
 </Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
 

@@ -163,8 +163,7 @@ else
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseStatusCodePagesWithReExecute("/StatusCode/{0}");
-
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 app.UseAntiforgery();
 
 app.MapControllers();//agregado
