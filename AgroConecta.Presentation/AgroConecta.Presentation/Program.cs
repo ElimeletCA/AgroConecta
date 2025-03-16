@@ -40,10 +40,12 @@ builder.Services.AddCascadingAuthenticationState();//Agregado
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 #region Carga de servicios de lógica de negocio
 var serviceAssembly = Assembly.Load("AgroConecta.Application"); 
-var baseServiceType = typeof(IBaseService);
+var baseServiceType = typeof(IBaseService<>);
 // Busca todas las clases concretas en el ensamblado de servicios
 var serviceTypes = serviceAssembly.GetTypes()
     .Where(type => type.IsClass && !type.IsAbstract) // Filtra solo clases concretas

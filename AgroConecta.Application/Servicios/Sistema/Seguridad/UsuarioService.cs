@@ -63,4 +63,29 @@ public class UsuarioService : IUsuarioService
         
         return listaUsuario;
     }
+    public async Task<UsuarioDTO> GetByIdAsync(string id)
+    {
+        var currentUser = await _userManager.FindByIdAsync(id);
+        if (currentUser == null || String.IsNullOrEmpty(currentUser.Email))
+        {
+            return new UsuarioDTO();
+        }
+        return _mapper.Map<UsuarioDTO>(currentUser);
+        
+        
+    }
+
+    public async Task<bool> DeleteAsync(string id)
+    {
+        var user = _userManager.FindByIdAsync(id).Result;
+        if (user != null)
+        {
+            var eliminado = await _userManager.DeleteAsync(user);
+            return eliminado.Succeeded;
+
+        }
+        return false;
+    }
+
+
 }

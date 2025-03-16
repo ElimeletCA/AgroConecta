@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace AgroConecta.Application.Servicios.Interfaces.Seguridad;
 
-public interface IAuthService : IBaseService
+public interface IAuthService
 {
     Task<bool> RegistrarUsuario(UsuarioDTO usuario);
     Task<bool> GenerarCorreoDeConfirmacion(UsuarioDTO usuario);

@@ -1,8 +1,11 @@
 @page "/sistema/seguridad/usuarios"
 @using System.Security.Claims
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Seguridad
+@using AgroConecta.Presentation.Client.Components.General.Alertas
 @using AgroConecta.Shared.Seguridad
+@using AgroConecta.Shared.Seguridad.Mensajes
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
 
 
 @inject HttpClient Http
@@ -27,23 +30,34 @@
             </MudTd>
             <MudTd>@context.Email</MudTd>
             <MudTd>
-                <!-- Menú de acciones -->
-                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
-                    <MudMenuItem OnClick="@(()=> EliminarUsuario(@context.Id))">
-                        <MudIcon Icon="@Icons.Material.Filled.Delete" Class="mr-2" /> Eliminar
-                    </MudMenuItem>
-                    <MudMenuItem OnClick="@(()=> AdministrarRoles(@context.Id))">
-                        <MudIcon Icon="@Icons.Material.Filled.Build" Class="mr-2" /> Administrar roles
-                    </MudMenuItem>
-                </MudMenu>
+                <MudTooltip Text="Eliminar">
+                    <MudIconButton 
+                        OnClick="@(() => EliminarUsuario(@context.Id))"
+                        Icon="@Icons.Material.Filled.Delete"
+                        Color="Color.Error"/>
+                </MudTooltip>
+                <MudTooltip Text="Administrar roles">
+                    <MudIconButton 
+                        OnClick="@(() => AdministrarRoles(@context.Id))"
+                        Icon="@Icons.Material.Filled.Build" 
+                        Color="Color.Tertiary"/>
+                </MudTooltip>
             </MudTd>
         </RowTemplate>
     </MudTable>
 </MudPaper>
+<MudButton
+    Color="Color.Success"
+    @onclick="@(() => Snackbar.Add("The reactor is running at optimum temperature", Severity.Success))">
+</MudButton>
+
+<MessageBox @ref="_messageBox" />
+
 @code {
     private ClaimsPrincipal _usuarioActual;
     private IEnumerable<UsuarioDTO> listaUsuarios = new List<UsuarioDTO>();
-    
+    private MessageBox _messageBox;
+
     protected override async Task OnInitializedAsync()
     {
         var authestate =  await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -55,7 +69,7 @@
         var emailUsuario = _usuarioActual.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
         if (!String.IsNullOrEmpty(emailUsuario))
         {
-            listaUsuarios = await UsuarioAgent.GetAllExcept(emailUsuario);
+            listaUsuarios = await UsuarioAgent.GetAllExceptAsync(emailUsuario);
             StateHasChanged();
         }
     }
@@ -63,10 +77,12 @@
 
     private async Task EliminarUsuario(string userId)
     {
-        // Lógica para eliminar usuario
-        // Ejemplo: await Http.DeleteAsync($"api/usuarios/{userId}");
-        // Luego refrescar la lista de usuarios
-        await GetAllUsers();
+        if (await UsuarioAgent.DeleteAsync(userId))
+        {
+            Snackbar.Add("Usuario eliminado correctamente", Severity.Success);
+            await GetAllUsers();
+
+        }
     }
 
     private void AdministrarRoles(string userId)

@@ -68,4 +68,25 @@ public class RolesUsuariosController : ControllerBase
         };
         return Ok(new ApiResponse<AdministrarRolesUsuarioDTO> { success = true, message = model });
     }
+    
+    [HttpPut("UpdateRolesById")]
+    public async Task<IActionResult> UpdateRolesById
+    (
+        [FromQuery] string userId,
+        [FromBody] AdministrarRolesUsuarioDTO model
+    )
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        var roles = await _userManager.GetRolesAsync(user);
+        var result = await _userManager.RemoveFromRolesAsync(user, roles);
+        
+        result = await _userManager.AddToRolesAsync(user, model.RolesUsuario
+            .Where(x => x.Asignado)
+            .Select(y => y.NombreRol));
+        
+        var currentUser = await _userManager.GetUserAsync(User);
+        await _signInManager.RefreshSignInAsync(currentUser);
+        //await Seeds.DefaultUsers.SembrarUsuarioAdministradorAsync(_userManager, _roleManager, _configuration["DefaultUser:Password"]);
+        return Ok(new ApiResponse<string> { success = true, message = userId });
+    }
 }

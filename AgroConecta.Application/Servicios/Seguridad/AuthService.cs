@@ -25,6 +25,8 @@ public class AuthService : IAuthService
         private readonly IMapper _mapper;
         private readonly LinkGenerator _linkGenerator;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private IAuthService _authServiceImplementation;
+
         public AuthService
         (
             LinkGenerator linkGenerator,
@@ -190,4 +192,6 @@ public class AuthService : IAuthService
         {
             context.Response.Cookies.Delete("tokenacceso");
         }
+
+
     }

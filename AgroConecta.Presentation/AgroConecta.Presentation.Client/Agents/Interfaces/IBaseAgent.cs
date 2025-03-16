@@ -1,10 +1,7 @@
 namespace AgroConecta.Presentation.Client.Agents.Interfaces;
 
-public interface IBaseAgent<T>
+public interface IBaseAgent
 {
-    Task<IEnumerable<T>> GetAllAsync();
-    Task<T> GetByIdAsync(int id);
-    Task AddAsync(T entity);
-    Task UpdateAsync(int id, T entity);
-    Task DeleteAsync(int id);
+
+
 }

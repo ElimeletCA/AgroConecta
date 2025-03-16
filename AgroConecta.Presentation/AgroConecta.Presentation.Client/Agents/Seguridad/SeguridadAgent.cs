@@ -6,7 +6,7 @@ using AgroConecta.Shared.Seguridad.Mensajes;
 
 namespace AgroConecta.Presentation.Client.Agents.Seguridad;
 
-public class SeguridadAgent : BaseAgent<UsuarioDTO>, ISeguridadAgent
+public class SeguridadAgent : BaseAgent, ISeguridadAgent
 {
     public SeguridadAgent(HttpClient httpClient)
         : base(httpClient, "api/Auth")

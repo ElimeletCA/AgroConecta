@@ -55,13 +55,17 @@ public class UsuariosController : ControllerBase
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(string userId)
     {
-        var currentUser = await _userManager.FindByIdAsync(userId);
-        if (currentUser == null || String.IsNullOrEmpty(currentUser.Email))
-        {
-            return Ok(new ApiResponse<UsuarioDTO> { success = true, message = new UsuarioDTO() });
-        }
+        var currentUser = await _usuarioService.GetByIdAsync(userId);
+        return Ok(new ApiResponse<UsuarioDTO> { success = true, message = currentUser });
         
-        return Ok(new ApiResponse<UsuarioDTO> { success = true, message = new UsuarioDTO() });
-
+    }
+    
+    [HttpDelete("Delete")]
+    public async Task<IActionResult> Delete([FromQuery] string userId)
+    {
+        var eliminado = await _usuarioService.DeleteAsync(userId);
+        
+        return Ok(new ApiResponse<bool> { success = eliminado, message = eliminado });
+        
     }
 }
