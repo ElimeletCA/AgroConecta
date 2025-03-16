@@ -10,9 +10,9 @@
 @inject IUsuarioAgent UsuarioAgent
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
-<AuthorizeView>
-    <Authorized>
-        @if (context.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+<AuthorizeView Context="authContext">
+    <Authorized >
+        @if (authContext.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
         {
         <PageTitle>Administrar Roles</PageTitle>
 

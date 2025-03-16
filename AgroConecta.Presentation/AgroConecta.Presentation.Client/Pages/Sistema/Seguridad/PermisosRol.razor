@@ -13,9 +13,9 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
 
-<AuthorizeView>
+<AuthorizeView Context="authContext">
     <Authorized>
-        @if (context.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+        @if (authContext.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
         {
             <PageTitle>Administrar Permisos</PageTitle>
 
