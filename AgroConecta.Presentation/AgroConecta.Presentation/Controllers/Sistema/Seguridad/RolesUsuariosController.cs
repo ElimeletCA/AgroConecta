@@ -5,6 +5,7 @@ using AgroConecta.Application.Servicios.Interfaces.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Presentation.Seguridad;
 using AgroConecta.Shared.Constantes.Seguridad;
+using AgroConecta.Shared.DTO;
 using AgroConecta.Shared.Seguridad;
 using AgroConecta.Shared.Seguridad.Mensajes;
 using Microsoft.AspNetCore.Authorization;
@@ -17,51 +18,54 @@ namespace AgroConecta.Presentation.Controllers.Sistema.Seguridad;
 [Route("api/[controller]")]
 [ApiController]
 [Authorize(Roles = "Administrador")]
-public class UsuariosController : ControllerBase
+public class RolesUsuariosController : ControllerBase
 {
     private readonly IUsuarioService _usuarioService;
 
     private readonly UserManager<Usuario> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _config;
     private readonly SignInManager<Usuario> _signInManager;
     
-    public UsuariosController(
+    public RolesUsuariosController(
         UserManager<Usuario> userManager,
         IConfiguration config, 
         SignInManager<Usuario> signInManager,
-        IUsuarioService usuarioService)
+        IUsuarioService usuarioService, RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _config = config;
         _signInManager = signInManager;
         _usuarioService = usuarioService;
-
+        _roleManager = roleManager;
     }
     
-    [HttpGet("GetAllExcept")]
-    public async Task<IActionResult> GetAllExcept(string email)
+    [HttpGet("GetAllRolesById")]
+    public async Task<IActionResult> GetAllRolesById(string userId)
     {
-        var currentUser = await _userManager.FindByEmailAsync(email);
-        if (currentUser == null || String.IsNullOrEmpty(currentUser.Email))
+        var listaRolesUsuario = new List<RolUsuarioDTO>();
+        var user = await _userManager.FindByIdAsync(userId);
+        foreach (var role in _roleManager.Roles.ToList())
         {
-            return Ok(new ApiResponse<IEnumerable<UsuarioDTO>> { success = true, message = new List<UsuarioDTO>() });
+            var rolUsuario = new RolUsuarioDTO
+            {
+                NombreRol = role.Name
+            };
+            if (await _userManager.IsInRoleAsync(user, role.Name))
+            {
+                rolUsuario.Asignado = true;
+            }
+            else
+            {
+                rolUsuario.Asignado = false;
+            }
+            listaRolesUsuario.Add(rolUsuario);
         }
-        
-        var listaUsuarios = await _usuarioService.GetAllExceptAsync(currentUser.Email);
-        
-        return Ok(new ApiResponse<IEnumerable<UsuarioDTO>> { success = true, message = listaUsuarios });
-
-    }
-    [HttpGet("GetById")]
-    public async Task<IActionResult> GetById(string userId)
-    {
-        var currentUser = await _userManager.FindByIdAsync(userId);
-        if (currentUser == null || String.IsNullOrEmpty(currentUser.Email))
+        var model = new AdministrarRolesUsuarioDTO()
         {
-            return Ok(new ApiResponse<UsuarioDTO> { success = true, message = new UsuarioDTO() });
-        }
-        
-        return Ok(new ApiResponse<UsuarioDTO> { success = true, message = new UsuarioDTO() });
-
+            UsuarioId = userId,
+            RolesUsuario = listaRolesUsuario
+        };
+        return Ok(new ApiResponse<AdministrarRolesUsuarioDTO> { success = true, message = model });
     }
 }

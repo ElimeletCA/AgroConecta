@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class UsuarioDTO
 {
+    public string Id { get; set; } = string.Empty;
     //[Required(ErrorMessage = "El nombre completo es requerido")]
     //[RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚüÜ ]{1,50}$", ErrorMessage = "Nombre completo inválido (ERROR-104)")]
     public string nombre_completo { get; set; } = string.Empty;

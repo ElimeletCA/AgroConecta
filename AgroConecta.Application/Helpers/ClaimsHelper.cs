@@ -2,17 +2,18 @@ using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using System.Security.Claims;
 using AgroConecta.Application.ViewModels;
+using AgroConecta.Shared.DTO;
 
 namespace AgroConecta.Application.Helpers;
 
 public static class ClaimsHelper
 {
-    public static void ObtenerPermisos(this List<RoleClaimsViewModel> allPermissions, Type policy, string roleId)
+    public static void ObtenerPermisos(this List<FuncionesRolDTO> allPermissions, Type policy, string roleId)
     {
         FieldInfo[] fields = policy.GetFields(BindingFlags.Static | BindingFlags.Public);
         foreach (FieldInfo fi in fields)
         {
-            allPermissions.Add(new RoleClaimsViewModel { Value = fi.GetValue(null).ToString(), Type = "Permiso" });
+            allPermissions.Add(new FuncionesRolDTO { Valor = fi.GetValue(null).ToString(), Tipo = "Permiso" });
         }
     }
 

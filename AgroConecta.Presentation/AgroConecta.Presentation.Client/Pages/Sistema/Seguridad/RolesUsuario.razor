@@ -1,0 +1,65 @@
+@page "/sistema/seguridad/rolesusuario/{UserId}"
+@using System.Security.Claims
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Seguridad
+@using AgroConecta.Shared.DTO
+@using AgroConecta.Shared.Seguridad
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IUsuarioAgent UsuarioAgent
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<PageTitle>Administrar Roles</PageTitle>
+
+<MudPaper Elevation="1" Class="p-4">
+    <MudText Typo="Typo.h5" Class="mb-4">Administrar roles para @UserId</MudText>
+
+    <MudTable Items="userRoles" Dense="true">
+        <HeaderContent>
+            <MudTh>Rol</MudTh>
+            <MudTh>Estatus</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.NombreRol</MudTd>
+            <MudTd>
+                <MudCheckBox @bind-Value="context.Asignado" />
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+
+    <MudButton OnClick="Guardar" Color="Color.Primary" Class="mt-4">Guardar</MudButton>
+</MudPaper>
+
+@code {
+    [Parameter] public string UserId { get; set; }
+
+
+
+    private List<RolUsuarioDTO> userRoles = new List<RolUsuarioDTO>();
+
+    private ClaimsPrincipal _usuarioActual;
+    private IEnumerable<UsuarioDTO> listaUsuarios = new List<UsuarioDTO>();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var authestate =  await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        _usuarioActual = authestate.User;
+        await GetAllRoles();
+    }
+    private async Task GetAllRoles()
+    {
+        var emailUsuario = _usuarioActual.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+        if (!String.IsNullOrEmpty(emailUsuario))
+        {
+            listaUsuarios = await UsuarioAgent.GetAllExcept(emailUsuario);
+            StateHasChanged();
+        }
+    }
+
+    private async Task Guardar()
+    {
+        // Lógica para actualizar los roles del usuario
+        // Ejemplo: await Http.PostAsJsonAsync($"api/userroles/update/{UserId}", userRoles);
+        // Después de guardar, se redirige o se muestra un mensaje de confirmación
+        NavigationManager.NavigateTo("/sistema/seguridad/usuarios");
+    }
+}
