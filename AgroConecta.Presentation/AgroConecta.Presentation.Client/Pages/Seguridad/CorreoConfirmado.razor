@@ -6,11 +6,13 @@
 
 <MudContainer MaxWidth="MaxWidth.Small">
     <MudGrid Justify="Justify.Center">
-        <MudImage Src="/images/check-mail.png" Alt="Check-mail" Class="rounded-lg" Fluid="true" ObjectFit="ObjectFit.Contain" Width="150" />
-        <MudText Typo="Typo.h6" Style="font-weight:bold; margin-bottom:15px; margin-top: 25px;">Su correo electrónico ha sido verificado con éxito</MudText>
-        <MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
-            Inicio
-        </MudButton>
+        <MudStack>
+            <MudImage Style="margin: 0 auto;" Src="/images/check-mail.png" Alt="Check-mail" Class="rounded-lg" Fluid="true" ObjectFit="ObjectFit.Contain" Width="150" />
+            <MudText Typo="Typo.h6" Style="font-weight:bold; margin-bottom:15px; margin-top: 25px;">Su correo electrónico ha sido verificado con éxito</MudText>
+            <MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
+                Inicio
+            </MudButton>
+        </MudStack>
     </MudGrid>
 </MudContainer>
 
