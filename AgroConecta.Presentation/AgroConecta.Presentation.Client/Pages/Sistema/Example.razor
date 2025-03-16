@@ -2,6 +2,7 @@
 @using System.Net.Http.Headers
 @using System.Security.Claims
 @using AgroConecta.Presentation.Client.Helpers.Seguridad
+@using AgroConecta.Shared.Constantes.Seguridad
 @using AgroConecta.Shared.Seguridad.Mensajes
 @inject IJSRuntime JS
 @inject HttpClient Http
@@ -38,7 +39,23 @@
     </MudSelect>
 </div>
 
+<AuthorizeView>
+    <Authorized>
+        @if (PermissionCheker.TienePermiso(context.User, Permisos.Terrenos.Ver))
+        {
 
+        }
+    </Authorized>
+</AuthorizeView>
+
+<AuthorizeView>
+    <Authorized>
+        @if (context.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+        {
+
+        }
+    </Authorized>
+</AuthorizeView>
 
 @code {
     

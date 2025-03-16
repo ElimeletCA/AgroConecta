@@ -4,6 +4,7 @@
 @using AgroConecta.Presentation.Client.Components.General.Alertas
 @using AgroConecta.Presentation.Client.Helpers
 @using AgroConecta.Shared.DTO
+@using AgroConecta.Shared.Constantes.Seguridad
 @using AgroConecta.Shared.Seguridad
 @using AgroConecta.Shared.Seguridad.Mensajes
 @inject HttpClient Http
@@ -11,51 +12,74 @@
 @inject IUsuarioAgent UsuarioAgent
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ISnackbar Snackbar
-<style>
-    .custom-table .mud-table-container {
-        min-height: 0;
-        max-height: 100%;
-    }
-</style>
-<PageTitle>Administrar Permisos</PageTitle>
 
-<MudText Typo="Typo.h5" Class="mb-4">
-    <MudLink Href="/sistema/seguridad/roles/">
-        <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Tertiary"/>
-    </MudLink>
-    Administrar permisos para el rol @_permisosRol.NombreRol
-</MudText>
-<!-- Contenedor desplazable -->
+<AuthorizeView>
+    <Authorized>
+        @if (context.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+        {
+            <PageTitle>Administrar Permisos</PageTitle>
 
-<MudTable  Height="500px" Class="custom-table" Items="_permisosRol.FuncionesRol" Dense="true">
-    <HeaderContent>
-        <MudTh>Tipo</MudTh>
-        <MudTh>Permiso</MudTh>
-        <MudTh>Estatus</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd>@context.Tipo</MudTd>
-        <MudTd>@FormatStrings.VisualizarPermiso(@context.Valor)</MudTd>
-        <MudTd>
-            <MudCheckBox @bind-Value="context.Asignada" />
-        </MudTd>
-    </RowTemplate>
-</MudTable>
+            <MudText Typo="Typo.h5" Class="mb-4">
+                <MudLink Href="/sistema/seguridad/roles/">
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Tertiary"/>
+                </MudLink>
+                Administrar permisos para el rol <strong>@_permisosRol.NombreRol</strong>
+            </MudText>
 
-<br/>
-<MudPaper Class="mt-4 d-flex flex-row-reverse flex-grow-1 gap-4" Elevation="0">
-    <MudButton OnClick="Guardar"
-               Class="flow-button"
-               Variant="Variant.Filled"
-               Color="Color.Primary">Guardar</MudButton>
-</MudPaper>
+            <MudDataGrid
+                T="FuncionesRolDTO"
+                QuickFilter="@_quickFilter"
+                Items="@_permisosRol.FuncionesRol"
+                SortMode="SortMode.Multiple"
+                Filterable="true"
+                RowsPerPage="5"
+                Hideable="true"
+                FixedHeader="true"
+                Height="calc(59vh - 10rem);"
+                Loading="@_isLoadingData"
+                LoadingProgressColor="Color.Primary"
+            >
 
-<MessageBox @ref="_messageBox" />
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Permisos</MudText>
+                    <MudSpacer/>
+                    <MudTextField @bind-Value="_searchString" Placeholder="Buscar..." Adornment="Adornment.Start" Immediate="true"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <Columns>
+                    <PropertyColumn Property="x => x.Tipo" Title="Tipo" Sortable="false" Filterable="false"/>
+                    <PropertyColumn Property="x => FormatStrings.VisualizarPermiso(x.Valor)" Title="Permiso" Filterable="false"/>
+                    <TemplateColumn Title="Estatus" CellClass="d-flex ">
+                        <CellTemplate>
+                            <MudStack Row>
+                                <MudCheckBox @bind-Value="@context.Item.Asignada" />
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="FuncionesRolDTO" PageSizeOptions=@(new int[] {5, 10, 15})/>
+                </PagerContent>
+            </MudDataGrid>
+            <br/>
+            <MudPaper Class="mt-4 d-flex flex-row-reverse flex-grow-1 gap-4" Elevation="0">
+                <MudButton OnClick="Guardar"
+                           Class="flow-button"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary">Guardar</MudButton>
+            </MudPaper>
+
+            <MessageBox @ref="_messageBox" />
+        }
+    </Authorized>
+</AuthorizeView>
+
 
 @code {
     [Parameter] 
     public string rolId { get; set; }
-    
+    private string _searchString;
+    private bool _isLoadingData;
     private RolDTO _rolActual = new();
 
     private PermisoDTO _permisosRol = new PermisoDTO();
@@ -67,8 +91,11 @@
     }
     private async Task GetAllPermisos()
     {
-        
+        _isLoadingData = true;
+
         _permisosRol = await UsuarioAgent.GetAllPermisosByRolIdAsync(rolId);
+        _isLoadingData = false;
+
         StateHasChanged();
     }
 
@@ -81,4 +108,15 @@
             await GetAllPermisos();
         }
     }
+    // quick filter - filter globally across multiple columns with the same input
+    private Func<FuncionesRolDTO, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Valor.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
 }

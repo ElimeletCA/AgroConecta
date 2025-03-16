@@ -92,7 +92,7 @@ public class UsuarioService : IUsuarioService
     
     public async Task<IEnumerable<RolDTO>> GetAllRolesAsync()
     {
-        var listaRoles = await _rolManager.Roles.ToListAsync();
+        var listaRoles = await _rolManager.Roles.Where(x => x.Name != Roles.Administrador.ToString()).ToListAsync();
         var listaRolesDto = _mapper.Map<IEnumerable<RolDTO>>(listaRoles);
         return listaRolesDto;
     }

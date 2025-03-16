@@ -1,4 +1,5 @@
 ﻿@using AgroConecta.Presentation.Client.Components.Seguridad
+@using AgroConecta.Shared.Constantes.Seguridad
 @implements IDisposable
 
 @inject NavigationManager NavigationManager
@@ -23,13 +24,16 @@
                 <MudNavLink Href="Parametros" Icon="@Icons.Material.Filled.Settings">Parámetros del Sistema</MudNavLink>
                 <MudNavLink Href="Notificaciones" Icon="@Icons.Material.Filled.Notifications">Notificaciones</MudNavLink>
             </MudNavGroup>
+            
+            @if (context.User.IsInRole(Roles.Administrador.ToString()))
+            {
+                <!-- Sección de Seguridad -->
+                <MudNavGroup Icon="@Icons.Material.Filled.AdminPanelSettings" Title="Seguridad" Expanded="true">
+                    <MudNavLink Href="sistema/seguridad/usuarios" Icon="@Icons.Material.Filled.People">Usuarios</MudNavLink>
+                    <MudNavLink Href="sistema/seguridad/roles" Icon="@Icons.Material.Filled.Security">Roles</MudNavLink>
+                </MudNavGroup>
 
-            <!-- Sección de Usuarios y Roles -->
-            <MudNavGroup Title="Seguridad" Expanded="true">
-                <MudNavLink Href="sistema/seguridad/usuarios" Icon="@Icons.Material.Filled.People">Usuarios</MudNavLink>
-                <MudNavLink Href="sistema/seguridad/roles" Icon="@Icons.Material.Filled.Security">Roles</MudNavLink>
-                <MudNavLink Href="sistema/seguridad/permisos" Icon="@Icons.Material.Filled.VerifiedUser">Permisos</MudNavLink>
-            </MudNavGroup>
+            }
 
             <!-- Sección de Acerca de -->
             <MudNavLink Href="AcercaDe" Icon="@Icons.Material.Filled.Info">Acerca de</MudNavLink>

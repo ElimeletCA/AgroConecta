@@ -38,9 +38,15 @@
     }
     <MudText Class="mb-4">Hello @userName!</MudText>
 
-    @if (PermissionCheker.TienePermiso(@context.User, Permisos.Terrenos.Ver))
+    @if (PermissionCheker.TienePermiso(context.User, Permisos.Terrenos.Ver))
     {
       <MudText Class="mb-4">Tienes permiso para ver los terrenos</MudText>
+    }
+    @if (context.User.IsInRole(Roles.Administrador.ToString()))
+    {
+      <MudText Class="mb-4">      Eres un administrador</MudText>
+
+
     }
 
     <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>

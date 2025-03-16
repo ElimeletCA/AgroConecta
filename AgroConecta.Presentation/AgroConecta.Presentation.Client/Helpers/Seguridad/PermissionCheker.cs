@@ -8,4 +8,8 @@ public static class PermissionCheker
     {
         return usuario?.Claims.Any(c => c.Type == "Permiso" && c.Value == permiso) ?? false;
     }
+    public static bool TieneRol(ClaimsPrincipal usuario,  string rol)
+    {
+        return usuario?.Claims.Any(c => c.Type == "Role" && c.Value == rol) ?? false;
+    }
 }
