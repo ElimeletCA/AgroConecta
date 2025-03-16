@@ -4,13 +4,15 @@
 @layout EmptyLayout
 @inject NavigationManager NavigationManager
 
-<MudIcon Icon="@Icons.Material.Filled.MarkEmailRead"
-         Color="Color.Success"
-         Style="font-size: 4rem;"/>
-<MudText>Su correo electrónico ha sido verificado con éxito, ya puede iniciar sesión.</MudText>
-<MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
-    Ir al inicio de sesión
-</MudButton>
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudGrid Justify="Justify.Center">
+        <MudImage Src="/images/check-mail.png" Alt="Check-mail" Class="rounded-lg" Fluid="true" ObjectFit="ObjectFit.Contain" Width="150" />
+        <MudText Typo="Typo.h6" Style="font-weight:bold; margin-bottom:15px; margin-top: 25px;">Su correo electrónico ha sido verificado con éxito</MudText>
+        <MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
+            Inicio
+        </MudButton>
+    </MudGrid>
+</MudContainer>
 
 @code {
     private async Task RedirectToLogin()
