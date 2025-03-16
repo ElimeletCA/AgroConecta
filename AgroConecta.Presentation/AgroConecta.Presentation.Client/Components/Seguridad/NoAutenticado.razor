@@ -1,13 +1,14 @@
 @inject NavigationManager NavigationManager
 
-<MudIcon Icon="@Icons.Material.Filled.GppBad"
-         Color="Color.Error"
-         Style="font-size: 4rem;"/>
-<MudText>No está autenticado en el sistema....</MudText>
-<MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
-    Ir al inicio de sesión
-</MudButton>
-
+<MudContainer MaxWidth="MaxWidth.Small">
+    <MudImage Src="/images/authentication.png" Alt="Check-mail" Class="rounded-lg" Fluid="true" ObjectFit="ObjectFit.Contain" Width="150" />
+    <MudGrid Justify="Justify.Center">
+        <MudText Typo="Typo.h6" Style="font-weight:bold; margin-bottom:15px; margin-top: 25px;">Autenticación fallida</MudText>
+        <MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
+            Inicio
+        </MudButton>
+    </MudGrid>
+</MudContainer>
 @code {
     private async Task RedirectToLogin()
     {
