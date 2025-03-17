@@ -1,10 +1,9 @@
 ﻿@page "/counter"
 @using AgroConecta.Presentation.Client.Agents.Interfaces
 @inject HttpClient Http
-@inject IInitialAgent initialAgent
 @inject IJSRuntime JS
 
-<PageTitle>Home</PageTitle>
+@*<PageTitle>Home</PageTitle>
 
 
 @if (!string.IsNullOrEmpty(PdfBase64))
@@ -34,5 +33,5 @@ else
     {
         await JS.InvokeVoidAsync("saveAsFile", "documento.pdf", PdfBase64);
     }
-}
+}*@
 

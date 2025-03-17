@@ -36,6 +36,34 @@ builder.Services.AddCascadingAuthenticationState();
  builder.Services.AddScoped(typeof(IBaseAgent), typeof(BaseAgent));
  builder.Services.AddScoped<ISeguridadAgent, SeguridadAgent>();
  builder.Services.AddScoped<IUsuarioAgent, UsuarioAgent>();
+
+ var clientAssembly = typeof(Program).Assembly;  // Asumiendo que los agents están en el mismo ensamblado
+ var baseAgentInterface  = typeof(IInitialAgent<>);
+
+ var agentTypes = clientAssembly.GetTypes()
+  .Where(t => t.IsClass && !t.IsAbstract && !t.IsGenericType)
+  .Select(type => new {
+   Implementation = type,
+   Interfaces = type.GetInterfaces()
+    .Where(i => i.IsGenericType && 
+                i.GetGenericTypeDefinition() == baseAgentInterface)
+    .ToList()
+  })
+  .Where(t => t.Interfaces.Any())
+  .ToList();
+
+ foreach (var agent in agentTypes)
+ {
+  // Registrar bajo la interfaz específica (ej: ITipoMedidaAreaAgent)
+  var specificInterface = agent.Implementation.GetInterfaces()
+   .FirstOrDefault(i => !i.IsGenericType && i != typeof(IBaseAgent));
+    
+  if (specificInterface != null)
+  {
+   builder.Services.AddScoped(specificInterface, agent.Implementation);
+  }
+  
+ }
 #endregion
 
 

@@ -32,6 +32,7 @@ public abstract class Repository<T> : IRepository<T>
     public async Task AddAsync(T entity)
     {
         // Agregar la entidad al DbSet de EF Core
+        entity.Id = Guid.NewGuid().ToString();
         await Entities.AddAsync(entity);
     }
 

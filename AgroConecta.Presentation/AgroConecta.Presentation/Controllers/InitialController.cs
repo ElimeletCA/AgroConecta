@@ -34,7 +34,7 @@ namespace AgroConecta.Presentation.Controllers;
 
         // GET: api/[controller]/{id}
         [HttpGet("{id}")]
-        public virtual async Task<ActionResult<ApiResponse<TDto>>> GetById(string id)
+        public virtual async Task<ActionResult<ApiResponse<TDto>>> GetById([FromQuery]string id)
         {
             var dto = await _service.GetByIdAsync(id);
             if (dto == null)
@@ -57,7 +57,7 @@ namespace AgroConecta.Presentation.Controllers;
 
         // POST: api/[controller]
         [HttpPost]
-        public virtual async Task<ActionResult<ApiResponse<TDto>>> Create([FromBody] TDto dto)
+        public virtual async Task<IActionResult>  Create([FromBody] TDto dto)
         {
             await _service.AddAsync(dto);
             var response = new ApiResponse<TDto>
@@ -65,7 +65,7 @@ namespace AgroConecta.Presentation.Controllers;
                 Success = true,
                 Message = dto
             };
-            return CreatedAtAction(nameof(GetById), new { id = dto.Id }, response);
+            return Ok(response);
         }
 
         // PUT: api/[controller]/{id}

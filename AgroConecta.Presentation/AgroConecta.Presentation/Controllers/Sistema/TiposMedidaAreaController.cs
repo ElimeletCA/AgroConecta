@@ -1,6 +1,7 @@
 using AgroConecta.Application.Servicios.Interfaces.Sistema;
 using AgroConecta.Domain.Sistema.Tipos;
 using AgroConecta.Shared.DTO;
+using AgroConecta.Shared.Seguridad.Mensajes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AgroConecta.Presentation.Controllers.Sistema;
@@ -15,4 +16,17 @@ public class TiposMedidaAreaController : InitialController<TipoMedidaAreaDTO, Ti
     {
     }
 
+    [HttpPost]
+    public override Task<IActionResult> Create(TipoMedidaAreaDTO dto)
+    {
+        
+        return base.Create(dto);
+    }
+    [HttpPut]
+
+    public override Task<ActionResult<ApiResponse<TipoMedidaAreaDTO>>> Update(string id, TipoMedidaAreaDTO dto)
+    {
+        return base.Update(id, dto);
+    }
 }
+
