@@ -30,7 +30,7 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
             (await _httpClient.GetAsync($"{_endpoint}/GetAllExcept?email={email}"))
             .Content.ReadFromJsonAsync<ApiResponse<IEnumerable<UsuarioDTO>>>().Result;
 
-        return listaUsuarios?.message ?? new List<UsuarioDTO>();
+        return listaUsuarios?.Message ?? new List<UsuarioDTO>();
     }
     public async Task<AdministrarRolesUsuarioDTO> GetAllRolesByIdAsync(string userId)
     {
@@ -40,7 +40,7 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
             (await _httpClient.GetAsync($"api/RolesUsuarios/GetAllRolesById?userId={userId}"))
             .Content.ReadFromJsonAsync<ApiResponse<AdministrarRolesUsuarioDTO>>().Result;
 
-        return rolesUsuario?.message ?? new AdministrarRolesUsuarioDTO();
+        return rolesUsuario?.Message ?? new AdministrarRolesUsuarioDTO();
     }
     public async Task<UsuarioDTO> GetByIdAsync(string userId)
     {
@@ -50,7 +50,7 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
             (await _httpClient.GetAsync($"{_endpoint}/GetById?userId={userId}"))
             .Content.ReadFromJsonAsync<ApiResponse<UsuarioDTO>>().Result;
 
-        return usuario?.message ?? new UsuarioDTO();
+        return usuario?.Message ?? new UsuarioDTO();
     }
     public async Task<bool> UpdateRolesById(string userId, AdministrarRolesUsuarioDTO model)
     {
@@ -58,7 +58,7 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
         
         var apiResponse = (await _httpClient.PutAsJsonAsync($"api/RolesUsuarios/UpdateRolesById?userId={userId}", model)).Content
             .ReadFromJsonAsync<ApiResponse<string>>().Result;
-        return apiResponse?.success ?? false;
+        return apiResponse?.Success ?? false;
     }
     public async Task<bool> DeleteAsync(string userId)
     {
@@ -68,7 +68,7 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
             (await _httpClient.DeleteAsync($"{_endpoint}/Delete?userId={userId}"))
             .Content.ReadFromJsonAsync<ApiResponse<bool>>().Result;
 
-        return eliminado?.success ?? false;
+        return eliminado?.Success ?? false;
     }
 
     #region Gestión roles
@@ -81,7 +81,7 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
             (await _httpClient.GetAsync($"api/Roles/GetAll"))
             .Content.ReadFromJsonAsync<ApiResponse<IEnumerable<RolDTO>>>().Result;
 
-        return listaRoles?.message ?? new List<RolDTO>();
+        return listaRoles?.Message ?? new List<RolDTO>();
     }
      
     public async Task<ApiResponse<bool>> AddRoleAsync(RolDTO rol)
@@ -98,7 +98,7 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
             (await _httpClient.DeleteAsync($"api/Roles/Delete?rolId={rolId}"))
             .Content.ReadFromJsonAsync<ApiResponse<bool>>().Result;
 
-        return eliminado?.success ?? false;
+        return eliminado?.Success ?? false;
     }
 
     #endregion
@@ -113,7 +113,7 @@ public class UsuarioAgent: BaseAgent, IUsuarioAgent
             (await _httpClient.GetAsync($"api/Permisos/GetALlPermisosByRolId?rolId={rolId}"))
             .Content.ReadFromJsonAsync<ApiResponse<PermisoDTO>>().Result;
 
-        return allPermisos?.message ?? new PermisoDTO();
+        return allPermisos?.Message ?? new PermisoDTO();
     }
      
     public async Task<ApiResponse<bool>> UpdatePermisosAsync(PermisoDTO permisosRol)

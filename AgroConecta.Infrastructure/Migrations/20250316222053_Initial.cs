@@ -59,84 +59,94 @@ namespace AgroConecta.Infrastructure.Migrations
                 name: "Perfil",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    nombre_perfil = table.Column<string>(type: "text", nullable: false),
-                    descripcion_perfil = table.Column<string>(type: "text", nullable: true)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    NombrePerfil = table.Column<string>(type: "text", nullable: false),
+                    DescripcionPerfil = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Perfil", x => x.id);
+                    table.PrimaryKey("PK_Perfil", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TipoArchivo",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    registro_activo = table.Column<bool>(type: "boolean", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoArchivo", x => x.id);
+                    table.PrimaryKey("PK_TipoArchivo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TipoArrendamiento",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    registro_activo = table.Column<bool>(type: "boolean", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    RegistroActivo = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoArrendamiento", x => x.id);
+                    table.PrimaryKey("PK_TipoArrendamiento", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TipoCultivo",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    registro_activo = table.Column<bool>(type: "boolean", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoCultivo", x => x.id);
+                    table.PrimaryKey("PK_TipoCultivo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TipoMedidaArea",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    registro_activo = table.Column<bool>(type: "boolean", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    RegistroActivo = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoMedidaArea", x => x.id);
+                    table.PrimaryKey("PK_TipoMedidaArea", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "TipoSuelo",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    registro_activo = table.Column<bool>(type: "boolean", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    RegistroActivo = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoSuelo", x => x.id);
+                    table.PrimaryKey("PK_TipoSuelo", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -249,12 +259,12 @@ namespace AgroConecta.Infrastructure.Migrations
                 name: "UsuarioPerfil",
                 columns: table => new
                 {
-                    perfilesid = table.Column<int>(type: "integer", nullable: false),
+                    perfilesId = table.Column<string>(type: "text", nullable: false),
                     usuariosId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsuarioPerfil", x => new { x.perfilesid, x.usuariosId });
+                    table.PrimaryKey("PK_UsuarioPerfil", x => new { x.perfilesId, x.usuariosId });
                     table.ForeignKey(
                         name: "FK_UsuarioPerfil_AspNetUsers_usuariosId",
                         column: x => x.usuariosId,
@@ -262,10 +272,10 @@ namespace AgroConecta.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UsuarioPerfil_Perfil_perfilesid",
-                        column: x => x.perfilesid,
+                        name: "FK_UsuarioPerfil_Perfil_perfilesId",
+                        column: x => x.perfilesId,
                         principalTable: "Perfil",
-                        principalColumn: "id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -273,174 +283,180 @@ namespace AgroConecta.Infrastructure.Migrations
                 name: "Archivo",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    tipo_archivo_id = table.Column<int>(type: "integer", nullable: false),
-                    referencia_id = table.Column<int>(type: "integer", nullable: false),
-                    nombre_archivo = table.Column<string>(type: "text", nullable: false),
-                    url_archivo = table.Column<string>(type: "text", nullable: false),
-                    fecha_creacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    descripcion = table.Column<string>(type: "text", nullable: false),
-                    formato = table.Column<string>(type: "text", nullable: false),
-                    size = table.Column<string>(type: "text", nullable: false),
-                    estado = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    TipoArchivoId = table.Column<string>(type: "text", nullable: false),
+                    ReferenciaId = table.Column<string>(type: "text", nullable: false),
+                    NombreArchivo = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    UrlArchivo = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    FechaCreacion = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Descripcion = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    Formato = table.Column<string>(type: "text", nullable: false),
+                    Size = table.Column<string>(type: "text", nullable: false),
+                    Estado = table.Column<int>(type: "integer", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Archivo", x => x.id);
+                    table.PrimaryKey("PK_Archivo", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Archivo_TipoArchivo_tipo_archivo_id",
-                        column: x => x.tipo_archivo_id,
+                        name: "FK_Archivo_TipoArchivo_TipoArchivoId",
+                        column: x => x.TipoArchivoId,
                         principalTable: "TipoArchivo",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Terreno",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    propietario_id = table.Column<string>(type: "text", nullable: false),
-                    tipo_medida_area_id = table.Column<int>(type: "integer", nullable: false),
-                    tipo_suelo_id = table.Column<int>(type: "integer", nullable: false),
-                    coordenada_latitud = table.Column<double>(type: "double precision", nullable: false),
-                    coordenada_longitud = table.Column<double>(type: "double precision", nullable: false),
-                    cantidad_area_suelo_total = table.Column<double>(type: "double precision", nullable: false),
-                    cantidad_area_suelo_disponible = table.Column<double>(type: "double precision", nullable: false),
-                    comentario = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    registro_activo = table.Column<bool>(type: "boolean", nullable: false),
-                    estado = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    PropietarioId = table.Column<string>(type: "text", nullable: false),
+                    TipoMedidaAreaId = table.Column<string>(type: "text", nullable: false),
+                    TipoSueloId = table.Column<string>(type: "text", nullable: false),
+                    CoordenadaLatitud = table.Column<double>(type: "double precision", nullable: false),
+                    CoordenadaLongitud = table.Column<double>(type: "double precision", nullable: false),
+                    CantidadAreaSueloTotal = table.Column<double>(type: "double precision", nullable: false),
+                    CantidadAreaSueloDisponible = table.Column<double>(type: "double precision", nullable: false),
+                    Comentario = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    estado = table.Column<int>(type: "integer", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Terreno", x => x.id);
+                    table.PrimaryKey("PK_Terreno", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Terreno_AspNetUsers_propietario_id",
-                        column: x => x.propietario_id,
+                        name: "FK_Terreno_AspNetUsers_PropietarioId",
+                        column: x => x.PropietarioId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Terreno_TipoMedidaArea_tipo_medida_area_id",
-                        column: x => x.tipo_medida_area_id,
+                        name: "FK_Terreno_TipoMedidaArea_TipoMedidaAreaId",
+                        column: x => x.TipoMedidaAreaId,
                         principalTable: "TipoMedidaArea",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Terreno_TipoSuelo_tipo_suelo_id",
-                        column: x => x.tipo_suelo_id,
+                        name: "FK_Terreno_TipoSuelo_TipoSueloId",
+                        column: x => x.TipoSueloId,
                         principalTable: "TipoSuelo",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Arrendamiento",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    terreno_id = table.Column<int>(type: "integer", nullable: false),
-                    agricultor_id = table.Column<string>(type: "text", nullable: false),
-                    tipo_arrendamiento_id = table.Column<int>(type: "integer", nullable: false),
-                    fecha_inicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    fecha_fin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    condiciones = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    cantidad_area_suelo_arrendada = table.Column<double>(type: "double precision", nullable: false),
-                    monto_pago = table.Column<decimal>(type: "numeric", nullable: false),
-                    frecuencia_pago = table.Column<string>(type: "text", nullable: false),
-                    comentario = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    registro_activo = table.Column<bool>(type: "boolean", nullable: false),
-                    estado = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    TerrenoId = table.Column<string>(type: "text", nullable: false),
+                    AgricultorId = table.Column<string>(type: "text", nullable: false),
+                    TipoArrendamientoId = table.Column<string>(type: "text", nullable: false),
+                    FechaInicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Condiciones = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    CantidadAreaSueloArrendada = table.Column<double>(type: "double precision", nullable: false),
+                    MontoPago = table.Column<decimal>(type: "numeric", nullable: false),
+                    FrecuenciaPago = table.Column<string>(type: "text", nullable: false),
+                    Comentario = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Estado = table.Column<int>(type: "integer", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Arrendamiento", x => x.id);
+                    table.PrimaryKey("PK_Arrendamiento", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Arrendamiento_AspNetUsers_agricultor_id",
-                        column: x => x.agricultor_id,
+                        name: "FK_Arrendamiento_AspNetUsers_AgricultorId",
+                        column: x => x.AgricultorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Arrendamiento_Terreno_terreno_id",
-                        column: x => x.terreno_id,
+                        name: "FK_Arrendamiento_Terreno_TerrenoId",
+                        column: x => x.TerrenoId,
                         principalTable: "Terreno",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Arrendamiento_TipoArrendamiento_tipo_arrendamiento_id",
-                        column: x => x.tipo_arrendamiento_id,
+                        name: "FK_Arrendamiento_TipoArrendamiento_TipoArrendamientoId",
+                        column: x => x.TipoArrendamientoId,
                         principalTable: "TipoArrendamiento",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Proyecto",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    arrendamiento_id = table.Column<int>(type: "integer", nullable: false),
-                    inversionista_id = table.Column<string>(type: "text", nullable: false),
-                    tipo_cultivo_id = table.Column<int>(type: "integer", nullable: false),
-                    fecha_inicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    fecha_fin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    nombre = table.Column<string>(type: "text", nullable: false),
-                    descripcion = table.Column<string>(type: "text", nullable: false),
-                    monto_total_presupuesto = table.Column<decimal>(type: "numeric", nullable: false),
-                    objetivos = table.Column<string>(type: "text", nullable: false),
-                    resultados_esperados = table.Column<string>(type: "text", nullable: false),
-                    monto_total_retorno_estimado = table.Column<decimal>(type: "numeric", nullable: false),
-                    comentario = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    registro_activo = table.Column<bool>(type: "boolean", nullable: false),
-                    estado = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    ArrendamientoId = table.Column<string>(type: "text", nullable: false),
+                    InversionistaId = table.Column<string>(type: "text", nullable: false),
+                    TipoCultivoId = table.Column<string>(type: "text", nullable: false),
+                    FechaInicio = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Nombre = table.Column<string>(type: "text", nullable: false),
+                    Descripcion = table.Column<string>(type: "text", nullable: false),
+                    MontoTotalPresupuesto = table.Column<decimal>(type: "numeric", nullable: false),
+                    Objetivos = table.Column<string>(type: "text", nullable: false),
+                    ResultadosEsperados = table.Column<string>(type: "text", nullable: false),
+                    MontoTotalRetornoEstimado = table.Column<decimal>(type: "numeric", nullable: false),
+                    Comentario = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    RegistroActivo = table.Column<bool>(type: "boolean", nullable: false),
+                    Estado = table.Column<int>(type: "integer", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedTimeUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    LastUpdateUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Proyecto", x => x.id);
+                    table.PrimaryKey("PK_Proyecto", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Proyecto_Arrendamiento_arrendamiento_id",
-                        column: x => x.arrendamiento_id,
+                        name: "FK_Proyecto_Arrendamiento_ArrendamientoId",
+                        column: x => x.ArrendamientoId,
                         principalTable: "Arrendamiento",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Proyecto_AspNetUsers_inversionista_id",
-                        column: x => x.inversionista_id,
+                        name: "FK_Proyecto_AspNetUsers_InversionistaId",
+                        column: x => x.InversionistaId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Proyecto_TipoCultivo_tipo_cultivo_id",
-                        column: x => x.tipo_cultivo_id,
+                        name: "FK_Proyecto_TipoCultivo_TipoCultivoId",
+                        column: x => x.TipoCultivoId,
                         principalTable: "TipoCultivo",
-                        principalColumn: "id");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
                 table: "Perfil",
-                columns: new[] { "id", "descripcion_perfil", "nombre_perfil" },
+                columns: new[] { "Id", "DeletedTimeUtc", "DescripcionPerfil", "IsDeleted", "LastUpdateUtc", "NombrePerfil" },
                 values: new object[,]
                 {
-                    { 1, "Propietario", "Propietario" },
-                    { 2, "Agricultor", "Agricultor" },
-                    { 3, "Inversionista", "Inversionista" }
+                    { "118cf490-f506-43c8-a43b-41143886ea8f", null, "Propietario", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Propietario" },
+                    { "28b241ba-5797-4e1f-9ab4-456d18181ec9", null, "Inversionista", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Inversionista" },
+                    { "5d243871-1b82-4afc-8bed-3657729e615a", null, "Agricultor", false, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Agricultor" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Archivo_tipo_archivo_id",
+                name: "IX_Archivo_TipoArchivoId",
                 table: "Archivo",
-                column: "tipo_archivo_id");
+                column: "TipoArchivoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Arrendamiento_agricultor_id",
+                name: "IX_Arrendamiento_AgricultorId",
                 table: "Arrendamiento",
-                column: "agricultor_id");
+                column: "AgricultorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Arrendamiento_terreno_id",
+                name: "IX_Arrendamiento_TerrenoId",
                 table: "Arrendamiento",
-                column: "terreno_id");
+                column: "TerrenoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Arrendamiento_tipo_arrendamiento_id",
+                name: "IX_Arrendamiento_TipoArrendamientoId",
                 table: "Arrendamiento",
-                column: "tipo_arrendamiento_id");
+                column: "TipoArrendamientoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -480,34 +496,34 @@ namespace AgroConecta.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Proyecto_arrendamiento_id",
+                name: "IX_Proyecto_ArrendamientoId",
                 table: "Proyecto",
-                column: "arrendamiento_id");
+                column: "ArrendamientoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Proyecto_inversionista_id",
+                name: "IX_Proyecto_InversionistaId",
                 table: "Proyecto",
-                column: "inversionista_id");
+                column: "InversionistaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Proyecto_tipo_cultivo_id",
+                name: "IX_Proyecto_TipoCultivoId",
                 table: "Proyecto",
-                column: "tipo_cultivo_id");
+                column: "TipoCultivoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Terreno_propietario_id",
+                name: "IX_Terreno_PropietarioId",
                 table: "Terreno",
-                column: "propietario_id");
+                column: "PropietarioId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Terreno_tipo_medida_area_id",
+                name: "IX_Terreno_TipoMedidaAreaId",
                 table: "Terreno",
-                column: "tipo_medida_area_id");
+                column: "TipoMedidaAreaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Terreno_tipo_suelo_id",
+                name: "IX_Terreno_TipoSueloId",
                 table: "Terreno",
-                column: "tipo_suelo_id");
+                column: "TipoSueloId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsuarioPerfil_usuariosId",

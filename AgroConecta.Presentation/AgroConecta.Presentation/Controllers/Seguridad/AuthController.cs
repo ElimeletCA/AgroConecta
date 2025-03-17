@@ -42,25 +42,25 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
                 )
                 {
                     //return BadRequest(new{ success = false, message = "ERROR-101" });
-                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                    return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
 
                 }
                 if (!Regex.IsMatch(usuario.UserName, @"^[a-zA-Z]{1,15}$", RegexOptions.IgnoreCase))
                 {
                     //return BadRequest(new { success = false, message = "ERROR-102" });
-                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                    return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
 
                 }
                 if (!Regex.IsMatch(usuario.pasword_without_hash, @"^.{1,25}$", RegexOptions.IgnoreCase))
                 {
                     //return BadRequest(new{ success = false, message = "ERROR-103" });
-                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                    return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
 
                 }
                 if (!Regex.IsMatch(usuario.nombre_completo, @"^[a-zA-ZáéíóúÁÉÍÓÚüÜ ]{1,50}$", RegexOptions.IgnoreCase))
                 {
                     //return BadRequest(new{ success = false, message = "ERROR-104" });
-                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                    return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
 
                 }
                 // linux @"^\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}$"
@@ -78,19 +78,19 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
                 if (!Regex.IsMatch(usuario.Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", RegexOptions.IgnoreCase))
                 {
                     //return BadRequest(new{ success = false, message = "ERROR-107" });
-                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                    return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
 
                 }
                 if (!(await _userManager.FindByNameAsync(usuario.UserName) is null))
                 {
                     //return BadRequest(new{ success = false, message = "Ya existe una cuenta con ese nombre de usuario, favor verificar e intentar de nuevo" });
-                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                    return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
 
                 }
                 if (!(await _userManager.FindByEmailAsync(usuario.Email) is null))
                 {
                     //return BadRequest(new { success = false, message = "Ya existe una cuenta con ese correo electrónico, favor verificar e intentar de nuevo" });
-                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                    return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
 
                 }
                 if (await _authService.RegistrarUsuario(usuario))
@@ -103,21 +103,21 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
                     if (await _authService.GenerarCorreoDeConfirmacion(usuario))
                     {
                         //return BadRequest(new { success = true , message = "Correo de confirmación enviado"});
-                        return Ok(new ApiResponse<BackendMessage>{ success = true, message = BackendMessages.MessageS006 });
+                        return Ok(new ApiResponse<BackendMessage>{ Success = true, Message = BackendMessages.MessageS006 });
 
                     }
                     else
                     {
-                        return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                        return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
                     }
 
 
                 }
-                return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
             }
             catch (Exception ex)
             {
-                return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS000 });
+                return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS000 });
             }
 
         }
@@ -135,11 +135,11 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
 
                 if (usuarioexistente is null)
                 {
-                    return Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS001 });
+                    return Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS001 });
                 }
                 if (!await _userManager.IsEmailConfirmedAsync(usuarioexistente))
                 {
-                    return  Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS002 });
+                    return  Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS002 });
                 }
 
                 if (await _authService.LoginUsuario(usuario))
@@ -153,19 +153,19 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
                             bool confirmacionenvio = await EnviarCodigo2FA(usuarioexistente.Email);
                     
                             return  confirmacionenvio
-                                ?  Ok(new ApiResponse<BackendMessage>{ success = true, message = BackendMessages.MessageS003 })
-                                :  Ok(new ApiResponse<BackendMessage>{  success = false, message = BackendMessages.MessageS004});
+                                ?  Ok(new ApiResponse<BackendMessage>{ Success = true, Message = BackendMessages.MessageS003 })
+                                :  Ok(new ApiResponse<BackendMessage>{  Success = false, Message = BackendMessages.MessageS004});
                         }
                         var token = await _authService.GenerarTokenString(usuarioexistente);
 
                         return Ok(new ApiResponse<BackendMessage>
-                            { success = true, message = new BackendMessage() { Codigo = TipoCodigo.Skip2FA, Descripcion = token} });
+                            { Success = true, Message = new BackendMessage() { Codigo = TipoCodigo.Skip2FA, Descripcion = token} });
 
                     }
 
 
                 }
-                return  Ok(new ApiResponse<BackendMessage>{ success = false, message = BackendMessages.MessageS005 });
+                return  Ok(new ApiResponse<BackendMessage>{ Success = false, Message = BackendMessages.MessageS005 });
 
             }
             catch( Exception e)

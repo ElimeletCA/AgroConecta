@@ -1,33 +1,33 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AgroConecta.Domain.General;
 using AgroConecta.Domain.Sistema.Tipos;
 
 namespace AgroConecta.Domain.Sistema.Extras;
 
-public class Archivo
+public class Archivo : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int id { get; set; }
 
-    public int tipo_archivo_id { get; set; }
+    public string TipoArchivoId { get; set; }
     
-    public int referencia_id { get; set; }
-    
-    public string nombre_archivo { get; set; }
-    
-    public string url_archivo { get; set; }
+    public string ReferenciaId { get; set; }
+    [MaxLength(250)]
 
-    public DateTime fecha_creacion { get; set; }
-    
-    public string descripcion { get; set; }
-    
-    public string formato { get; set; }
+    public required string NombreArchivo { get; set; }
+    [MaxLength(250)]
+    public required string UrlArchivo { get; set; }
 
-    public string size { get; set; }
+    public DateTime FechaCreacion { get; set; }
+    [MaxLength(250)]
+
+    public required string Descripcion { get; set; }
     
-    public int estado  { get; set; }
+    public string Formato { get; set; }
+
+    public string Size { get; set; }
     
-    public TipoArchivo tipo_archivo { get; set; }
+    public int Estado  { get; set; }
+    
+    public TipoArchivo TipoArchivo { get; set; }
 
 }

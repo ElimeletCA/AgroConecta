@@ -44,19 +44,19 @@ public class UsuariosController : ControllerBase
         var currentUser = await _userManager.FindByEmailAsync(email);
         if (currentUser == null || String.IsNullOrEmpty(currentUser.Email))
         {
-            return Ok(new ApiResponse<IEnumerable<UsuarioDTO>> { success = true, message = new List<UsuarioDTO>() });
+            return Ok(new ApiResponse<IEnumerable<UsuarioDTO>> { Success = true, Message = new List<UsuarioDTO>() });
         }
         
         var listaUsuarios = await _usuarioService.GetAllExceptAsync(currentUser.Email);
         
-        return Ok(new ApiResponse<IEnumerable<UsuarioDTO>> { success = true, message = listaUsuarios });
+        return Ok(new ApiResponse<IEnumerable<UsuarioDTO>> { Success = true, Message = listaUsuarios });
 
     }
     [HttpGet("GetById")]
     public async Task<IActionResult> GetById(string userId)
     {
         var currentUser = await _usuarioService.GetByIdAsync(userId);
-        return Ok(new ApiResponse<UsuarioDTO> { success = true, message = currentUser });
+        return Ok(new ApiResponse<UsuarioDTO> { Success = true, Message = currentUser });
         
     }
     
@@ -65,7 +65,7 @@ public class UsuariosController : ControllerBase
     {
         var eliminado = await _usuarioService.DeleteAsync(userId);
         
-        return Ok(new ApiResponse<bool> { success = eliminado, message = eliminado });
+        return Ok(new ApiResponse<bool> { Success = eliminado, Message = eliminado });
         
     }
 }

@@ -14,7 +14,7 @@
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
-<AuthorizeView>
+<AuthorizeView Context="authContext">
     <Authorizing>
         <PantallaCarga/>
     </Authorizing>
@@ -29,7 +29,15 @@
                 <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
                 <MudText Color="Color.Dark" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConecta</MudText>
                 <MudSpacer/>
-                <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Dark" Edge="Edge.End"/>
+                <MudMenu>
+                    <ActivatorContent>
+                        @{var emailUsuario = authContext.User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;}
+                        <MudAvatar Color="Color.Primary">@emailUsuario?.Substring(0,1).ToUpperInvariant()</MudAvatar>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <BtnCerrarSesion/>
+                    </ChildContent>
+                </MudMenu>
             </MudAppBar>
             <MudDrawer @bind-Open="@_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
                 @*<MudDrawerHeader>

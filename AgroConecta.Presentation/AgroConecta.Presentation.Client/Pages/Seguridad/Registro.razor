@@ -185,13 +185,13 @@
         if (isValid)
         {
             var response = await seguridadAgent.RegisterUser(_usuario);
-            if (response.success)
+            if (response.Success)
             {
-                await _messageBox.OpenDialogAsync("Verificación de correo electrónico",response.message.Descripcion, (int)TipoMensaje.Exito );
+                await _messageBox.OpenDialogAsync("Verificación de correo electrónico",response.Message.Descripcion, (int)TipoMensaje.Exito );
             }
             else
             {
-                await _messageBox.OpenDialogAsync(response.message.Codigo,response.message.Descripcion, (int)TipoMensaje.Error );
+                await _messageBox.OpenDialogAsync(response.Message.Codigo,response.Message.Descripcion, (int)TipoMensaje.Error );
             }
             
         }

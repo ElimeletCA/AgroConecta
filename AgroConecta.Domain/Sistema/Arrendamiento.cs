@@ -1,52 +1,49 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AgroConecta.Domain.General;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Tipos;
 
 namespace AgroConecta.Domain.Sistema;
 
-public class Arrendamiento
+public class Arrendamiento : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int id { get; set; }
 
-    public int terreno_id { get; set; }
+    public string TerrenoId { get; set; }
     
-    public string agricultor_id { get; set; }
+    public string AgricultorId { get; set; }
     
-    public int tipo_arrendamiento_id { get; set; }
+    public string TipoArrendamientoId { get; set; }
     
-    public DateTime fecha_inicio { get; set; }
+    public DateTime FechaInicio { get; set; }
     
-    public DateTime fecha_fin { get; set; }
-    
-    [MaxLength(500)]
-    public string condiciones { get; set; }
-    
-    public double cantidad_area_suelo_arrendada { get; set; }
-    
-    public decimal monto_pago{ get; set; }
-    
-    public string frecuencia_pago { get; set; }
+    public DateTime FechaFin { get; set; }
     
     [MaxLength(500)]
-    public string comentario { get; set; }
+    public string Condiciones { get; set; }
     
-    public bool registro_activo { get; set; }
+    public double CantidadAreaSueloArrendada { get; set; }
     
-    public int estado  { get; set; }
+    public decimal MontoPago{ get; set; }
+    
+    public string FrecuenciaPago { get; set; }
+    
+    [MaxLength(500)]
+    public string Comentario { get; set; }
+    
+    
+    public int Estado  { get; set; }
     
     //Propiedades navigacionales 
 
     
-    public Usuario agricultor { get; set; }
+    public Usuario Agricultor { get; set; }
 
-    public Terreno terreno { get; set; }
+    public Terreno Terreno { get; set; }
     
-    public TipoArrendamiento tipo_arrendamiento { get; set; }
+    public TipoArrendamiento TipoArrendamiento { get; set; }
     
-    public ICollection<Proyecto>? proyectos { get; set; }
+    public ICollection<Proyecto>? Proyectos { get; set; }
 
 
 }

@@ -14,6 +14,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AgroConecta.Domain\AgroConecta.Domain.csproj" />
+      <ProjectReference Include="..\AgroConecta.Infrastructure\AgroConecta.Infrastructure.csproj" />
       <ProjectReference Include="..\AgroConecta.Shared\AgroConecta.Shared.csproj" />
     </ItemGroup>
 

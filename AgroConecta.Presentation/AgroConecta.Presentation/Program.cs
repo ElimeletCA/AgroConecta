@@ -12,12 +12,16 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AgroConecta.Application.Seeds;
+using AgroConecta.Application.Servicios;
+using AgroConecta.Application.Servicios.Interfaces;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Application.Servicios.Interfaces.Sistema.Seguridad;
 using AgroConecta.Application.Servicios.Seguridad;
 using AgroConecta.Application.Servicios.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
-using AgroConecta.Infrastructure.Repositorio.Data;
+using AgroConecta.Infrastructure.Repositorios;
+using AgroConecta.Infrastructure.Repositorios.Data;
+using AgroConecta.Infrastructure.Repositorios.Interfaces;
 using AgroConecta.Presentation.Seguridad;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -42,25 +46,51 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>));
 
 #region Carga de servicios de lógica de negocio
-var serviceAssembly = Assembly.Load("AgroConecta.Application"); 
-var baseServiceType = typeof(IBaseService<>);
-// Busca todas las clases concretas en el ensamblado de servicios
+var serviceAssembly = Assembly.Load("AgroConecta.Application");
+var baseServiceType = typeof(IBaseService<,>);
+
+// Busca todas las clases concretas que implementan IBaseService<,>
 var serviceTypes = serviceAssembly.GetTypes()
-    .Where(type => type.IsClass && !type.IsAbstract) // Filtra solo clases concretas
+    .Where(type => 
+        type.IsClass && 
+        !type.IsAbstract && 
+        !type.IsGenericType
+    )
     .Select(type => new
     {
         Implementation = type,
-        Interface = type.GetInterfaces()
-            .FirstOrDefault(i => i != baseServiceType && baseServiceType.IsAssignableFrom(i)) // Busca la interfaz específica
+        Interfaces = type.GetInterfaces()
+            .Where(i => 
+                i.IsGenericType && 
+                i.GetGenericTypeDefinition() == baseServiceType
+            )
+            .ToList()
     })
-    .Where(t => t.Interface != null) // Solo toma las que tienen una interfaz válida
+    .Where(t => t.Interfaces.Any())
     .ToList();
+
 // Registra cada servicio encontrado
 foreach (var service in serviceTypes)
 {
-    builder.Services.AddScoped(service.Interface!, service.Implementation);
+    foreach (var serviceInterface in service.Interfaces)
+    {
+        // Registra la implementación bajo IBaseService<,>
+        builder.Services.AddScoped(serviceInterface, service.Implementation);
+        
+        // También registra la implementación bajo su interfaz específica (ITerrenoService)
+        var specificInterface = service.Implementation.GetInterfaces()
+            .FirstOrDefault(i => !i.IsGenericType && i != serviceInterface);
+        
+        if (specificInterface != null)
+        {
+            builder.Services.AddScoped(specificInterface, service.Implementation);
+        }
+    }
 }
 #endregion
 

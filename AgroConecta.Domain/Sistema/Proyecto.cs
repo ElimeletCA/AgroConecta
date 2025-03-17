@@ -1,51 +1,50 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AgroConecta.Domain.General;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Tipos;
 
 namespace AgroConecta.Domain.Sistema;
 
-public class Proyecto
+public class Proyecto : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int id { get; set; }
 
-    public int arrendamiento_id { get; set; }
-    
-    public string inversionista_id { get; set; }
-    
-    public int tipo_cultivo_id { get; set; }
-    
-    public DateTime fecha_inicio { get; set; }
-    
-    public DateTime fecha_fin { get; set; }
-    
-    public string nombre { get; set; }
-    
-    public string descripcion { get; set; }
 
-    public decimal monto_total_presupuesto { get; set; }
+    public string ArrendamientoId { get; set; }
     
-    public string objetivos { get; set; }
+    public string InversionistaId { get; set; }
+    
+    public string TipoCultivoId { get; set; }
+    
+    public DateTime FechaInicio { get; set; }
+    
+    public DateTime FechaFin { get; set; }
+    
+    public string Nombre { get; set; }
+    
+    public string Descripcion { get; set; }
 
-    public string resultados_esperados { get; set; }
+    public decimal MontoTotalPresupuesto { get; set; }
     
-    public decimal monto_total_retorno_estimado { get; set; }
+    public string Objetivos { get; set; }
+
+    public string ResultadosEsperados { get; set; }
+    
+    public decimal MontoTotalRetornoEstimado { get; set; }
 
     [MaxLength(500)]
-    public string comentario { get; set; }
+    public string Comentario { get; set; }
     
-    public bool registro_activo { get; set; }
+    public bool RegistroActivo { get; set; }
     
-    public int estado  { get; set; }
+    public int Estado  { get; set; }
 
     //Propiedades navigacionales 
 
     
-    public Usuario inversionista { get; set; }
+    public Usuario Inversionista { get; set; }
 
-    public Arrendamiento arrendamiento { get; set; }
+    public Arrendamiento Arrendamiento { get; set; }
     
-    public TipoCultivo tipo_cultivo { get; set; }
+    public TipoCultivo TipoCultivo { get; set; }
 }

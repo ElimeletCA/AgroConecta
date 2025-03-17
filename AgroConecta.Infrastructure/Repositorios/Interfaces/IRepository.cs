@@ -1,17 +1,24 @@
+using AgroConecta.Domain.General;
+
 namespace AgroConecta.Infrastructure.Repositorios.Interfaces;
 
-public interface IRepository<T, TId>
+public interface IRepository<T> where T : BaseEntity
 {
-    Task<T> InsertAsync(T entity);
+    // Obtiene una entidad por su ID
+    Task<T?> GetByIdAsync(string id);
     
-    Task<T?> GetByIdAsync(TId id);
+    // Obtiene todas las entidades (usualmente filtrando los eliminados lógicamente)
+    Task<IEnumerable<T>> GetAllAsync();
     
-    Task<IQueryable<T>> GetAllAsync();
+    // Agrega una nueva entidad
+    Task AddAsync(T entity);
     
-    void UpdateAsync(T entity);
+    // Actualiza una entidad existente
+    void Update(T entity);
     
-    Task<bool> SoftDeleteAsync(TId id);
+    // Realiza un soft delete marcando la entidad como eliminada
+    Task SoftDeleteAsync(T entity);
     
-    Task<bool> HardDeleteAsync(TId id);
-
+    // Realiza un hard delete eliminando la entidad de forma permanente
+    Task HardDeleteAsync(T entity);
 }

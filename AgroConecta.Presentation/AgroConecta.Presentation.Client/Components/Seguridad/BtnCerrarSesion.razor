@@ -3,9 +3,11 @@
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<button @onclick=Salir class="mud-nav-link mud-ripple">
+@*<button @onclick=Salir class="mud-nav-link mud-ripple">
     <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Cerrar Sesión
-</button>
+</button>*@
+<MudMenuItem OnClick="Salir" Label="Cerrar sesión" />
+
 @code {
     private TokenManager _tokenManager;    
     protected override Task OnInitializedAsync()

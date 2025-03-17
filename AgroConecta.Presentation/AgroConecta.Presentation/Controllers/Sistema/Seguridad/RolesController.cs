@@ -47,7 +47,7 @@ public class RolesController : ControllerBase
         {
             var listaRoles= await _usuarioService.GetAllRolesAsync();
 
-            return Ok(new ApiResponse<IEnumerable<RolDTO>> { success = true, message = listaRoles });
+            return Ok(new ApiResponse<IEnumerable<RolDTO>> { Success = true, Message = listaRoles });
 
         }
         catch (Exception e)
@@ -62,7 +62,7 @@ public class RolesController : ControllerBase
     public async Task<IActionResult> Add([FromBody] RolDTO rol)
     {
         var added = await _usuarioService.AddRoleAsync(rol.Name);
-        return Ok(new ApiResponse<bool> { success = added, message = added });
+        return Ok(new ApiResponse<bool> { Success = added, Message = added });
     }
     
     
@@ -71,7 +71,7 @@ public class RolesController : ControllerBase
     {
         var eliminado = await _usuarioService.DeleteRoleAsync(rolId);
         
-        return Ok(new ApiResponse<bool> { success = eliminado, message = eliminado });
+        return Ok(new ApiResponse<bool> { Success = eliminado, Message = eliminado });
         
     }
 }

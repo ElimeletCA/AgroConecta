@@ -1,21 +1,19 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AgroConecta.Domain.General;
 
 namespace AgroConecta.Domain.Sistema.Tipos;
 
-public class TipoMedidaArea
+public class TipoMedidaArea : BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int id { get; set; }
     
     [MaxLength(100)]
-    public string descripcion { get; set; }
+    public required string Descripcion { get; set; }
 
-    public bool registro_activo { get; set; }
+    public bool RegistroActivo { get; set; }
     //Propiedades navigacionales
 
-    public ICollection<Terreno>? terrenos { get; set; }
+    public ICollection<Terreno>? Terrenos { get; set; }
 
 
 }

@@ -45,7 +45,7 @@ public class PermisosController : ControllerBase
     {
         var permisosRol = await _usuarioService.GetALlPermisosByRolId(rolId);
 
-        return Ok(new ApiResponse<PermisoDTO> { success = true, message = permisosRol });
+        return Ok(new ApiResponse<PermisoDTO> { Success = true, Message = permisosRol });
     }
     
     [HttpPut("UpdatePermisos")]
@@ -53,6 +53,6 @@ public class PermisosController : ControllerBase
     {
         var actualizado = await _usuarioService.UpdatePermisos(permisosRol);
 
-        return Ok(new ApiResponse<bool> { success = actualizado, message = actualizado });
+        return Ok(new ApiResponse<bool> { Success = actualizado, Message = actualizado });
     }
 }

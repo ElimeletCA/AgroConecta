@@ -102,7 +102,7 @@
     private async Task Guardar()
     {
         var actualizacionCorrecta = await UsuarioAgent.UpdatePermisosAsync(_permisosRol);
-        if (actualizacionCorrecta.success)
+        if (actualizacionCorrecta.Success)
         {
             Snackbar.Add("Permisos modificados correctamente", Severity.Success);
             await GetAllPermisos();

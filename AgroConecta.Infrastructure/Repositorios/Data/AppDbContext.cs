@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-namespace AgroConecta.Infrastructure.Repositorio.Data;
+
+namespace AgroConecta.Infrastructure.Repositorios.Data;
 
 public class AppDbContext : IdentityDbContext<Usuario>
 {
@@ -58,22 +59,22 @@ public class AppDbContext : IdentityDbContext<Usuario>
          #region Relaciones Entidad -Terreno-
 
             modelbuilder.Entity<Terreno>()
-                   .HasOne(terreno => terreno.propietario)
+                   .HasOne(terreno => terreno.Propietario)
                    .WithMany(usuario => usuario.terrenos)
-                   .HasForeignKey(terreno => terreno.propietario_id)
+                   .HasForeignKey(terreno => terreno.PropietarioId)
                    .OnDelete(DeleteBehavior.ClientSetNull);
             
             
             modelbuilder.Entity<Terreno>()
-                .HasOne(terreno => terreno.tipo_medida_area)
-                .WithMany(tipo_medida_area => tipo_medida_area.terrenos)
-                .HasForeignKey(terreno => terreno.tipo_medida_area_id)
+                .HasOne(terreno => terreno.TipoMedidaArea)
+                .WithMany(tipo_medida_area => tipo_medida_area.Terrenos)
+                .HasForeignKey(terreno => terreno.TipoMedidaAreaId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             modelbuilder.Entity<Terreno>()
-                .HasOne(terreno => terreno.tipo_suelo)
-                .WithMany(tipo_suelo => tipo_suelo.terrenos)
-                .HasForeignKey(terreno => terreno.tipo_suelo_id)
+                .HasOne(terreno => terreno.TipoSuelo)
+                .WithMany(tipo_suelo => tipo_suelo.Terrenos)
+                .HasForeignKey(terreno => terreno.TipoSueloId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
             
         #endregion
@@ -81,22 +82,22 @@ public class AppDbContext : IdentityDbContext<Usuario>
         #region Relaciones Entidad -Arrendamiento-
         
         modelbuilder.Entity<Arrendamiento>()
-            .HasOne(arrendamiento => arrendamiento.agricultor)
+            .HasOne(arrendamiento => arrendamiento.Agricultor)
             .WithMany(usuario => usuario.arrendamientos)
-            .HasForeignKey(arrendamiento => arrendamiento.agricultor_id)
+            .HasForeignKey(arrendamiento => arrendamiento.AgricultorId)
             .OnDelete(DeleteBehavior.ClientSetNull);
             
                 
         modelbuilder.Entity<Arrendamiento>()
-            .HasOne(arrendamiento => arrendamiento.terreno)
-            .WithMany(terreno => terreno.arrendamientos)
-            .HasForeignKey(arrendamiento => arrendamiento.terreno_id)
+            .HasOne(arrendamiento => arrendamiento.Terreno)
+            .WithMany(terreno => terreno.Arrendamientos)
+            .HasForeignKey(arrendamiento => arrendamiento.TerrenoId)
             .OnDelete(DeleteBehavior.ClientSetNull);
         
         modelbuilder.Entity<Arrendamiento>()
-            .HasOne(arrendamiento => arrendamiento.tipo_arrendamiento)
-            .WithMany(tipo_arrendamiento => tipo_arrendamiento.arrendamientos)
-            .HasForeignKey(arrendamiento => arrendamiento.tipo_arrendamiento_id)
+            .HasOne(arrendamiento => arrendamiento.TipoArrendamiento)
+            .WithMany(tipo_arrendamiento => tipo_arrendamiento.Arrendamientos)
+            .HasForeignKey(arrendamiento => arrendamiento.TipoArrendamientoId)
             .OnDelete(DeleteBehavior.ClientSetNull);
         
         #endregion
@@ -104,22 +105,22 @@ public class AppDbContext : IdentityDbContext<Usuario>
         #region Relaciones Entidad -Proyecto-
         
         modelbuilder.Entity<Proyecto>()
-            .HasOne(proyecto => proyecto.inversionista)
+            .HasOne(proyecto => proyecto.Inversionista)
             .WithMany(usuario => usuario.proyectos)
-            .HasForeignKey(proyecto => proyecto.inversionista_id)
+            .HasForeignKey(proyecto => proyecto.InversionistaId)
             .OnDelete(DeleteBehavior.ClientSetNull);
             
                 
         modelbuilder.Entity<Proyecto>()
-            .HasOne(proyecto => proyecto.arrendamiento)
-            .WithMany(arrendamiento => arrendamiento.proyectos)
-            .HasForeignKey(proyecto => proyecto.arrendamiento_id)
+            .HasOne(proyecto => proyecto.Arrendamiento)
+            .WithMany(arrendamiento => arrendamiento.Proyectos)
+            .HasForeignKey(proyecto => proyecto.ArrendamientoId)
             .OnDelete(DeleteBehavior.ClientSetNull);
         
         modelbuilder.Entity<Proyecto>()
-            .HasOne(proyecto => proyecto.tipo_cultivo)
-            .WithMany(tipo_cultivo => tipo_cultivo.proyectos)
-            .HasForeignKey(proyecto => proyecto.tipo_cultivo_id)
+            .HasOne(proyecto => proyecto.TipoCultivo)
+            .WithMany(tipo_cultivo => tipo_cultivo.Proyectos)
+            .HasForeignKey(proyecto => proyecto.TipoCultivoId)
             .OnDelete(DeleteBehavior.ClientSetNull);
         
         #endregion
@@ -127,9 +128,9 @@ public class AppDbContext : IdentityDbContext<Usuario>
         #region Relaciones Entidad -Archivo-
         
         modelbuilder.Entity<Archivo>()
-            .HasOne(archivo => archivo.tipo_archivo)
-            .WithMany(tipo_archivo => tipo_archivo.archivos)
-            .HasForeignKey(archivo => archivo.tipo_archivo_id)
+            .HasOne(archivo => archivo.TipoArchivo)
+            .WithMany(tipo_archivo => tipo_archivo.Archivos)
+            .HasForeignKey(archivo => archivo.TipoArchivoId)
             .OnDelete(DeleteBehavior.ClientSetNull);
         
         #endregion
@@ -150,9 +151,9 @@ public class AppDbContext : IdentityDbContext<Usuario>
         
         var listaperfiles = new Perfil[]
         {
-            new Perfil {id= 1, nombre_perfil = "Propietario", descripcion_perfil= "Propietario"},
-            new Perfil {id= 2, nombre_perfil = "Agricultor", descripcion_perfil = "Agricultor"},
-            new Perfil {id= 3, nombre_perfil = "Inversionista", descripcion_perfil = "Inversionista"},
+            new Perfil {Id= Guid.NewGuid().ToString(), NombrePerfil = "Propietario", DescripcionPerfil= "Propietario"},
+            new Perfil {Id= Guid.NewGuid().ToString(), NombrePerfil = "Agricultor", DescripcionPerfil = "Agricultor"},
+            new Perfil {Id= Guid.NewGuid().ToString(), NombrePerfil = "Inversionista", DescripcionPerfil = "Inversionista"},
 
         };
         modelbuilder.Entity<Perfil>().HasData(listaperfiles);

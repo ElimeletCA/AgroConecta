@@ -13,17 +13,11 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
     public class EmailController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly UserManager<Usuario> _userManager;
-        private readonly IConfiguration _config;
-        private readonly SignInManager<Usuario> _signInManager;
 
         public EmailController(IAuthService authservice, UserManager<Usuario> userManager, IConfiguration config,
             SignInManager<Usuario> signInManager)
         {
             _authService = authservice;
-            _userManager = userManager;
-            _config = config;
-            _signInManager = signInManager;
         }
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmarCorreo(string encodedToken, string email)

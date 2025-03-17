@@ -1,45 +1,42 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AgroConecta.Domain.General;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Tipos;
 
 namespace AgroConecta.Domain.Sistema;
 
-public class Terreno
+public class Terreno: BaseEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int id { get; set; }
     [ForeignKey("Usuario")]
-    public string propietario_id { get; set; }
+    public string PropietarioId { get; set; }
     
-    public int tipo_medida_area_id { get; set; }
+    public string TipoMedidaAreaId { get; set; }
     
-    public int tipo_suelo_id { get; set; }
+    public string TipoSueloId { get; set; }
     
-    public double coordenada_latitud { get; set; }
+    public double CoordenadaLatitud { get; set; }
     
-    public double coordenada_longitud { get; set; }
+    public double CoordenadaLongitud { get; set; }
     
-    public double cantidad_area_suelo_total { get; set; }
+    public double CantidadAreaSueloTotal { get; set; }
     
-    public double cantidad_area_suelo_disponible{ get; set; }
+    public double CantidadAreaSueloDisponible{ get; set; }
     
     [MaxLength(500)]
-    public string comentario { get; set; }
+    public string Comentario { get; set; }
     
-    public bool registro_activo { get; set; }
     
     public int estado  { get; set; }
     
     //Propiedades navigacionales 
     
-    public Usuario propietario { get; set; }
+    public Usuario Propietario { get; set; }
 
-    public TipoMedidaArea tipo_medida_area { get; set; }
+    public TipoMedidaArea TipoMedidaArea { get; set; }
     
-    public TipoSuelo tipo_suelo { get; set; }
+    public TipoSuelo TipoSuelo { get; set; }
 
-    public ICollection<Arrendamiento>? arrendamientos { get; set; }
+    public ICollection<Arrendamiento>? Arrendamientos { get; set; }
 
 }

@@ -66,7 +66,7 @@ public class RolesUsuariosController : ControllerBase
             UsuarioId = userId,
             RolesUsuario = listaRolesUsuario
         };
-        return Ok(new ApiResponse<AdministrarRolesUsuarioDTO> { success = true, message = model });
+        return Ok(new ApiResponse<AdministrarRolesUsuarioDTO> { Success = true, Message = model });
     }
     
     [HttpPut("UpdateRolesById")]
@@ -87,6 +87,6 @@ public class RolesUsuariosController : ControllerBase
         var currentUser = await _userManager.GetUserAsync(User);
         await _signInManager.RefreshSignInAsync(currentUser);
         //await Seeds.DefaultUsers.SembrarUsuarioAdministradorAsync(_userManager, _roleManager, _configuration["DefaultUser:Password"]);
-        return Ok(new ApiResponse<string> { success = true, message = userId });
+        return Ok(new ApiResponse<string> { Success = true, Message = userId });
     }
 }

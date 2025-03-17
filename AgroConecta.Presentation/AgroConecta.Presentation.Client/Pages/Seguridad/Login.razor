@@ -70,11 +70,11 @@
     private async Task IniciarSesion()
     {
         var response = await seguridadAgent.LoginUser(usuario);
-        if (response.success)
+        if (response.Success)
         {
-            if (response.message.Codigo == TipoCodigo.Skip2FA)
+            if (response.Message.Codigo == TipoCodigo.Skip2FA)
             {
-                _tokenManager.SetTokenAsync(response.message.Descripcion);
+                _tokenManager.SetTokenAsync(response.Message.Descripcion);
                 await AuthenticationStateProvider.GetAuthenticationStateAsync();
                 await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
                 NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);   
@@ -89,17 +89,17 @@
                     usuario.two_factor_code = (string)result.Data!;
                     var response2FA = await seguridadAgent.Verificar2FA(usuario);
                 
-                    if (response2FA.success)
+                    if (response2FA.Success)
                     {
                         DialogS.Close(dialog);
-                        _tokenManager.SetTokenAsync(response2FA.message.Descripcion);
+                        _tokenManager.SetTokenAsync(response2FA.Message.Descripcion);
                         await AuthenticationStateProvider.GetAuthenticationStateAsync();
                         await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
                         NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);  
                     }
                     else
                     {
-                        await _messageBox.OpenDialogAsync(response2FA.message.Codigo,response2FA.message.Descripcion, (int)TipoMensaje.Error );
+                        await _messageBox.OpenDialogAsync(response2FA.Message.Codigo,response2FA.Message.Descripcion, (int)TipoMensaje.Error );
 
                     }
                 } 
@@ -109,7 +109,7 @@
         }
         else
         {
-           await _messageBox.OpenDialogAsync(response.message.Codigo,response.message.Descripcion, (int)TipoMensaje.Error );
+           await _messageBox.OpenDialogAsync(response.Message.Codigo,response.Message.Descripcion, (int)TipoMensaje.Error );
         }
     }
 }
