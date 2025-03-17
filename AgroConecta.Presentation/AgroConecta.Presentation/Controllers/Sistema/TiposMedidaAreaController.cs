@@ -16,17 +16,6 @@ public class TiposMedidaAreaController : InitialController<TipoMedidaAreaDTO, Ti
     {
     }
 
-    [HttpPost]
-    public override Task<IActionResult> Create(TipoMedidaAreaDTO dto)
-    {
-        
-        return base.Create(dto);
-    }
-    [HttpPut]
 
-    public override Task<ActionResult<ApiResponse<TipoMedidaAreaDTO>>> Update(string id, TipoMedidaAreaDTO dto)
-    {
-        return base.Update(id, dto);
-    }
 }
 

@@ -11,9 +11,9 @@
     <Authorized>
         @if (authContext.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
         {
-            <PageTitle>Lista de tipos de medida de superficie</PageTitle>
+            <PageTitle>Lista de tipos de medida</PageTitle>
 
-            <MudText Typo="Typo.h4" Class="mb-4">Lista de tipos de medida de superficie</MudText>
+            <MudText Typo="Typo.h4" Class="mb-4">Lista de tipos de medida</MudText>
 
             <MudDataGrid
                 T="TipoMedidaAreaDTO"
@@ -32,18 +32,25 @@
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Tipos de Medida de Área</MudText>
                     <MudSpacer/>
+                    <MudStack Row>
+                        
 
-                    <MudTextField @bind-Value="_searchString"
-                                  Placeholder="Buscar..."
-                                  Adornment="Adornment.Start"
-                                  Immediate="true"
-                                  AdornmentIcon="@Icons.Material.Filled.Search"
-                                  IconSize="Size.Medium"
-                                  Class="mt-0"></MudTextField>
-                    <MudButton Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               StartIcon="@Icons.Material.Filled.Add"
-                               OnClick="OpenCreateDialog">Nuevo</MudButton>
+                        <MudPaper Elevation="0" Class="">
+                            <MudTextField @bind-Value="_searchString"
+                                          Placeholder="Buscar..."
+                                          Adornment="Adornment.Start"
+                                          Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search"
+                                          IconSize="Size.Medium"
+                                          Class="mt-0"></MudTextField>
+                        </MudPaper>
+                        <MudPaper Elevation="0" Class="">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.Add"
+                                       OnClick="OpenCreateDialog">Nuevo</MudButton>
+                        </MudPaper>
+                    </MudStack>
                 </ToolBarContent>
                 <Columns>
                     <TemplateColumn Title="Descripción" CellClass=" "  Filterable="false">
@@ -56,6 +63,12 @@
                     <TemplateColumn Title="Acciones" CellClass="d-flex ">
                         <CellTemplate>
                             <MudStack Row>
+                                <MudTooltip Text="Ver">
+                                    <MudIconButton
+                                        OnClick="@(() => OpenViewDialog(@context.Item))"
+                                        Icon="@Icons.Material.Filled.Visibility"
+                                        Color="Color.Info"/>
+                                </MudTooltip>
                                 <MudTooltip Text="Editar">
                                     <MudIconButton
                                         OnClick="@(() => OpenEditDialog(@context.Item))"
@@ -127,28 +140,45 @@
             await GetAll();
         }
     }
-
-    private async Task OpenCreateDialog()
+    private async Task OpenViewDialog(TipoMedidaAreaDTO item)
     {
-        var parameters = new DialogParameters();
-        parameters.Add("OnSaved", EventCallback.Factory.Create(this, GetAll));
-    
-        var options = new DialogOptions { 
-            CloseButton = true,
-            CloseOnEscapeKey = true,
-            BackdropClick = true
+        var parameters = new DialogParameters {
+            { "TipoMedida", item },
+            { "IsViewMode", true }
         };
     
-        DialogService.Show<FrmTipoMedidaArea>("Nuevo Tipo de Medida", parameters, options);
+        DialogService.Show<FrmTipoMedidaArea>("Ver Tipo de Medida", parameters, new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+        });
+    }
+    private async Task OpenCreateDialog()
+    {
+        var result = await DialogService.Show<FrmTipoMedidaArea>("Nuevo Tipo de Medida", new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+
+        }).Result;
+    
+        if (!result.Canceled) await GetAll();
     }
 
     private async Task OpenEditDialog(TipoMedidaAreaDTO item)
     {
-        var parameters = new DialogParameters();
-        parameters.Add("TipoMedida", item);
-        parameters.Add("OnSaved", EventCallback.Factory.Create(this, GetAll));
+        var parameters = new DialogParameters {
+            { "TipoMedida", item },
+            { "IsViewMode", false }
+        };
+    
+        var result = await DialogService.Show<FrmTipoMedidaArea>("Editar Tipo de Medida", parameters, new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
 
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
-        DialogService.Show<FrmTipoMedidaArea>("Editar Tipo de Medida", parameters, options);
+        }).Result;
+    
+        if (!result.Canceled) await GetAll();
     }
 }

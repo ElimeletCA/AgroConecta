@@ -11,6 +11,7 @@ public class TemaGeneral : MudTheme
             Primary = Colors.Green.Default,
             Secondary = Colors.Brown.Lighten1,
             Tertiary = Colors.Gray.Lighten1,
+            
             AppbarBackground = Colors.Shades.White,
         };
         PaletteDark = new PaletteDark()

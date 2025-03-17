@@ -21,7 +21,7 @@ namespace AgroConecta.Presentation.Controllers;
 
         // GET: api/[controller]
         [HttpGet]
-        public virtual async Task<ActionResult<ApiResponse<IEnumerable<TDto>>>> GetAll()
+        public virtual async Task<IActionResult>  GetAll()
         {
             var dtos = await _service.GetAllAsync();
             var response = new ApiResponse<IEnumerable<TDto>>
@@ -34,7 +34,7 @@ namespace AgroConecta.Presentation.Controllers;
 
         // GET: api/[controller]/{id}
         [HttpGet("{id}")]
-        public virtual async Task<ActionResult<ApiResponse<TDto>>> GetById([FromQuery]string id)
+        public virtual async  Task<IActionResult> GetById(string id)
         {
             var dto = await _service.GetByIdAsync(id);
             if (dto == null)
@@ -70,7 +70,7 @@ namespace AgroConecta.Presentation.Controllers;
 
         // PUT: api/[controller]/{id}
         [HttpPut("{id}")]
-        public virtual async Task<ActionResult<ApiResponse<TDto>>> Update(string id, [FromBody] TDto dto)
+        public virtual async Task<IActionResult> Update(string id, [FromBody] TDto dto)
         {
             if (dto.Id != id)
             {
@@ -93,7 +93,7 @@ namespace AgroConecta.Presentation.Controllers;
 
         // DELETE (SoftDelete): api/[controller]/soft/{id}
         [HttpDelete("soft/{id}")]
-        public virtual async Task<ActionResult<ApiResponse<string>>> SoftDelete(string id)
+        public virtual async Task<IActionResult>  SoftDelete(string id)
         {
             await _service.SoftDeleteAsync(id);
             var response = new ApiResponse<string>
@@ -106,7 +106,7 @@ namespace AgroConecta.Presentation.Controllers;
 
         // DELETE (HardDelete): api/[controller]/hard/{id}
         [HttpDelete("hard/{id}")]
-        public virtual async Task<ActionResult<ApiResponse<string>>> HardDelete(string id)
+        public virtual async Task<IActionResult>  HardDelete(string id)
         {
             await _service.HardDeleteAsync(id);
             var response = new ApiResponse<string>
