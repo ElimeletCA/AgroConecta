@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace AgroConecta.Presentation.Controllers.Sistema;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 //[Authorize(Roles = "Administrador")]
