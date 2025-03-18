@@ -167,8 +167,8 @@
     {
         if (string.IsNullOrWhiteSpace(value))
             return "La contraseña es requerida";
-        if (!Regex.IsMatch(value, @"^.{1,25}$", RegexOptions.IgnoreCase))
-            return "Contraseña inválida ";
+        if (!Regex.IsMatch(value, @"^.{8,24}$", RegexOptions.IgnoreCase))
+            return "La contraseña debe tener entre 8 y 24 caracteres";
         return null;
     }
 
