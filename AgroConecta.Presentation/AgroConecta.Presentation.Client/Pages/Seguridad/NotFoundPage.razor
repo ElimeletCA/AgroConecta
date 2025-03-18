@@ -1,0 +1,37 @@
+@page "/error/404"
+@inject NavigationManager NavigationManager
+<style>
+    .mud-main-content {
+        background-color: #eae7d1;
+    }
+    .mb-2, .mb-4 {
+        color: #003f37;
+        font-weight: bold;
+    }
+</style>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex flex-column align-center justify-center text-center mt-6">
+    <MudImage Src="/images/404.jpg" Alt="Página no encontrada" Width="500" Class="mb-4" />
+
+    <MudText Typo="Typo.h4" Class="mb-2">
+        ¡Oh no! Parece que este campo está vacío
+    </MudText>
+
+    <MudText Typo="Typo.h6" Class="mb-4">
+        Quizás esta página nunca fue sembrada... o alguien se la llevó con la última cosecha.
+    </MudText>
+
+    <MudButton @onclick="RedirectToLogin" Variant="Variant.Filled" Color="Color.Primary">
+        Volver al inicio
+    </MudButton>
+</MudContainer>
+
+@code {
+    private async Task RedirectToLogin()
+    {
+        {
+            NavigationManager.NavigateTo("/Sistema/Dashboard", forceLoad: true);
+        }
+    }
+}
+

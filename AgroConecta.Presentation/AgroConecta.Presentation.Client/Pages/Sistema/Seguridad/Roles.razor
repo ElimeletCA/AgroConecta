@@ -1,0 +1,125 @@
+@page "/sistema/seguridad/roles"
+@using System.Security.Claims
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Seguridad
+@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Shared.DTO
+@using AgroConecta.Shared.Seguridad
+@using AgroConecta.Shared.Seguridad.Mensajes
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
+
+
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject IUsuarioAgent UsuarioAgent
+
+<AuthorizeView Context="authContext">
+    <Authorized>
+        @if (authContext.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+        {
+<PageTitle>Lista de Roles</PageTitle>
+
+<MudText Typo="Typo.h4" Class="mb-4">Lista de Roles</MudText>
+
+
+<MudDataGrid
+    T="RolDTO"
+    QuickFilter="@_quickFilter"
+    Items="@listaRoles"
+    SortMode="SortMode.Multiple"
+    Filterable="true"
+    RowsPerPage="10"
+    Hideable="true"
+    FixedHeader="true"
+    Height="calc(61vh - 10rem);"
+    Loading="@_isLoadingData"
+    LoadingProgressColor="Color.Primary"
+>
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Roles</MudText>
+        <MudSpacer/>
+        <MudTextField @bind-Value="_searchString" Placeholder="Buscar..." Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <TemplateColumn Title="Rol" CellClass=" ">
+            <CellTemplate>
+                <MudStack>
+                    <MudText Typo="Typo.caption">@context.Item.Name</MudText>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Acciones" CellClass="d-flex ">
+            <CellTemplate>
+                <MudStack Row>
+                    @*<MudTooltip Text="Eliminar">
+                        <MudIconButton
+                            OnClick="@(() => EliminarRol(@context.Item.Id))"
+                            Icon="@Icons.Material.Filled.Delete"
+                            Color="Color.Error"/>
+                    </MudTooltip>*@
+                    <MudTooltip Text="Administrar permisos">
+                        <MudIconButton
+                            OnClick="@(() => AdministrarPermisos(@context.Item.Id))"
+                            Icon="@Icons.Material.Filled.Build"
+                            Color="Color.Tertiary"/>
+                    </MudTooltip>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="RolDTO" PageSizeOptions=@(new int[] {5, 10, 15})/>
+    </PagerContent>
+</MudDataGrid>
+<MessageBox @ref="_messageBox" />
+        }
+    </Authorized>
+</AuthorizeView>
+
+
+@code {
+    private IEnumerable<RolDTO> listaRoles = new List<RolDTO>();
+    private MessageBox _messageBox;
+    private string _searchString;
+    private bool _isLoadingData;
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllRoles();
+    }
+    private async Task GetAllRoles()
+    {
+        _isLoadingData = true;
+        listaRoles = await UsuarioAgent.GetAllRolesAsync();
+        _isLoadingData = false;
+
+        StateHasChanged();
+    }
+
+    private async Task EliminarRol(string rolId)
+    {
+        if (await UsuarioAgent.DeleteRoleAsync(rolId))
+        {
+            Snackbar.Add("Rol eliminado correctamente", Severity.Success);
+            await GetAllRoles();
+
+        }
+    }
+
+    private void AdministrarPermisos(string rolId)
+    {
+        NavigationManager.NavigateTo($"/sistema/seguridad/permisosrol/{rolId}");
+    }
+    // quick filter - filter globally across multiple columns with the same input
+    private Func<RolDTO, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+}

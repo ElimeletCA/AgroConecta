@@ -1,0 +1,39 @@
+@page "/Seguridad/CorreoConfirmado"
+@using AgroConecta.Presentation.Client.Layout
+@using AgroConecta.Presentation.Client.Layout
+@layout EmptyLayout
+@inject NavigationManager NavigationManager
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<MudPaper Class="align-center justify-center" MaxWidth="100%" Height="100%" Elevation="0">
+    <MudStack Class="d-flex justify-center">
+        <MudPaper Elevation="0" Class="d-flex justify-center pa-1">
+            <MudImage Src="/images/check-mail.png" Alt="Check-mail" Class="rounded-lg" Fluid="true" ObjectFit="ObjectFit.Contain" Width="150"/>
+
+        </MudPaper>
+        <MudPaper Elevation="0" Class="d-flex justify-center pa-1">
+            <MudText Typo="Typo.h6" Style="font-weight:bold; margin-bottom:15px; margin-top: 25px;">Su correo electrónico ha sido verificado con éxito</MudText>
+        </MudPaper>
+        <MudPaper Elevation="0" Class="d-flex justify-center pa-1">
+            <MudButton Variant="Variant.Filled" @onclick="RedirectToLogin" Color="Color.Primary">
+                Inicio
+            </MudButton>
+            </MudPaper>
+
+    </MudStack>
+</MudPaper>
+@code {
+
+    private async Task RedirectToLogin()
+    {
+        {
+            NavigationManager.NavigateTo("/Seguridad/Login", forceLoad: true);
+        }
+    }
+
+}

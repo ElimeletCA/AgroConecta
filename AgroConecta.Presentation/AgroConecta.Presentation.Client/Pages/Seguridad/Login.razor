@@ -1,0 +1,115 @@
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Seguridad
+@using AgroConecta.Presentation.Client.Constantes
+@using AgroConecta.Presentation.Client.Layout
+@using AgroConecta.Shared.Seguridad
+@using AgroConecta.Shared.Seguridad.Mensajes
+@using Microsoft.AspNetCore.Components.Authorization
+@using AgroConecta.Presentation.Client.Components.General
+@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Presentation.Client.Helpers.Seguridad
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
+@inject HttpClient Http
+@inject IDialogService DialogS
+@inject NavigationManager NavigationManager
+@inject ISeguridadAgent seguridadAgent
+@page "/Seguridad/Login"
+@layout EmptyLayout
+<PageTitle>Iniciar sesión - AgroConecta</PageTitle>
+
+<div class="login-container">
+    <div class="left-section">
+        <div class="left-content">
+            <img src="images/agroconectawhite.svg" style="max-width: 300px;" alt="logo" class="logowhite" />
+            <h3>Conecta con oportunidades agropecuarias.</h3>
+            <p class="description">
+                
+                Una plataforma digital que facilita la conexión entre propietarios de tierras, agricultores e inversionistas.
+            </p>
+            <img src="images/pepper.svg" style="max-width: 300px;" alt="Pepper" class="character-image" />
+        </div>
+    </div>
+
+
+    <div class="right-section">
+        <div class="login-box">
+            <h2 class="text-center">Ingresar</h2>
+
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" class="input-field" placeholder="Ingresa tu correo" @bind="usuario.Email" />
+
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" class="input-field" placeholder="Ingresa tu contraseña" @bind="usuario.pasword_without_hash" />
+
+            <button class="login-button" @onclick="IniciarSesion">Ingresar</button>
+
+            <a href="/Seguridad/Registro" class="register-link">¿No tienes cuenta? Regístrate</a>
+        </div>
+    </div>
+</div>
+
+<MessageBox @ref="_messageBox" />
+<MessageBox2FA @ref="_messageBox2Fa" />
+
+@code {
+    private TokenManager _tokenManager;
+    UsuarioDTO usuario = new();
+    private MessageBox _messageBox;
+    
+    private MessageBox2FA _messageBox2Fa;
+    private readonly DialogOptions _backdropClick = new() { BackdropClick = false };
+    
+
+    protected override Task OnInitializedAsync()
+    {
+        _tokenManager = new TokenManager(JS);
+        return base.OnInitializedAsync();
+    }
+
+
+    private async Task IniciarSesion()
+    {
+        var response = await seguridadAgent.LoginUser(usuario);
+        if (response.Success)
+        {
+            if (response.Message.Codigo == TipoCodigo.Skip2FA)
+            {
+                _tokenManager.SetTokenAsync(response.Message.Descripcion);
+                await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
+                NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);   
+            }
+            else
+            {
+                var dialog = await DialogS.ShowAsync<MessageBox2FA>("Verificación 2FA", _backdropClick);
+                var result = await dialog.Result;
+                if (!result.Canceled)
+                {
+                
+                    usuario.two_factor_code = (string)result.Data!;
+                    var response2FA = await seguridadAgent.Verificar2FA(usuario);
+                
+                    if (response2FA.Success)
+                    {
+                        DialogS.Close(dialog);
+                        _tokenManager.SetTokenAsync(response2FA.Message.Descripcion);
+                        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                        await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
+                        NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);  
+                    }
+                    else
+                    {
+                        await _messageBox.OpenDialogAsync(response2FA.Message.Codigo,response2FA.Message.Descripcion, (int)TipoMensaje.Error );
+
+                    }
+                } 
+            }
+
+            
+        }
+        else
+        {
+           await _messageBox.OpenDialogAsync(response.Message.Codigo,response.Message.Descripcion, (int)TipoMensaje.Error );
+        }
+    }
+}

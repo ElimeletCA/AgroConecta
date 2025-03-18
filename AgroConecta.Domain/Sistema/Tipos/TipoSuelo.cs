@@ -1,0 +1,17 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using AgroConecta.Domain.General;
+
+namespace AgroConecta.Domain.Sistema.Tipos;
+
+public class TipoSuelo: BaseEntity
+{
+    
+    [MaxLength(100)]
+    public required string Descripcion { get; set; }
+    
+    public bool RegistroActivo { get; set; }
+    //Propiedades navigacionales
+
+    public ICollection<Terreno>? Terrenos { get; set; }
+}
