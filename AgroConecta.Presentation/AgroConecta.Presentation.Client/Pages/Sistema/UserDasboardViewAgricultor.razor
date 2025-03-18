@@ -1,0 +1,159 @@
+@page "/dashboard-owner"
+@using System.Net.Http.Headers
+@using System.Security.Claims
+@using AgroConecta.Presentation.Client.Helpers.Seguridad
+@using AgroConecta.Shared.Constantes.Seguridad
+@using AgroConecta.Shared.Seguridad.Mensajes
+@inject IJSRuntime JS
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<MudContainer MaxWidth="MaxWidth.False">
+    <MudGrid Spacing="3">
+        
+        <!-- Tarjetas de Resumen -->
+        <MudItem xs="12" md="3">
+            <MudPaper Elevation="4" Class="p-4 text-center">
+                <MudText Typo="Typo.h6">Proyectos Activos</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Primary">@TotalProyectos</MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="3">
+            <MudPaper Elevation="4" Class="p-4 text-center">
+                <MudText Typo="Typo.h6">Proyectos en Propuesta</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Secondary">@ProyectosEnPropuesta</MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="3">
+            <MudPaper Elevation="4" Class="p-4 text-center">
+                <MudText Typo="Typo.h6">Inversiones Recibidas</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Tertiary">@InversionesRecibidas</MudText>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="3">
+            <MudPaper Elevation="4" Class="p-4 text-center">
+                <MudText Typo="Typo.h6">Ingresos Estimados</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Success">@IngresosEstimados</MudText>
+            </MudPaper>
+        </MudItem>
+
+        <!-- Tabla de Proyectos -->
+        <MudItem xs="12">
+            <MudTable Items="@Proyectos" Dense="true">
+                <HeaderContent>
+                    <MudTh>Nombre</MudTh>
+                    <MudTh>Ubicación</MudTh>
+                    <MudTh>Estado</MudTh>
+                    <MudTh>Financiamiento</MudTh>
+                    <MudTh>Acciones</MudTh>
+                </HeaderContent>
+
+                <RowTemplate Context="proyecto">
+                    <MudTd>@proyecto.Nombre</MudTd>
+                    <MudTd>@proyecto.Ubicacion</MudTd>
+                    <MudTd>
+                        <MudChip Color="@GetEstadoColor(proyecto.Estado)">
+                            @proyecto.Estado
+                        </MudChip>
+                    </MudTd>
+                    <MudTd>@($"${proyecto.InversionActual} / ${proyecto.InversionMeta}")</MudTd>
+                    <MudTd>
+                        <MudIconButton Icon="icons.mdi-eye" Color="Color.Primary" OnClick="@(() => VerDetallesProyecto(proyecto.Id))" />
+                        <MudIconButton Icon="icons.mdi-pencil" Color="Color.Secondary" OnClick="@(() => EditarProyecto(proyecto.Id))" />
+                        <MudIconButton Icon="icons.mdi-delete" Color="Color.Error" OnClick="@(() => EliminarProyecto(proyecto.Id))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudItem>
+
+        <!-- Tabla de Solicitudes de Inversión -->
+        <MudItem xs="12">
+            <MudTable Items="@SolicitudesInversion" Dense="true">
+                <HeaderContent>
+                    <MudTh>Inversionista</MudTh>
+                    <MudTh>Proyecto</MudTh>
+                    <MudTh>Fecha</MudTh>
+                    <MudTh>Monto</MudTh>
+                    <MudTh>Estado</MudTh>
+                    <MudTh>Acciones</MudTh>
+                </HeaderContent>
+
+                <RowTemplate Context="solicitud">
+                    <MudTd>@solicitud.Inversionista</MudTd>
+                    <MudTd>@solicitud.Proyecto</MudTd>
+                    <MudTd>@solicitud.Fecha.ToShortDateString()</MudTd>
+                    <MudTd>@($"${solicitud.Monto}")</MudTd>
+                    <MudTd>
+                        <MudChip Color="@GetEstadoColor(solicitud.Estado)">
+                            @solicitud.Estado
+                        </MudChip>
+                    </MudTd>
+                    <MudTd>
+                        <MudIconButton Icon="icons.mdi-check" Color="Color.Success" OnClick="@(() => AceptarInversion(solicitud.Id))" />
+                        <MudIconButton Icon="icons.mdi-close" Color="Color.Error" OnClick="@(() => RechazarInversion(solicitud.Id))" />
+                        <MudIconButton Icon="icons.mdi-chat" Color="Color.Primary" OnClick="@(() => ChatearConInversionista(solicitud.Id))" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private int TotalProyectos = 3;
+    private int ProyectosEnPropuesta = 1;
+    private decimal InversionesRecibidas = 20000;
+    private decimal IngresosEstimados = 50000;
+
+    private List<dynamic> Proyectos = new()
+    {
+        new { Id = 1, Nombre = "Cultivo de Tomates", Ubicacion = "La Vega", Estado = "En Progreso", InversionActual = 5000, InversionMeta = 10000 },
+        new { Id = 2, Nombre = "Plantación de Aguacates", Ubicacion = "Monte Plata", Estado = "Finalizado", InversionActual = 10000, InversionMeta = 10000 },
+        new { Id = 3, Nombre = "Cosecha de Café", Ubicacion = "San Cristóbal", Estado = "En Propuesta", InversionActual = 2000, InversionMeta = 15000 }
+    };
+
+    private List<dynamic> SolicitudesInversion = new()
+    {
+        new { Id = 1, Inversionista = "Carlos Ramírez", Proyecto = "Cultivo de Tomates", Fecha = DateTime.Now, Monto = 3000, Estado = "Pendiente" },
+        new { Id = 2, Inversionista = "María López", Proyecto = "Plantación de Aguacates", Fecha = DateTime.Now.AddDays(-2), Monto = 5000, Estado = "Aprobado" }
+    };
+
+    private void VerDetallesProyecto(int id) => Nav.NavigateTo($"/proyecto/{id}");
+    private void EditarProyecto(int id) => Nav.NavigateTo($"/proyecto/editar/{id}");
+    private void EliminarProyecto(int id) => Console.WriteLine($"Eliminar proyecto {id}");
+    private void AceptarInversion(int id) => Console.WriteLine($"Aceptar inversión {id}");
+    private void RechazarInversion(int id) => Console.WriteLine($"Rechazar inversión {id}");
+    private void ChatearConInversionista(int id) => Nav.NavigateTo($"/chat/{id}");
+
+    private Color GetEstadoColor(string estado) => estado switch
+    {
+        "En Progreso" => Color.Success,
+        "Finalizado" => Color.Tertiary,
+        "En Propuesta" => Color.Warning,
+        "Pendiente" => Color.Warning,
+        "Aprobado" => Color.Success,
+        "Rechazado" => Color.Error,
+        _ => Color.Default
+    };
+    private string Prueba;
+    string _value;
+    private TokenManager _tokenManager;
+    private ClaimsPrincipal _usuario;
+    protected override Task OnInitializedAsync()
+    {
+        _tokenManager = new TokenManager(JS);
+        return base.OnInitializedAsync();
+    }
+    public async Task  PruebaT(){
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
+        //var response2FA = (await Http.GetAsync("api/Auth/GetTerrenos")).Content.ReadFromJsonAsync<ApiResponse>().Result;
+        var response2FA = (await Http.GetStringAsync("api/Auth/GetTerrenos"));
+
+        //var response2F = (await Http.GetAsync("api/Auth/GetTerrenos")).Content
+
+        Console.WriteLine(response2FA);
+    }
+}
