@@ -1,0 +1,33 @@
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Seguridad
+@inject ISeguridadAgent SeguridadAgent
+
+<MudDialog>
+    <DialogContent>
+        <MudText Class="pb-1" HtmlTag="label" for="input_prueba" Style="@($"color:{Colors.Shades.Black};")">Mantener los últimos (número)</MudText>
+        <MudTextField Margin="Margin.Dense"
+                      Class="flow-input"
+                      InputId="input_prueba"
+                      Variant="Variant.Outlined"
+                      Label=""
+                      @bind-Value="logsToKeep"
+                      InputType="InputType.Number"
+                      Immediate="true"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancelar</MudButton>
+        <MudButton Color="Color.Error" OnClick="Confirm">Eliminar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+    private int logsToKeep = 50;
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task Confirm()
+    {
+        await SeguridadAgent.MantenerLogsRecientes(logsToKeep);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

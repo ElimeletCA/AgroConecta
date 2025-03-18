@@ -1,18 +1,58 @@
-﻿@inherits LayoutComponentBase
+﻿@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Presentation.Client.Constantes
+@using AgroConecta.Shared.Seguridad.Mensajes
+@using AgroConecta.Presentation.Client.Pages.Seguridad
+@using AgroConecta.Presentation.Client.Components.Seguridad
+@using AgroConecta.Presentation.Client.Components.General
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
 
-<MudThemeProvider Theme="MyCustomTheme" />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
-<MudLayout>
-    <MudAppBar Bottom="true" Fixed="true" Color="Color.Primary" Elevation="1">
-        <NavMenu></NavMenu>
-    </MudAppBar>
-    <MudMainContent Class="mt-16 pa-4">
-        @Body
-    </MudMainContent>
-</MudLayout>
+<HeadContent>
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet"/>
+</HeadContent>
+<MudThemeProvider Theme="temaActual" />
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<AuthorizeView Context="authContext">
+    <Authorizing>
+        <PantallaCarga/>
+    </Authorizing>
+    <NotAuthorized>
+        <NoAutenticado/>
+    </NotAuthorized>
+    <Authorized>
+        <MudLayout>
+            <MudAppBar Elevation="1">
+                <MudIconButton Icon="@(_drawerOpen ? Icons.Material.Filled.Close : Icons.Material.Filled.Menu)" Color="Color.Dark" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())"/>
 
+                <MudImage Src="/images/landing/LOGO-AGROCONECTA.png" Height="32" Alt="AgroConecta Logo"></MudImage>
+                <MudText Color="Color.Dark" Typo="Typo.h6" Style="font-weight:bold" Class="ml-3">AgroConecta</MudText>
+                <MudSpacer/>
+                <MudMenu>
+                    <ActivatorContent>
+                        @{var emailUsuario = authContext.User.Claims.FirstOrDefault(c => c.Type == "email")?.Value;}
+                        <MudAvatar Color="Color.Primary">@emailUsuario?.Substring(0,1).ToUpperInvariant()</MudAvatar>
+                    </ActivatorContent>
+                    <ChildContent>
+                        <BtnCerrarSesion/>
+                    </ChildContent>
+                </MudMenu>
+            </MudAppBar>
+            <MudDrawer @bind-Open="@_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
+                @*<MudDrawerHeader>
+            <MudText Typo="Typo.h6">Menú principal</MudText>
+        </MudDrawerHeader>*@
+                <NavMenu/>
+            </MudDrawer>
+            <MudMainContent Class="pt-16 px-16">
+                <MudContainer Class="mt-6">
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    </Authorized>
+</AuthorizeView>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -21,25 +61,11 @@
 </div>
 
 @code {
-    MudTheme MyCustomTheme = new MudTheme()
-    {
-        PaletteLight = new PaletteLight()
-        {
-            Primary = Colors.Green.Default,
-            Secondary = Colors.Shades.White,
-            AppbarBackground = Colors.Green.Default,
-        },
-        PaletteDark = new PaletteDark()
-        {
-            Primary = Colors.Green.Lighten1
-        },
+    private MessageBox _messageBox;
+    private bool isNotAuthenticated;
+    public TemaGeneral temaActual=new();
+    
 
-        LayoutProperties = new LayoutProperties()
-        {
-            DrawerWidthLeft = "260px",
-            DrawerWidthRight = "300px"
-        }
-    };
     private bool _drawerOpen = true;
 
     private void DrawerToggle()
@@ -47,5 +73,10 @@
         _drawerOpen = !_drawerOpen;
         StateHasChanged();
     }
+
+
+
+
+
 
 }

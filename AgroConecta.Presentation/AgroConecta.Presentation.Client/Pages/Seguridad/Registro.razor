@@ -1,0 +1,199 @@
+@page "/Seguridad/Registro"
+@layout EmptyLayout
+@using System.Text.RegularExpressions
+
+@using AgroConecta.Presentation.Client.Layout
+@using System.Net
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Seguridad
+@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Shared.Seguridad
+@using AgroConecta.Shared.Seguridad.Mensajes
+@inject HttpClient httpClient
+@inject ISeguridadAgent seguridadAgent
+
+<PageTitle>Registrarse - AgroConecta</PageTitle>
+
+
+<br />
+<style>
+    body {
+        background-color: #04682d;
+    }
+    .mud-left-section {
+        background-color: #04682d;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+
+    .mud-left-content {
+        text-align: center;
+        max-width: 80%;
+    }
+
+    .description {
+        margin-top: 10px;
+    }
+    .character-image {
+        margin-top: 20px;
+        width: 150px;
+    }
+
+    .mud-right-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .mud-login-box {
+        padding: 2rem;
+        max-width: 400px;
+        width: 100%;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+</style>
+
+
+<MudContainer>
+    <MudGrid>
+        <MudItem xs="12" md="6" Class="mud-left-section">
+            <MudContainer Class="mud-left-content">
+                <img src="images/agroconectawhite.svg" style="max-width: 300px;" alt="logo" class="logowhite" />
+                <MudText Typo="Typo.h4">Conecta con oportunidades agropecuarias.</MudText>
+                <MudText Class="description" Typo="Typo.body1">
+                    Una plataforma digital que facilita la conexión entre propietarios de tierras, agricultores e inversionistas.
+                </MudText>
+                <img src="images/pepper.svg" style="max-width: 300px;" alt="Pepper" class="character-image" />
+            </MudContainer>
+        </MudItem>
+        <MudItem xs="12" md="6" Class="mud-right-section">
+            <MudPaper Class="mud-login-box">
+                <MudForm @ref="form" @bind-IsValid="isValid">
+                    <!-- Nombre completo -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtNombreCompleto" Color="Color.Dark">Nombre completo</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtNombreCompleto"
+                                  @bind-Value="_usuario.nombre_completo" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" Validation="ValidateNombreCompleto" />
+
+                    <!-- Fecha de nacimiento -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtFechaNacimiento" Color="Color.Dark">Fecha de nacimiento</MudText>
+                    <MudDatePicker Color="Color.Primary" Class="flow-input"
+                                   @bind-Date="_usuario.fecha_nacimiento" ShowToolbar="false"
+                                   Validation="ValidateFechaNacimiento" />
+
+                    <!-- Correo electrónico -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtEmail" Color="Color.Dark">Correo electrónico</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtEmail"
+                                  @bind-Value="_usuario.Email" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" Validation="ValidateEmail" />
+
+                    <!-- Usuario -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtUserName" Color="Color.Dark">Usuario</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtUserName"
+                                  @bind-Value="_usuario.UserName" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" Validation="ValidateUserName" />
+
+                    <!-- Contraseña -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtPassword" Color="Color.Dark">Contraseña</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtPassword"
+                                  @bind-Value="_usuario.pasword_without_hash" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" InputType="InputType.Password" Validation="ValidatePassword" />
+
+                    <!-- Repetir contraseña -->
+                    <MudText Class="pb-1" HtmlTag="label" For="txtRepeatedPassword" Color="Color.Dark">Repetir contraseña</MudText>
+                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtRepeatedPassword"
+                                  @bind-Value="repeatedPassword" Label="" Variant="Variant.Outlined"
+                                  Immediate="true" InputType="InputType.Password" Validation="ValidateRepeatedPassword" />
+                    <br/>
+
+                    <MudButton Class="login-button" OnClick="Submit" Disabled="!isValid" Variant="Variant.Filled" Color="Color.Primary">
+                        Registrar
+                    </MudButton>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+<MessageBox @ref="_messageBox"/>
+
+@code {
+    private MudForm form;
+    private bool isValid;
+    private UsuarioDTO _usuario = new UsuarioDTO();
+    private string repeatedPassword;
+    private MessageBox _messageBox;
+    private readonly DialogOptions _backdropClick = new() { BackdropClick = false };
+    private string ValidateNombreCompleto(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "El nombre completo es requerido";
+        if (!Regex.IsMatch(value, @"^[a-zA-ZáéíóúÁÉÍÓÚüÜ ]{1,50}$", RegexOptions.IgnoreCase))
+            return "Nombre completo inválido";
+        return null;
+    }
+
+    private string ValidateFechaNacimiento(DateTime? value)
+    {
+        if (value == null)
+            return "La fecha de nacimiento es requerida";
+        if (value > DateTime.Now)
+            return "La fecha de nacimiento no puede ser futura";
+        return null;
+    }
+
+    private string ValidateEmail(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "El correo electrónico es requerido";
+        if (!Regex.IsMatch(value, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", RegexOptions.IgnoreCase))
+            return "Correo electrónico inválido";
+        return null;
+    }
+
+    private string ValidateUserName(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "El usuario es requerido ";
+        if (!Regex.IsMatch(value, @"^[a-zA-Z]{1,15}$", RegexOptions.IgnoreCase))
+            return "Usuario inválido ";
+        return null;
+    }
+
+    private string ValidatePassword(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "La contraseña es requerida";
+        if (!Regex.IsMatch(value, @"^.{1,25}$", RegexOptions.IgnoreCase))
+            return "Contraseña inválida ";
+        return null;
+    }
+
+    private string ValidateRepeatedPassword(string value)
+    {
+        if (value != _usuario.pasword_without_hash)
+            return "Las contraseñas no coinciden";
+        return null;
+    }
+
+    private async Task Submit()
+    {
+        await form.Validate();
+        if (isValid)
+        {
+            var response = await seguridadAgent.RegisterUser(_usuario);
+            if (response.Success)
+            {
+                await _messageBox.OpenDialogAsync("Verificación de correo electrónico",response.Message.Descripcion, (int)TipoMensaje.Exito );
+            }
+            else
+            {
+                await _messageBox.OpenDialogAsync(response.Message.Codigo,response.Message.Descripcion, (int)TipoMensaje.Error );
+            }
+            
+        }
+    }
+}

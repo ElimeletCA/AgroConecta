@@ -1,0 +1,67 @@
+@using System.Text.RegularExpressions
+@using AgroConecta.Shared.Seguridad.Mensajes
+@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Class="d-flex justify-center">
+            <MudPaper Elevation="0" Class="d-flex justify-center pa-1">
+                <MudIcon Icon="@Icons.Material.Filled.CheckCircle"
+                         Color="Color.Success"
+                         Style="font-size: 4rem;" />
+            </MudPaper>
+            <MudPaper Elevation="0" Style="max-width: 400px; word-wrap: break-word;" Class="d-flex justify-center pa-1">
+                @BackendMessages.MessageS003.Descripcion
+            </MudPaper>
+            <MudPaper Elevation="0" Style="max-width: 400px; word-wrap: break-word;" Class="d-flex justify-center pa-1">
+                <MudForm @ref="form" @bind-IsValid="@isValid">
+                    <MudText Class="pb-1" HtmlTag="label" For="txtMsgBoxTextBoxValue" Color="Color.Dark">
+                        Ingrese el código de 6 dígitos
+                    </MudText>
+                    <MudTextField T="string"
+                                  Margin="Margin.Dense"
+                                  Class="flow-input"
+                                  InputId="txtMsgBoxTextBoxValue"
+                                  Variant="Variant.Outlined"
+                                  @bind-Value="Codigo"
+                                  Immediate="true"
+                                  Pattern="^\d{6}$"
+                                  MaxLength="6"
+                                  Validation="@(new Func<string, IEnumerable<string>>(ValidarCodigo))"
+                                  Required="true"
+                                  RequiredError="El código es obligatorio"/>
+                </MudForm>
+
+
+            </MudPaper>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Disabled="!isValid" Color="Color.Primary" OnClick="Submit">Enviar</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter]
+    
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(Codigo));
+
+    private void Cancel() => MudDialog.Cancel();
+    
+    
+    public string Codigo { get; set; } = string.Empty;
+    private MudForm form;
+    private bool isValid;
+
+    private IEnumerable<string> ValidarCodigo(string value)
+    {
+        if (!Regex.IsMatch(value, @"^\d{6}$"))
+        {
+            yield return "El código debe ser un número de 6 dígitos.";
+        }
+    }
+    
+
+
+}

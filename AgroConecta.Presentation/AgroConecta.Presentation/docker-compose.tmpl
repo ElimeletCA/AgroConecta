@@ -1,10 +1,13 @@
 services:
   agroconecta-app:
+    container_name: agroconecta-app
     image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     networks:
       - enviroment_default
     environment:
       ConnectionStrings__DefaultConnection: Host=$POSTGRESQL_HOST;Database=$POSTGRESQL_DATABASE;Username=$POSTGRESQL_USER;Password=$POSTGRESQL_PASSWORD
+      DefaultUser__Email: "$ADMIN_EMAIL"
+      DefaultUser__Password: "$ADMIN_PASSWORD"
       VIRTUAL_HOST: agroconecta.elimeletca.com
       LETSENCRYPT_HOST: agroconecta.elimeletca.com
       LETSENCRYPT_EMAIL: elimelet.dev@gmail.com
@@ -12,9 +15,11 @@ services:
     build:
       context: .
       dockerfile: AgroConecta.Presentation/AgroConecta.Presentation/Dockerfile
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4 
+    volumes:
+      - agroconecta-dp-keys:/app/DataProtection-Keys
 networks:
   enviroment_default:
     external: true
+volumes:
+  agroconecta-dp-keys:
+    driver: local

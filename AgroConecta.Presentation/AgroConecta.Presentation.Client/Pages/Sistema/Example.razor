@@ -1,0 +1,93 @@
+@page "/Example"
+@using System.Net.Http.Headers
+@using System.Security.Claims
+@using AgroConecta.Presentation.Client.Helpers.Seguridad
+@using AgroConecta.Shared.Constantes.Seguridad
+@using AgroConecta.Shared.Seguridad.Mensajes
+@inject IJSRuntime JS
+@inject HttpClient Http
+
+@{
+    //_usuario = context.User;
+}
+<h3>Demo componentes</h3>
+
+<h5>Botones</h5>
+<MudButton OnClick="PruebaT" Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+<MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
+<MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Tertiary">Tertiary</MudButton>
+
+<br/>
+<br/>
+<br/>
+<h5>Textbox</h5>
+<MudText Class="pb-1" HtmlTag="label" for="input_prueba" Color="Color.Dark">First name</MudText>
+<MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined"> </MudTextField>
+
+<br/>
+<br/>
+<br/>
+<h5>Select</h5>
+
+<MudText Class="pb-1" HtmlTag="label" for="select_prueba" Color="Color.Dark">Select</MudText>
+<div style="max-width: 300px;">
+    <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+        @foreach (var state in _states)
+        {
+            <MudSelectItem Value="state">@state</MudSelectItem>
+        }
+    </MudSelect>
+</div>
+
+<AuthorizeView>
+    <Authorized>
+        @if (PermissionCheker.TienePermiso(context.User, Permisos.Terrenos.Ver))
+        {
+
+        }
+    </Authorized>
+</AuthorizeView>
+
+<AuthorizeView>
+    <Authorized>
+        @if (context.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+        {
+
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    
+    private string Prueba;
+    string _value;
+    private TokenManager _tokenManager;
+    private ClaimsPrincipal _usuario;
+    protected override Task OnInitializedAsync()
+    {
+        _tokenManager = new TokenManager(JS);
+        return base.OnInitializedAsync();
+    }
+    private string[] _states =
+    {
+        "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+        "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+        "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
+        "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
+        "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana",
+        "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
+        "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
+        "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+        "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
+        "Washington", "West Virginia", "Wisconsin", "Wyoming"
+    };
+    public async Task  PruebaT(){
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
+        //var response2FA = (await Http.GetAsync("api/Auth/GetTerrenos")).Content.ReadFromJsonAsync<ApiResponse>().Result;
+        var response2FA = (await Http.GetStringAsync("api/Auth/GetTerrenos"));
+
+        //var response2F = (await Http.GetAsync("api/Auth/GetTerrenos")).Content
+
+        Console.WriteLine(response2FA);
+    }
+}

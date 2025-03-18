@@ -1,0 +1,184 @@
+@page "/sistema/tiposmedidaarea"
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema
+@using AgroConecta.Presentation.Client.Components.Formularios
+@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Shared.DTO
+@inject ITipoMedidaAreaAgent TipoMedidaAreaAgent
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<AuthorizeView Context="authContext">
+    <Authorized>
+        @if (authContext.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+        {
+            <PageTitle>Lista de tipos de medida</PageTitle>
+
+            <MudText Typo="Typo.h4" Class="mb-4">Lista de tipos de medida</MudText>
+
+            <MudDataGrid
+                T="TipoMedidaAreaDTO"
+                QuickFilter="@_quickFilter"
+                Items="@listaTiposMedidaArea"
+                SortMode="SortMode.Multiple"
+                Filterable="true"
+                RowsPerPage="10"
+                Hideable="true"
+                FixedHeader="true"
+                Height="calc(61vh - 10rem);"
+                Loading="@_isLoadingData"
+                LoadingProgressColor="Color.Primary"
+            >
+
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Tipos de Medida de Área</MudText>
+                    <MudSpacer/>
+                    <MudStack Row>
+                        
+
+                        <MudPaper Elevation="0" Class="">
+                            <MudTextField @bind-Value="_searchString"
+                                          Placeholder="Buscar..."
+                                          Adornment="Adornment.Start"
+                                          Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search"
+                                          IconSize="Size.Medium"
+                                          Class="mt-0"></MudTextField>
+                        </MudPaper>
+                        <MudPaper Elevation="0" Class="">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.Add"
+                                       OnClick="OpenCreateDialog">Nuevo</MudButton>
+                        </MudPaper>
+                    </MudStack>
+                </ToolBarContent>
+                <Columns>
+                    <TemplateColumn Title="Descripción" CellClass=" "  Filterable="false">
+                        <CellTemplate>
+                            <MudStack>
+                                <MudText Typo="Typo.caption">@context.Item.Descripcion</MudText>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="Acciones" CellClass="d-flex ">
+                        <CellTemplate>
+                            <MudStack Row>
+                                <MudTooltip Text="Ver">
+                                    <MudIconButton
+                                        OnClick="@(() => OpenViewDialog(@context.Item))"
+                                        Icon="@Icons.Material.Filled.Visibility"
+                                        Color="Color.Info"/>
+                                </MudTooltip>
+                                <MudTooltip Text="Editar">
+                                    <MudIconButton
+                                        OnClick="@(() => OpenEditDialog(@context.Item))"
+                                        Icon="@Icons.Material.Filled.Edit"
+                                        Color="Color.Warning"/>
+                                </MudTooltip>
+                                <MudTooltip Text="Eliminar">
+                                    <MudIconButton
+                                        OnClick="@(() => Eliminar(@context.Item.Id))"
+                                        Icon="@Icons.Material.Filled.Delete"
+                                        Color="Color.Error"/>
+                                </MudTooltip>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="TipoMedidaAreaDTO" PageSizeOptions=@(new int[] {5, 10, 15})/>
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private string _searchString;
+    private bool _isLoadingData;
+    private IEnumerable<TipoMedidaAreaDTO> listaTiposMedidaArea;
+
+    private Func<TipoMedidaAreaDTO, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        return x.Descripcion.Contains(_searchString, StringComparison.OrdinalIgnoreCase);
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAll();
+    }
+
+    private async Task GetAll()
+    {
+        _isLoadingData = true;
+        listaTiposMedidaArea = await TipoMedidaAreaAgent.GetAllAsync();
+        _isLoadingData = false;
+        StateHasChanged();
+    }
+
+    private async Task Eliminar(string id)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Content", "¿Está seguro de eliminar este registro?" },
+            { "ButtonColor", Color.Error },
+            { "ButtonText", "Eliminar" }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = DialogService.Show<AvisoConfirmacion>("Confirmación", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await TipoMedidaAreaAgent.HardDeleteAsync(id);
+            Snackbar.Add("Registro eliminado correctamente", Severity.Success);
+            await GetAll();
+        }
+    }
+    private async Task OpenViewDialog(TipoMedidaAreaDTO item)
+    {
+        var parameters = new DialogParameters {
+            { "TipoMedida", item },
+            { "IsViewMode", true }
+        };
+    
+        DialogService.Show<FrmTipoMedidaArea>("Ver Tipo de Medida", parameters, new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+        });
+    }
+    private async Task OpenCreateDialog()
+    {
+        var result = await DialogService.Show<FrmTipoMedidaArea>("Nuevo Tipo de Medida", new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+
+        }).Result;
+    
+        if (!result.Canceled) await GetAll();
+    }
+
+    private async Task OpenEditDialog(TipoMedidaAreaDTO item)
+    {
+        var parameters = new DialogParameters {
+            { "TipoMedida", item },
+            { "IsViewMode", false }
+        };
+    
+        var result = await DialogService.Show<FrmTipoMedidaArea>("Editar Tipo de Medida", parameters, new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+
+        }).Result;
+    
+        if (!result.Canceled) await GetAll();
+    }
+}

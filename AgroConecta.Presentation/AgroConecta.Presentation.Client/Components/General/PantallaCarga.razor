@@ -1,0 +1,98 @@
+<style>
+    /* Reset básico 
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }*/
+
+    /* Skeleton de fondo con efecto shimmer */
+    .skeleton-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 37%, #f0f0f0 43%);
+        background-size: 200% 100%;
+        animation: shimmer 4s ease infinite;
+        z-index: -1;
+    }
+    @@keyframes shimmer {
+        0% {
+            background-position: 100% 0;
+        }
+        100% {
+            background-position: -100% 0;
+        }
+    }
+
+    /* Contenedor centrado */
+    .loader-container {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        z-index: 1;
+    }
+
+    /* Animación de la imagen (zoom in/out) */
+    .logo {
+        width: 200px;
+        animation: zoom 2s infinite;
+    }
+    @@keyframes zoom {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /* Estilo para el texto de carga */
+    .loading-text {
+        font-family: 'Inter', sans-serif;
+        font-size: 2em;
+        margin-top: 20px;
+    }
+    /* Animación para Agro (inicia en verde) */
+    .agro {
+        color: #4CAF50;
+        animation: colorSwap 2s infinite;
+    }
+    /* Animación para conecta (inicia en marrón, con desfase para invertir el ciclo) */
+    .conecta {
+        color: #8D6E63;
+        animation: colorSwap 2s infinite -1s;
+    }
+    @@keyframes colorSwap {
+        0% {
+            color: #4CAF50;
+        }
+        50% {
+            color: #8D6E63;
+        }
+        100% {
+            color: #4CAF50;
+        }
+    }
+</style>
+<div class="skeleton-background"></div>
+<div class="loader-container">
+    <!-- Imagen de carga -->
+    <img src="./images/landing/LOGO-AGROCONECTA.png" alt="Logo Agroconecta" class="logo">
+    <!-- Texto animado -->
+    <div class="loading-text">
+        <strong>
+            <span class="agro">Agro</span><span class="conecta">conecta</span>
+        </strong>
+    </div>
+</div>
+@code {
+    
+}

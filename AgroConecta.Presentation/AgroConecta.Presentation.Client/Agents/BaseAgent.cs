@@ -1,13 +1,18 @@
-using AgroConecta.Presentation.Client.Agents.Interfaces.Interfaces;
+using System.Net.Http.Json;
+using AgroConecta.Presentation.Client.Agents.Interfaces;
 
-namespace AgroConecta.Presentation.Client.Agents.Interfaces;
+namespace AgroConecta.Presentation.Client.Agents;
 
-public class BaseAgent : IBaseAgent
+public class BaseAgent: IBaseAgent
 {
-    protected readonly HttpClient httpClient;
+    protected readonly HttpClient _httpClient;
+    protected readonly string _endpoint;
 
-    public BaseAgent(HttpClient _httpClient)
+    public BaseAgent(HttpClient httpClient, string endpoint)
     {
-        httpClient = _httpClient;
+        _httpClient = httpClient;
+        _endpoint = endpoint;
     }
+
+    
 }
