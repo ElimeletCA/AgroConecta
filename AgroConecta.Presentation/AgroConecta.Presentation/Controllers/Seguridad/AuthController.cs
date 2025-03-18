@@ -215,7 +215,7 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
                                     userEmail: usuario.Email ?? string.Empty,
                                     parameters: usuario
                                 );
-                                Ok(new ApiResponse<BackendMessage>
+                                return Ok(new ApiResponse<BackendMessage>
                                     { Success = true, Message = BackendMessages.MessageS003 });
                             }
                             else
@@ -229,21 +229,25 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
                                     userEmail: usuario.Email ?? string.Empty,
                                     parameters:usuario
                                 );
-                                Ok(new ApiResponse<BackendMessage>{  Success = false, Message = BackendMessages.MessageS004});
+                                return Ok(new ApiResponse<BackendMessage>{  Success = false, Message = BackendMessages.MessageS004});
                             }
                         }
-                        var token = await _authService.GenerarTokenString(usuarioexistente);
-                        usuario.pasword_without_hash = string.Empty;
+                        else
+                        {
+                            var token = await _authService.GenerarTokenString(usuarioexistente);
+                            usuario.pasword_without_hash = string.Empty;
 
-                        //Registro de información
-                        await _logger.LogInformation(
-                            action: fullActionName,
-                            message: $"Tipo: {typeof(UsuarioDTO).Name},Exito en login: Se ha generado token sin pasar por 2FA",
-                            userEmail: usuario.Email ?? string.Empty,
-                            parameters: usuario
-                        );
-                        return Ok(new ApiResponse<BackendMessage>
-                            { Success = true, Message = new BackendMessage() { Codigo = TipoCodigo.Skip2FA, Descripcion = token} });
+                            //Registro de información
+                            await _logger.LogInformation(
+                                action: fullActionName,
+                                message: $"Tipo: {typeof(UsuarioDTO).Name},Exito en login: Se ha generado token sin pasar por 2FA",
+                                userEmail: usuario.Email ?? string.Empty,
+                                parameters: usuario
+                            );
+                            return Ok(new ApiResponse<BackendMessage>
+                                { Success = true, Message = new BackendMessage() { Codigo = TipoCodigo.Skip2FA, Descripcion = token} });
+                        }
+
 
                     }
 
@@ -309,45 +313,30 @@ namespace AgroConecta.Presentation.Controllers.Seguridad;
 
                 if (usuarioexistente is not null)
                 {
-                    var enable2FA = _config["Security:Enable2FA"];
-                    if (!String.IsNullOrEmpty(enable2FA))
+                    var result = await _userManager.VerifyTwoFactorTokenAsync(usuarioexistente, "Email", usuario.two_factor_code);
+                    if (result)
                     {
-                        if (bool.Parse(enable2FA))
-                        {
-                            var result = await _userManager.VerifyTwoFactorTokenAsync(usuarioexistente, "Email", usuario.two_factor_code);
-                            if (result)
-                            {
-                                var token = await _authService.GenerarTokenString(usuarioexistente);
-                                usuario.pasword_without_hash = string.Empty;
+                        var token = await _authService.GenerarTokenString(usuarioexistente);
+                        usuario.pasword_without_hash = string.Empty;
 
-                                //Registro de información
-                                await _logger.LogInformation(
-                                    action: fullActionName,
-                                    message: $"Tipo: {typeof(UsuarioDTO).Name},Exito en Verificar 2FA: Se ha generado token verificando 2FA",
-                                    userEmail: usuario.Email ?? string.Empty,
-                                    parameters: usuario
-                                );
-                                return Ok (new  { success = true, message = new BackendMessage(){Codigo = "CODE-JWT", Descripcion = token}});
+                        //Registro de información
+                        await _logger.LogInformation(
+                            action: fullActionName,
+                            message: $"Tipo: {typeof(UsuarioDTO).Name},Exito en Verificar 2FA: Se ha generado token verificando 2FA",
+                            userEmail: usuario.Email ?? string.Empty,
+                            parameters: usuario
+                        );
+                        return Ok (new  { success = true, message = new BackendMessage(){Codigo = "CODE-JWT", Descripcion = token}});
 
-                            }
-                        }
-                        else
-                        {
-                            //Registro de información
-                            usuario.pasword_without_hash = string.Empty;
-
-                            await _logger.LogInformation(
-                                action: fullActionName,
-                                message: $"Tipo: {typeof(UsuarioDTO).Name},Exito en Verificar 2FA: Se ha generado token sin pasar por 2FA",
-                                userEmail: usuario.Email ?? string.Empty,
-                                parameters: usuario
-                            );
-                            var token = await _authService.GenerarTokenString(usuarioexistente);
-                            return Ok (new  { success = true, message = new BackendMessage(){Codigo = "CODE-JWT", Descripcion = token}});
-
-                        }      
                     }
                 }
+                //Registro de información
+                await _logger.LogWarning(
+                    action: fullActionName,
+                    message: $"Tipo: {typeof(UsuarioDTO).Name},Problemas en Verificar 2FA",
+                    userEmail: usuario.Email ?? string.Empty,
+                    parameters: usuario
+                );
                 return Ok(new { success = false, message = "ERROR" });
 
                
