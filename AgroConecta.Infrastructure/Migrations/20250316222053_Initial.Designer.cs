@@ -3,6 +3,7 @@ using System;
 using AgroConecta.Infrastructure.Repositorios.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AgroConecta.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250316222053_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,59 +90,6 @@ namespace AgroConecta.Infrastructure.Migrations
                     b.HasIndex("TipoArrendamientoId");
 
                     b.ToTable("Arrendamiento", (string)null);
-                });
-
-            modelBuilder.Entity("AgroConecta.Domain.Sistema.Auditoria.SystemLog", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Action")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
-
-                    b.Property<string>("AdditionalData")
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime?>("DeletedTimeUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Exception")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdateUtc")
-                        .IsConcurrencyToken()
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Level")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Parameters")
-                        .HasColumnType("jsonb");
-
-                    b.Property<DateTime>("Timestamp")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
-
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("varchar(250)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("SystemLogs", (string)null);
                 });
 
             modelBuilder.Entity("AgroConecta.Domain.Sistema.Extras.Archivo", b =>
@@ -307,7 +257,7 @@ namespace AgroConecta.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "871be731-c4f5-46bd-bf75-90c2991c41ec",
+                            Id = "118cf490-f506-43c8-a43b-41143886ea8f",
                             DescripcionPerfil = "Propietario",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -315,7 +265,7 @@ namespace AgroConecta.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = "354ae1c6-cbc8-4427-a1ad-82341673bbb5",
+                            Id = "5d243871-1b82-4afc-8bed-3657729e615a",
                             DescripcionPerfil = "Agricultor",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -323,7 +273,7 @@ namespace AgroConecta.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = "d67740dc-8e74-40f1-b25d-adb12c16eed7",
+                            Id = "28b241ba-5797-4e1f-9ab4-456d18181ec9",
                             DescripcionPerfil = "Inversionista",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),

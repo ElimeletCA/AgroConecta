@@ -1,3 +1,4 @@
+using AgroConecta.Shared.DTO;
 using AgroConecta.Shared.Seguridad;
 using AgroConecta.Shared.Seguridad.Mensajes;
 
@@ -9,5 +10,8 @@ public interface ISeguridadAgent : IBaseAgent
 
     Task<ApiResponse<BackendMessage>> LoginUser(UsuarioDTO usuario);
     Task<ApiResponse<BackendMessage>> Verificar2FA(UsuarioDTO usuario);
+
+    Task<IEnumerable<SystemLogDTO>> VerTodosLosLogs();
+    Task MantenerLogsRecientes(int cantidad);
 
 }

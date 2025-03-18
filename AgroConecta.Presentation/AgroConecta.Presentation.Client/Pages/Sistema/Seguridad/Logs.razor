@@ -1,0 +1,121 @@
+@page "/sistema/seguridad/logs"
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Seguridad
+@using AgroConecta.Presentation.Client.Components.Formularios
+@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Shared.DTO
+@inject ISeguridadAgent SeguridadAgent
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<AuthorizeView Context="authContext">
+    <Authorized>
+        @if (authContext.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+        {
+            <PageTitle>Logs</PageTitle>
+            
+            <MudDataGrid T="SystemLogDTO"
+                        Items="@listaSystemLogs"
+                        QuickFilter="@_quickFilter"
+                        RowsPerPage="10"
+                         FixedHeader="true"
+
+                         Height="calc(80vh - 10rem);"
+                        Loading="@_isLoadingData">
+
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Logs del sistema</MudText>
+                    <MudSpacer/>
+                    <MudStack Row>
+                        <MudTextField @bind-Value="_searchString"
+                                    Placeholder="Buscar..."
+                                    AdornmentIcon="@Icons.Material.Filled.Search"
+                                    Class="mt-0"/>
+                        <MudButton Variant="Variant.Filled"
+                                Color="Color.Error"
+                                StartIcon="@Icons.Material.Filled.Delete"
+                                OnClick="OpenDeleteDialog">
+                            Limpiar logs
+                        </MudButton>
+                    </MudStack>
+                </ToolBarContent>
+
+                <Columns>
+                    <PropertyColumn Property="x => x.Timestamp" Title="Fecha" />
+                    <TemplateColumn Title="Nivel">
+                        <CellTemplate>
+                            <MudChip T="string" Color="GetLevelColor(context.Item.Level)">@context.Item.Level</MudChip>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <PropertyColumn Property="x => x.Level" Title="Nivel" />
+                    <PropertyColumn Property="x => x.Action" Title="Acción" />
+                    <PropertyColumn Property="x => x.UserEmail" Title="Usuario" />
+                    
+                    <TemplateColumn Title="Acciones">
+                        <CellTemplate>
+                            <MudIconButton Icon="@Icons.Material.Filled.Visibility"
+                                        Color="Color.Info"
+                                        OnClick="@(() => OpenDetailDialog(context.Item))" />
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="SystemLogDTO" PageSizeOptions=@(new int[] {5, 10, 15})/>
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private IEnumerable<SystemLogDTO> listaSystemLogs = new List<SystemLogDTO>();
+    private string _searchString;
+    private bool _isLoadingData;
+
+    private Func<SystemLogDTO, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString)) return true;
+        
+        return x.Timestamp.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
+               x.Action.Contains(_searchString, StringComparison.OrdinalIgnoreCase) ||
+               x.UserEmail.Contains(_searchString, StringComparison.OrdinalIgnoreCase);
+    };
+    private Color GetLevelColor(string level) => level switch
+    {
+        "Error" => Color.Error,
+        "Warning" => Color.Warning,
+        _ => Color.Info
+    };
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLogs();
+    }
+
+    private async Task LoadLogs()
+    {
+        _isLoadingData = true;
+        listaSystemLogs = await SeguridadAgent.VerTodosLosLogs();
+        _isLoadingData = false;
+    }
+
+    private async Task OpenDetailDialog(SystemLogDTO log)
+    {
+        var parameters = new DialogParameters {
+            { "Log", log }
+        };
+        
+        DialogService.Show<DetailSystemLog>("Detalle del Log", parameters);
+    }
+
+    private async Task OpenDeleteDialog()
+    {
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small };
+        var dialog = DialogService.Show<DeleteLogsDialog>("Limpiar logs", options);
+        var result = await dialog.Result;
+        
+        if (!result.Canceled)
+        {
+            await LoadLogs();
+            Snackbar.Add("Logs limpiados exitosamente", Severity.Success);
+        }
+    }
+}

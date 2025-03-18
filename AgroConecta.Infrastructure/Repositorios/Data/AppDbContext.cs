@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AgroConecta.Domain.Sistema;
+using AgroConecta.Domain.Sistema.Auditoria;
 using AgroConecta.Domain.Sistema.Extras;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Tipos;
@@ -29,7 +30,7 @@ public class AppDbContext : IdentityDbContext<Usuario>
             Debug.WriteLine(e.Message);
         }
     }
-
+    public DbSet<SystemLog> SystemLogs { get; set; }
     public DbSet<Archivo> Archivos { get; set; }
     public DbSet<Perfil> Perfiles { get; set; }
     public DbSet<Arrendamiento> Arrendamientos { get; set; }
@@ -135,7 +136,31 @@ public class AppDbContext : IdentityDbContext<Usuario>
         
         #endregion
 
-
+        modelbuilder.Entity<SystemLog>(entity =>
+        {
+            entity.ToTable("SystemLogs"); 
+            entity.Property(e => e.Timestamp)
+                .HasColumnType("timestamp with time zone")
+                .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+            
+            entity.Property(e => e.Level)
+                .HasMaxLength(50)
+                .HasColumnType("varchar(50)");
+            
+            entity.Property(e => e.Action)
+                .HasMaxLength(200)
+                .HasColumnType("varchar(200)");
+            
+            entity.Property(e => e.UserEmail)
+                .HasMaxLength(250)
+                .HasColumnType("varchar(250)");
+            
+            entity.Property(e => e.Parameters)
+                .HasColumnType("jsonb"); 
+            
+            entity.Property(e => e.AdditionalData)
+                .HasColumnType("jsonb");
+        });
 
         modelbuilder.Entity<Usuario>()
             .HasMany(usuarios => usuarios.perfiles)

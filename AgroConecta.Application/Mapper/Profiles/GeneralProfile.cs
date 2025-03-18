@@ -1,3 +1,4 @@
+using AgroConecta.Domain.Sistema.Auditoria;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Tipos;
 using AgroConecta.Shared.DTO;
