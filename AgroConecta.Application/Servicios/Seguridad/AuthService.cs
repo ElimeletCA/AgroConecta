@@ -49,6 +49,7 @@ public class AuthService : IAuthService
         public async Task<bool> RegistrarUsuario(UsuarioDTO usuarioDto)
         {
             var usuario = _mapper.Map<Usuario>(usuarioDto);
+            usuario.Id = Guid.NewGuid().ToString();
             var result = await _userManager.CreateAsync(usuario, usuario.pasword_without_hash);
             return result.Succeeded;
         }
