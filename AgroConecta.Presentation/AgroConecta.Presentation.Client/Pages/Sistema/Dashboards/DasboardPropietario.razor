@@ -1,4 +1,4 @@
-@page "/dashboard-owner"
+@page "/sistema/dashboard/propietario"
 @using System.Net.Http.Headers
 @using System.Security.Claims
 @using AgroConecta.Presentation.Client.Helpers.Seguridad
@@ -45,8 +45,8 @@
             <MudTable Items="@Terrenos" Dense="true">
                 <HeaderContent>
                     <MudTh>Nombre</MudTh>
-                    <MudTh>Ubicación</MudTh>
-                    <MudTh>Tamaño</MudTh>
+                    <MudTh>Ubicaciï¿½n</MudTh>
+                    <MudTh>Tamaï¿½o</MudTh>
                     <MudTh>Estado</MudTh>
                     <MudTh>Acciones</MudTh>
                 </HeaderContent>
@@ -54,7 +54,7 @@
                 <RowTemplate Context="terreno">
                     <MudTd>@terreno.Nombre</MudTd>
                     <MudTd>@terreno.Ubicacion</MudTd>
-                    <MudTd>@($"{terreno.Tamaño} ha")</MudTd>
+                    <MudTd>@($"{terreno.Tamano} ha")</MudTd>
                     <MudTd>
                         <MudChip T="string" Color="@GetEstadoColor(terreno.Estado)">
                             @terreno.Estado
@@ -110,15 +110,15 @@
 
     private List<dynamic> Terrenos = new()
     {
-        new { Id = 1, Nombre = "Finca La Esperanza", Ubicacion = "La Vega", Tamaño = 10, Estado = "Disponible" },
-        new { Id = 2, Nombre = "Terreno Río Verde", Ubicacion = "Monte Plata", Tamaño = 15, Estado = "En Negociación" },
-        new { Id = 3, Nombre = "Parcelas del Sur", Ubicacion = "San Cristóbal", Tamaño = 5, Estado = "Arrendado" }
+        new { Id = 1, Nombre = "Finca La Esperanza", Ubicacion = "La Vega", Tamano = 10, Estado = "Disponible" },
+        new { Id = 2, Nombre = "Terreno Rï¿½o Verde", Ubicacion = "Monte Plata", Tamano = 15, Estado = "En Negociaciï¿½n" },
+        new { Id = 3, Nombre = "Parcelas del Sur", Ubicacion = "San Cristï¿½bal", Tamano = 5, Estado = "Arrendado" }
     };
 
     private List<dynamic> Solicitudes = new()
     {
-        new { Id = 1, Solicitante = "Carlos Ramírez", Terreno = "Finca La Esperanza", Fecha = DateTime.Now, Monto = 1500, Duracion = 12, Estado = "Pendiente" },
-        new { Id = 2, Solicitante = "María López", Terreno = "Terreno Río Verde", Fecha = DateTime.Now.AddDays(-2), Monto = 2000, Duracion = 24, Estado = "En Revisión" }
+        new { Id = 1, Solicitante = "Carlos Ramï¿½rez", Terreno = "Finca La Esperanza", Fecha = DateTime.Now, Monto = 1500, Duracion = 12, Estado = "Pendiente" },
+        new { Id = 2, Solicitante = "Marï¿½a Lï¿½pez", Terreno = "Terreno Rï¿½o Verde", Fecha = DateTime.Now.AddDays(-2), Monto = 2000, Duracion = 24, Estado = "En Revisiï¿½n" }
     };
 
     private void VerDetallesTerreno(int id) => Nav.NavigateTo($"/terreno/{id}");
@@ -131,7 +131,7 @@
     private Color GetEstadoColor(string estado) => estado switch
     {
         "Disponible" => Color.Success,
-        "En Negociación" => Color.Warning,
+        "En Negociacion" => Color.Warning,
         "Arrendado" => Color.Error,
         _ => Color.Default
     };

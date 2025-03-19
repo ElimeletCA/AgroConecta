@@ -1,3 +1,4 @@
+@using System.Text.RegularExpressions
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Seguridad
 @using AgroConecta.Presentation.Client.Constantes
 @using AgroConecta.Presentation.Client.Layout
@@ -34,14 +35,34 @@
     <div class="right-section">
         <div class="login-box">
             <h2 class="text-center">Ingresar</h2>
+            <MudForm @ref="form" @bind-IsValid="isValid">
 
-            <label for="email">Correo electrónico</label>
-            <input type="email" id="email" class="input-field" placeholder="Ingresa tu correo" @bind="usuario.Email" />
+            <!-- Correo electrónico -->
+            <MudText Class="pb-1" HtmlTag="label" For="txtEmail" Color="Color.Dark">Correo electrónico</MudText>
+            <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtEmail"
+                          @bind-Value="usuario.Email" Label="" Variant="Variant.Outlined"
+                          Immediate="true" Validation="ValidateEmail" />
 
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" class="input-field" placeholder="Ingresa tu contraseña" @bind="usuario.pasword_without_hash" />
 
-            <button class="login-button" @onclick="IniciarSesion">Ingresar</button>
+            <!-- Contraseña -->
+            <MudText Class="pb-1" HtmlTag="label" For="txtPassword" Color="Color.Dark">Contraseña</MudText>
+            <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="txtPassword"
+                          @bind-Value="usuario.pasword_without_hash" Label="" Validation="ValidatePassword"  Variant="Variant.Outlined"
+                          Immediate="true" InputType="InputType.Password" />
+            <br/>
+            <MudButton Class="login-button" OnClick="IniciarSesion" Disabled="!isValid" Variant="Variant.Filled" Color="Color.Primary">
+                @if (_isLoading)
+                {
+                    <MudProgressCircular Size="Size.Small" Style="color: #ffffff" Indeterminate="true"/>
+
+                }
+                else
+                {
+                    <span>Iniciar sesión</span>
+                }
+            </MudButton>
+            </MudForm>
+
 
             <a href="/Seguridad/Registro" class="register-link">¿No tienes cuenta? Regístrate</a>
         </div>
@@ -52,10 +73,12 @@
 <MessageBox2FA @ref="_messageBox2Fa" />
 
 @code {
+    private bool _isLoading = false;
     private TokenManager _tokenManager;
     UsuarioDTO usuario = new();
     private MessageBox _messageBox;
-    
+    private MudForm form;
+    private bool isValid;
     private MessageBox2FA _messageBox2Fa;
     private readonly DialogOptions _backdropClick = new() { BackdropClick = false };
     
@@ -66,9 +89,26 @@
         return base.OnInitializedAsync();
     }
 
-
+    private string ValidateEmail(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "El correo electrónico es requerido";
+        if (!Regex.IsMatch(value, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", RegexOptions.IgnoreCase))
+            return "Correo electrónico inválido";
+        return null;
+    }
+    private string ValidatePassword(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return "La contraseña es requerida";
+        return null;
+    }
     private async Task IniciarSesion()
     {
+        await form.Validate();
+        if (isValid)
+        {
+        _isLoading = true;
         var response = await seguridadAgent.LoginUser(usuario);
         if (response.Success)
         {
@@ -76,11 +116,13 @@
             {
                 _tokenManager.SetTokenAsync(response.Message.Descripcion);
                 await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                _isLoading = false;
                 await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
                 NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);   
             }
             else
             {
+                _isLoading = false;
                 var dialog = await DialogS.ShowAsync<MessageBox2FA>("Verificación 2FA", _backdropClick);
                 var result = await dialog.Result;
                 if (!result.Canceled)
@@ -95,7 +137,7 @@
                         _tokenManager.SetTokenAsync(response2FA.Message.Descripcion);
                         await AuthenticationStateProvider.GetAuthenticationStateAsync();
                         await _messageBox.OpenDialogAsync("Ha iniciado sesión con éxito","Será redirigido al sistema...", (int)TipoMensaje.Exito );
-                        NavigationManager.NavigateTo($"/Sistema/Dashboard", forceLoad:true);  
+                        
                     }
                     else
                     {
@@ -109,7 +151,10 @@
         }
         else
         {
+            _isLoading = false;
            await _messageBox.OpenDialogAsync(response.Message.Codigo,response.Message.Descripcion, (int)TipoMensaje.Error );
+        }
+        
         }
     }
 }

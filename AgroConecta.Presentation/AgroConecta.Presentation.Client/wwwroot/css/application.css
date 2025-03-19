@@ -2,7 +2,7 @@
 
 }
 .mud-input-outlined-border { border-radius: 8px !important; }
-.flow-input{
+.flow-input .mud-input{
     background-color: rgb(249, 250, 251); border-radius: 8px;
 }
 .flow-select{

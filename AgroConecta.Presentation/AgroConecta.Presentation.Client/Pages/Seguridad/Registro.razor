@@ -10,7 +10,7 @@
 @using AgroConecta.Shared.Seguridad.Mensajes
 @inject HttpClient httpClient
 @inject ISeguridadAgent seguridadAgent
-
+@inject NavigationManager NavigationManager
 <PageTitle>Registrarse - AgroConecta</PageTitle>
 
 
@@ -111,7 +111,16 @@
                     <br/>
 
                     <MudButton Class="login-button" OnClick="Submit" Disabled="!isValid" Variant="Variant.Filled" Color="Color.Primary">
-                        Registrar
+                        @if (_isLoading)
+                        {
+                            <MudProgressCircular Size="Size.Small" Style="color: #ffffff" Indeterminate="true"/>
+
+                        }
+                        else
+                        {
+                            <span>Registrar</span>
+                        }
+                        
                     </MudButton>
                 </MudForm>
             </MudPaper>
@@ -121,6 +130,8 @@
 <MessageBox @ref="_messageBox"/>
 
 @code {
+    private bool _isLoading = false;
+
     private MudForm form;
     private bool isValid;
     private UsuarioDTO _usuario = new UsuarioDTO();
@@ -140,11 +151,18 @@
     {
         if (value == null)
             return "La fecha de nacimiento es requerida";
-        if (value > DateTime.Now)
+
+        DateTime fechaNacimiento = value.Value;
+        DateTime fechaLimite = DateTime.Now.AddYears(-18);
+
+        if (fechaNacimiento > DateTime.Now)
             return "La fecha de nacimiento no puede ser futura";
+
+        if (fechaNacimiento > fechaLimite)
+            return "Debes tener al menos 18 años";
+
         return null;
     }
-
     private string ValidateEmail(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -184,13 +202,18 @@
         await form.Validate();
         if (isValid)
         {
+            _isLoading = true;
             var response = await seguridadAgent.RegisterUser(_usuario);
             if (response.Success)
             {
+                _isLoading = false;
                 await _messageBox.OpenDialogAsync("Verificación de correo electrónico",response.Message.Descripcion, (int)TipoMensaje.Exito );
+                NavigationManager.NavigateTo($"/Seguridad/Login", forceLoad:true);  
+
             }
             else
             {
+                _isLoading = false;
                 await _messageBox.OpenDialogAsync(response.Message.Codigo,response.Message.Descripcion, (int)TipoMensaje.Error );
             }
             

@@ -39,6 +39,217 @@
     </MudSelect>
 </div>
 
+@*
+<MudContainer MaxWidth="MaxWidth.Large">
+      
+      <!-- Sección Hero -->
+      <MudPaper Class="pa-6" Elevation="2" 
+                Style="background-image: url('../images/hero-placeholder.jpg'); background-size: cover; background-position: center; color: white; margin-top:20px;">
+        <MudText Typo="Typo.h2">Bienvenido a AgroConecta</MudText>
+        <MudText Typo="Typo.h6">Conectando propietarios, agricultores e inversionistas para impulsar la agricultura en la Republica Dominicana</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" Style="display:block; margin: 0 auto;">
+          Descubre Más
+        </MudButton>
+      </MudPaper>
+      
+      <MudGrid Class="mt-8" Spacing="3">
+        <!-- Propietarios -->
+        <MudItem xs="12" sm="4">
+          <MudPaper Elevation="3" Class="pa-4" Style="text-align: center;">
+            <!-- Imagen de Propietarios -->
+            <div style="width: 100%; height: 200px; overflow: hidden;">
+              <img src="/images/inicio-propietario.jpg" alt="Propietarios" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <MudText Typo="Typo.h5" Class="mt-2">Propietarios</MudText>
+            <MudText>Registra y administra tus propiedades y contratos de arrendamiento.</MudText>
+          </MudPaper>
+        </MudItem>
+        <!-- Agricultores -->
+        <MudItem xs="12" sm="4">
+          <MudPaper Elevation="3" Class="pa-4" Style="text-align: center;">
+            <!-- Imagen de Agricultores -->
+            <div style="width: 100%; height: 200px; overflow: hidden;">
+              <img src="/images/inicio-agricultor.jpg" alt="Agricultores" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <MudText Typo="Typo.h5" Class="mt-2">Agricultores</MudText>
+            <MudText>Crea tu perfil agrícola, busca terrenos y gestiona proyectos de cultivo.</MudText>
+          </MudPaper>
+        </MudItem>
+        <!-- Inversionistas -->
+        <MudItem xs="12" sm="4">
+          <MudPaper Elevation="3" Class="pa-4" Style="text-align: center;">
+            <!-- Imagen de Inversionistas -->
+            <div style="width: 100%; height: 200px; overflow: hidden;">
+              <img src="/images/inicio-inversionista.jpg" alt="Inversionistas" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+            <MudText Typo="Typo.h5" Class="mt-2">Inversionistas</MudText>
+            <MudText>Explora y financia proyectos agrícolas innovadores.</MudText>
+          </MudPaper>
+        </MudItem>
+      </MudGrid>
+
+      
+      <!-- Sección de Características del Sistema -->
+      <MudDivider Class="my-6" />
+      <MudText Typo="Typo.h4" >Características del Sistema</MudText>
+      <MudGrid Class="mt-4" Spacing="3">
+        <MudItem xs="12" sm="6">
+          <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.subtitle1"><strong>Gestión Integral de Propiedades</strong></MudText>
+            <MudText>Administra detalles, ubicaciones y condiciones de arrendamiento de terrenos.</MudText>
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.subtitle1"><strong>Contratos Digitales</strong></MudText>
+            <MudText>Genera y firma acuerdos digitales de manera segura.</MudText>
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.subtitle1"><strong>Gestión de Proyectos Agrícolas</strong></MudText>
+            <MudText>Crea, monitorea y evalúa planes de siembra y cultivos.</MudText>
+          </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+          <MudPaper Elevation="2" Class="pa-4">
+            <MudText Typo="Typo.subtitle1"><strong>Financiamiento e Inversión</strong></MudText>
+            <MudText>Solicita y gestiona financiamiento, y monitoriza tus inversiones.</MudText>
+          </MudPaper>
+        </MudItem>
+      </MudGrid>
+      <MudContainer Class="d-flex align-center justify-center mud-width-full">
+
+      <!-- Sección de Llamado a la Acción -->
+      <MudPaper Class="pa-6 mt-8" Elevation="1" Style="background-color: #e0f7fa;">
+        <MudText Typo="Typo.h5" >¡Únete a la revolución agrícola con AgroConecta!</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" Style="display:block; margin: 0 auto;">
+          Regístrate Ahora
+        </MudButton>
+      </MudPaper>
+      </MudContainer>
+      <div style="height: 120px;"></div>
+
+    </MudContainer>
+    *@
+
+
+@*<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+
+
+<Microsoft.AspNetCore.Components.Authorization.AuthorizeView>
+    <Authorized>
+        <p>Bienvenido @context.User.Identity?.Name!</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>No estas autorizado</p>
+    </NotAuthorized>
+</Microsoft.AspNetCore.Components.Authorization.AuthorizeView>*@
+
+
+
+
+
+
+
+
+
+
+@*Codigo anterior*@
+@*
+<PageTitle>Home</PageTitle>
+
+
+@if (!string.IsNullOrEmpty(PdfBase64))
+{
+    <button @onclick="DownloadPdf">Descargar PDF</button>
+    <h3>Vista previa del PDF</h3>
+    <embed style="width: 100%; height: 650px;" src="@PdfSrc" title="Titulo PDF"/>
+}
+else
+{
+    <button @onclick="GenerateReport">Generar PDF</button>
+}
+
+@code {
+    private string PdfBase64 = "";
+    private string PdfSrc = "";
+
+    private async Task GenerateReport()
+    {
+        // Generar PDF en Base64
+        PdfBase64 = await initialAgent.GetDocument();
+        PdfSrc = $"data:application/pdf;base64,{PdfBase64}";
+        // Llamar a la función de JS para cambiar el título
+        await JS.InvokeVoidAsync("waitForTitleAndChange", "Nuevo Título para el PDF");
+    }
+    private async Task DownloadPdf()
+    {
+        await JS.InvokeVoidAsync("saveAsFile", "documento.pdf", PdfBase64);
+    }
+}
+*@
+@*<MudText Margin="Margin.Dense" Class="pb-1" HtmlTag="label" for="select_prueba" Color="Color.Tertiary">Select</MudText>
+    <div style="max-width: 300px;">
+      <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+        @foreach (var state in _states)
+        {
+          <MudSelectItem Value="state">@state</MudSelectItem>
+        }
+      </MudSelect>
+    </div>
+    @{
+      Console.WriteLine("Autorizado");
+
+      string userName = "Invitado";
+
+      if (@context.User.Identity?.IsAuthenticated ?? false)
+      {
+        // Busca el claim con el tipo "name"
+        var nameClaim = @context.User.Claims.FirstOrDefault(c => c.Type == "name");
+        if (nameClaim != null)
+        {
+          userName = nameClaim.Value;
+        }
+      }
+
+    }
+    <MudText Class="mb-4">Hello @userName!</MudText>
+
+    @if (PermissionCheker.TienePermiso(context.User, Permisos.Terrenos.Ver))
+    {
+      <MudText Class="mb-4">Tienes permiso para ver los terrenos</MudText>
+    }
+    @if (context.User.IsInRole(Roles.Administrador.ToString()))
+    {
+      <MudText Class="mb-4">      Eres un administrador</MudText>
+
+
+    }
+
+    <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+    <MudButton Class="flow-button" Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
+
+    <br/>
+    <br/>
+    <br/>
+    <MudText Class="pb-1" HtmlTag="label" for="input_prueba" Color="Color.Tertiary">First name</MudText>
+    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_prueba" @bind-Value="@Prueba" Label="" Variant="Variant.Outlined"> </MudTextField>
+    <br/>
+    <br/>
+    <br/>
+    <MudText Margin="Margin.Dense" Class="pb-1" HtmlTag="label" for="select_prueba" Color="Color.Tertiary">Select</MudText>
+    <div style="max-width: 300px;">
+      <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="_value" InputId="select_prueba" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+        @foreach (var state in _states)
+        {
+          <MudSelectItem Value="state">@state</MudSelectItem>
+        }
+      </MudSelect>
+    </div>*@
 <AuthorizeView>
     <Authorized>
         @if (PermissionCheker.TienePermiso(context.User, Permisos.Terrenos.Ver))
