@@ -26,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Pages\Seguridad\Landing\" />
       <Folder Include="Services\" />
     </ItemGroup>
 
