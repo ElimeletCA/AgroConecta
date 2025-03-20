@@ -55,7 +55,7 @@
                     <MudTd>@proyecto.Nombre</MudTd>
                     <MudTd>@proyecto.Ubicacion</MudTd>
                     <MudTd>
-                        <MudChip Color="@GetEstadoColor(proyecto.Estado)">
+                        <MudChip T="string" Color="@GetEstadoColor(proyecto.Estado)">
                             @proyecto.Estado
                         </MudChip>
                     </MudTd>
@@ -87,7 +87,7 @@
                     <MudTd>@solicitud.Fecha.ToShortDateString()</MudTd>
                     <MudTd>@($"${solicitud.Monto}")</MudTd>
                     <MudTd>
-                        <MudChip Color="@GetEstadoColor(solicitud.Estado)">
+                        <MudChip T="string" Color="@GetEstadoColor(solicitud.Estado)">
                             @solicitud.Estado
                         </MudChip>
                     </MudTd>
