@@ -152,14 +152,19 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<AppDbContext>();
         context.Database.Migrate(); // Aplica migraciones pendientes
+        // Sembrar datos iniciales
+        logger.LogInformation("Inicio de seed de data general");
+        await DbInitializer.Seed(context);
+        logger.LogInformation("Seed de data general finalizado");
+
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones.");
+        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones y sembrar data general");
     }
     try
     {
-        logger.LogInformation("Comenzando seed de datos iniciales");
+        logger.LogInformation("Inicio de seed de data de seguridad");
 
         var userManager = services.GetRequiredService<UserManager<Usuario>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -172,8 +177,8 @@ using (var scope = app.Services.CreateScope())
         
         await DefaultUsers.SembrarUsuariosDummyAsync(userManager, 10);
 
-        logger.LogInformation("Seed de datos iniciales terminado");
-        logger.LogInformation("Iniciando Aplicacicon...");
+        logger.LogInformation("Seed de data de seguridad terminado");
+        logger.LogInformation("Iniciando Aplicacion...");
     }
     catch (Exception ex)
     {

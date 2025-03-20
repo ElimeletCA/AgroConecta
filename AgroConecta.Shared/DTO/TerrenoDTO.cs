@@ -19,6 +19,6 @@ public class TerrenoDTO: BaseDTO
     public string Comentario { get; set; }
     
     
-    public int estado  { get; set; }
+    public int Estado  { get; set; }
 
 }

@@ -1,0 +1,199 @@
+@page "/sistema/terrenos"
+@using AgroConecta.Shared.DTO
+
+<MudContainer Class="py-4 py-sm-8 py-md-12 py-lg-16 py-xl-20">
+    <MudItem xs="12">
+        <MudImage ObjectFit="ObjectFit.Cover" Src="https://dummyimage.com/1200x500" Alt="Örebro Slott" Class="rounded-lg" Height="256" Style="width: 100%" />
+        <br/>
+        <br/>
+        <br/>
+
+    </MudItem>
+    <MudItem xs="12">
+        <MudGrid Class="mb-8">
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.h2" Class="mud-typography-h4 mb-2">Explora Nuestras Opciones de Terrenos Agrícolas en Arrendamiento</MudText>
+                <MudSkeleton Animation="Animation.False" SkeletonType="SkeletonType.Rectangle" Height="4px" Width="20%" Style="background-color: #ffffff;" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudText Typo="Typo.body1">
+                    Ofrecemos una variedad de terrenos agrícolas disponibles para arrendamiento, ideales para agricultores que buscan expandir sus operaciones sin incurrir en los costos iniciales de adquisición de tierras. :contentReference[oaicite:0]{index=0} Nuestros contratos de arrendamiento están diseñados para ser equitativos y seguros, favoreciendo tanto a los arrendatarios como a los propietarios, y promoviendo el acceso a la tierra y la mejora de la producción agrícola. :contentReference[oaicite:1]{index=1}
+                </MudText>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="12" Class="mb-6">
+        <MudText Class="pb-1" HtmlTag="label" for="input_busqueda" Style="@($"color:{Colors.Shades.Black};")">Buscar terrenos</MudText>
+        <MudTextField Margin="Margin.Dense"
+                      Class="flow-input"
+                      InputId="input_busqueda"
+                      Label=""
+                      Variant="Variant.Outlined"
+                      @bind-Value="SearchTerm"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Immediate="true"/>
+    </MudItem>
+    <MudGrid>
+        <MudItem xs="12">
+            <MudGrid Class="mb-8">
+                <!-- Tu contenido del encabezado -->
+            </MudGrid>
+        </MudItem>
+
+        @foreach (var card in CurrentPageCards)
+        {
+            <MudItem xs="12" sm="6" md="3">
+                <MudCard>
+                    <MudCardMedia Image="@card.Image" Height="160"/>
+                    <MudCardContent>
+                        <MudText Typo="Typo.button" Class="mud-primary-text">@card.Subtitle</MudText>
+                        <MudText Typo="Typo.h6" Class="mb-4">@card.Title</MudText>
+                        <MudText Typo="Typo.body2">@card.Description</MudText>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+
+    <div class="d-flex justify-center my-6">
+        <MudPagination Selected="@CurrentPage"
+                       Count="@TotalPages"
+                       BoundaryCount="2"/>
+    </div>
+</MudContainer>
+
+@code {
+    private int CurrentPage = 1;
+    private int ItemsPerPage = 8; 
+
+    // Datos de ejemplo
+private List<CardItem> Cards = new List<CardItem>
+{
+    new CardItem("Azua", "Azua ", "Terreno de 50 hectáreas ideal para el cultivo de mango, gracias a su clima seco y suelo fértil.", "https://dummyimage.com/700x400/"),
+    new CardItem("La Vega", "Constanza", "Parcela de 30 hectáreas perfecta para el cultivo de vegetales y fresas, debido a su clima templado.", "https://dummyimage.com/700x400/"),
+    new CardItem("San Juan", "San Juan de la Maguana", "Terreno de 75 hectáreas adecuado para el cultivo de habichuelas, con sistema de riego disponible.", "https://dummyimage.com/700x400/"),
+    new CardItem("Santiago", "Santiago de los Caballeros", "Finca de 40 hectáreas óptima para el cultivo de tabaco, en una zona con tradición tabacalera.", "https://dummyimage.com/700x400/"),
+    new CardItem("Duarte", "San Francisco de Macorís", "Terreno de 60 hectáreas ideal para el cultivo de cacao orgánico, en una región con alta pluviometría.", "https://dummyimage.com/700x400/"),
+    new CardItem("Barahona", "Santa Cruz", "Parcela de 80 hectáreas perfecta para el cultivo de plátanos, con acceso a fuentes de agua.", "https://dummyimage.com/700x400/"),
+    new CardItem("Monte Plata", "Monte Plata", "Terreno de 55 hectáreas adecuado para el cultivo de piña, en una zona con suelos arenosos.", "https://dummyimage.com/700x400/"),
+    new CardItem("Peravia", "Baní", "Finca de 45 hectáreas óptima para el cultivo de tomate, con clima semiárido favorable.", "https://dummyimage.com/700x400/"),
+    new CardItem("La Altagracia", "Higüey", "Terreno de 70 hectáreas ideal para el cultivo de caña de azúcar, en una región con tradición azucarera.", "https://dummyimage.com/700x400/"),
+    new CardItem("Puerto Plata", "San Felipe", "Parcela de 35 hectáreas perfecta para el cultivo de café, en zonas montañosas con buena altitud.", "https://dummyimage.com/700x400/"),
+    new CardItem("Azua", "Azua ", "Terreno de 50 hectáreas ideal para el cultivo de mango, gracias a su clima seco y suelo fértil.", "https://dummyimage.com/700x400/"),
+    new CardItem("La Vega", "Constanza", "Parcela de 30 hectáreas perfecta para el cultivo de vegetales y fresas, debido a su clima templado.", "https://dummyimage.com/700x400/"),
+    new CardItem("San Juan", "San Juan de la Maguana", "Terreno de 75 hectáreas adecuado para el cultivo de habichuelas, con sistema de riego disponible.", "https://dummyimage.com/700x400/"),
+    new CardItem("Santiago", "Santiago de los Caballeros", "Finca de 40 hectáreas óptima para el cultivo de tabaco, en una zona con tradición tabacalera.", "https://dummyimage.com/700x400/"),
+
+};
+
+    // Lista paginada (modificada para usar la lista filtrada)
+    private List<CardItem> CurrentPageCards => FilteredCards
+        .Skip((CurrentPage - 1) * ItemsPerPage)
+        .Take(ItemsPerPage)
+        .ToList();
+    // Total de páginas basado en la lista filtrada
+    private int TotalPages => (int)Math.Ceiling((double)FilteredCards.Count / ItemsPerPage);
+    public class CardItem
+    {
+        public string Title { get; set; }
+        public string Subtitle { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
+
+        public CardItem(string title, string subtitle, string description, string image)
+        {
+            Title = title;
+            Subtitle = subtitle;
+            Description = description;
+            Image = image;
+        }
+    }
+    private string _searchTerm = string.Empty;
+    private string SearchTerm
+    {
+        get => _searchTerm;
+        set
+        {
+            _searchTerm = value;
+            CurrentPage = 1; // Resetear a primera página al buscar
+        }
+    }
+
+    // Lista filtrada
+    private List<CardItem> FilteredCards => Cards
+        .Where(c => 
+            c.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+            c.Subtitle.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+            c.Description.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+
+
+
+
+        //Data dummy
+    List<TerrenoDTO> terrenos = new List<TerrenoDTO>
+    {
+        new TerrenoDTO
+        {
+            PropietarioId = "propietario1",
+            TipoMedidaAreaId = "hectarea",
+            TipoSueloId = "Arcilloso",
+            CoordenadaLatitud = 18.4861,
+            CoordenadaLongitud = -69.9312,
+            CantidadAreaSueloTotal = 50.0,
+            CantidadAreaSueloDisponible = 20.0,
+            Comentario = "Terreno fértil cerca del río.",
+            Estado = 1
+        },
+        new TerrenoDTO
+        {
+            PropietarioId = "propietario2",
+            TipoMedidaAreaId = "acre",
+            TipoSueloId = "Arenoso",
+            CoordenadaLatitud = 18.7357,
+            CoordenadaLongitud = -70.1627,
+            CantidadAreaSueloTotal = 75.0,
+            CantidadAreaSueloDisponible = 50.0,
+            Comentario = "Terreno arenoso ideal para ciertos cultivos.",
+            Estado = 1
+        },
+        new TerrenoDTO
+        {
+            PropietarioId = "propietario3",
+            TipoMedidaAreaId = "metro_cuadrado",
+            TipoSueloId = "Franco",
+            CoordenadaLatitud = 19.2236,
+            CoordenadaLongitud = -70.5296,
+            CantidadAreaSueloTotal = 10000.0,
+            CantidadAreaSueloDisponible = 8000.0,
+            Comentario = "Terreno franco con buen drenaje.",
+            Estado = 1
+        },
+        new TerrenoDTO
+        {
+            PropietarioId = "propietario4",
+            TipoMedidaAreaId = "hectarea",
+            TipoSueloId = "Limoso",
+            CoordenadaLatitud = 18.4719,
+            CoordenadaLongitud = -69.8923,
+            CantidadAreaSueloTotal = 120.0,
+            CantidadAreaSueloDisponible = 60.0,
+            Comentario = "Terreno limoso adecuado para arroz.",
+            Estado = 1
+        },
+        new TerrenoDTO
+        {
+            PropietarioId = "propietario5",
+            TipoMedidaAreaId = "acre",
+            TipoSueloId = "Calcáreo",
+            CoordenadaLatitud = 18.5075,
+            CoordenadaLongitud = -69.8496,
+            CantidadAreaSueloTotal = 200.0,
+            CantidadAreaSueloDisponible = 150.0,
+            Comentario = "Terreno calcáreo en zona montañosa.",
+            Estado = 1
+        }
+    };
+}
+

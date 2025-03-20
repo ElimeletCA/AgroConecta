@@ -17,7 +17,12 @@ public class GeneralProfile : Profile
         CreateMap<Usuario, UsuarioDTO>();
         CreateMap<RolDTO, IdentityRole>();
         CreateMap<IdentityRole, RolDTO>();
+        
+        //Tipos
         CreateMap<TipoMedidaArea, TipoMedidaAreaDTO>().ReverseMap();
+        CreateMap<TipoSuelo, TipoSueloDTO>().ReverseMap();
+        CreateMap<TipoArrendamiento, TipoArrendamientoDTO>().ReverseMap();
+        CreateMap<TipoCultivo, TipoCultivoDTO>().ReverseMap();
 
         // CreateMap<ApplicationUser, UsuarioDto>()
         //     .ForMember(x => x.BalanceCuenta, y => y.MapFrom(x => x.Accounts.FirstOrDefault().Balance))
