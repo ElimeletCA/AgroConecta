@@ -36,11 +36,11 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddAuthorizationCore();//Agregado
-builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();//Agregado
-builder.Services.AddControllers();//agregado
-builder.Services.AddHttpClient();//Agregado
-builder.Services.AddCascadingAuthenticationState();//Agregado
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
+builder.Services.AddControllers();
+builder.Services.AddHttpClient();
+builder.Services.AddCascadingAuthenticationState();
 
 
 builder.Services.AddEndpointsApiExplorer();

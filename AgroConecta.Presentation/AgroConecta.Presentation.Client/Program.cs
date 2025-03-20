@@ -37,7 +37,7 @@ builder.Services.AddCascadingAuthenticationState();
  builder.Services.AddScoped<ISeguridadAgent, SeguridadAgent>();
  builder.Services.AddScoped<IUsuarioAgent, UsuarioAgent>();
 
- var clientAssembly = typeof(Program).Assembly;  // Asumiendo que los agents están en el mismo ensamblado
+ var clientAssembly = typeof(Program).Assembly; 
  var baseAgentInterface  = typeof(IInitialAgent<>);
 
  var agentTypes = clientAssembly.GetTypes()
@@ -54,7 +54,7 @@ builder.Services.AddCascadingAuthenticationState();
 
  foreach (var agent in agentTypes)
  {
-  // Registrar bajo la interfaz específica (ej: ITipoMedidaAreaAgent)
+  // Registrar bajo la interfaz específica (ITipoMedidaAreaAgent)
   var specificInterface = agent.Implementation.GetInterfaces()
    .FirstOrDefault(i => !i.IsGenericType && i != typeof(IBaseAgent));
     

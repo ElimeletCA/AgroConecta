@@ -1,9 +1,8 @@
-using System.Net.Http.Json;
-using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema;
-using AgroConecta.Shared.DTO;
+using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Tipos;
+using AgroConecta.Shared.DTO.Tipos;
 using Microsoft.JSInterop;
 
-namespace AgroConecta.Presentation.Client.Agents.Sistema;
+namespace AgroConecta.Presentation.Client.Agents.Sistema.Tipo;
 
 public class TipoMedidaAreaAgent : InitialAgent<TipoMedidaAreaDTO>, ITipoMedidaAreaAgent
 {

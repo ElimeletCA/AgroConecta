@@ -10,7 +10,7 @@ public class Archivo : BaseEntity
 
     public string TipoArchivoId { get; set; }
     
-    public string ReferenciaId { get; set; }
+    public string EntidadId { get; set; }
     [MaxLength(250)]
 
     public required string NombreArchivo { get; set; }
