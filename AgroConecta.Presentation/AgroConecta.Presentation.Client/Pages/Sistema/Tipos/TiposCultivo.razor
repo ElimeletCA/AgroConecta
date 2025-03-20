@@ -1,0 +1,237 @@
+@page "/sistema/tiposcultivo"
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Tipos
+@using AgroConecta.Presentation.Client.Components.Formularios
+@using AgroConecta.Presentation.Client.Components.Formularios.Tipos
+@using AgroConecta.Presentation.Client.Components.General.Alertas
+@using AgroConecta.Shared.DTO
+@using AgroConecta.Shared.DTO.Tipos
+@inject ITipoCultivoAgent TipoCultivoAgent
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<AuthorizeView Context="authContext">
+    <Authorized>
+        @if (authContext.User.IsInRole(Shared.Constantes.Seguridad.Roles.Administrador.ToString()))
+        {
+            <PageTitle>Lista de tipos de Cultivo</PageTitle>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+            <style>
+                .montserrat-900 {
+                  font-family: "Montserrat", sans-serif;
+                  font-optical-sizing: auto;
+                  font-weight: 900;
+                  font-style: normal;
+                }
+                .dark-green {
+                    color: #28600a;
+                }
+
+                .mud-input > input.mud-input-root-outlined {
+                    padding: 14px;
+                }
+
+                .mud-data-grid .mud-table-cell .column-header {
+                    text-transform: uppercase;
+                    color:darkgrey;
+                }
+                .mud-view-description {
+                    color: darkgrey;
+                    font-style: italic;
+                }
+
+                .mud-table-pagination-caption {
+                    color: darkgrey;
+                }
+                .mud-table {
+                    border: 1px solid #e2e2e2;
+                }
+            </style>
+            <MudText Typo="Typo.h4" Class="mb-4 montserrat-900 dark-green">Tipos de Cultivos</MudText>
+            <MudText Typo="Typo.subtitle1" Class="mud-view-description">
+                Este módulo permite gestionar los Tipos de Cultivo, facilitando la creación, edición, visualización y eliminación de registros. Los usuarios pueden ingresar detalles como el nombre del cultivo (por ejemplo, maíz, trigo, arroz, etc.), características agronómicas, ciclo de crecimiento, requerimientos de clima y suelo, así como cualquier observación relevante para optimizar la planificación y gestión agrícola.
+                </MudText>
+            <br />
+            <MudDataGrid
+                Elevation="4"
+                T="TipoCultivoDTO"
+                QuickFilter="@_quickFilter"
+                Items="@listaTiposCultivo"
+                SortMode="SortMode.Multiple"
+                Filterable="true"
+                RowsPerPage="10"
+                Hideable="true"
+                FixedHeader="true"
+                Height="calc(61vh - 10rem);"
+                Loading="@_isLoadingData"
+                LoadingProgressColor="Color.Primary"
+            >
+
+                <ToolBarContent>
+                    <MudText Typo="Typo.subtitle2">Cultivos </MudText>
+                    <MudSpacer/>
+                    <MudStack Row>
+                        
+
+                        <MudPaper Elevation="0" Class="">
+                            <MudTextField @bind-Value="_searchString"
+                                          Variant="Variant.Outlined"
+                                          Placeholder="Buscar..."
+                                          Adornment="Adornment.Start"
+                                          Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search"
+                                          IconSize="Size.Small"
+                                          Typo="Typo.caption"
+                                          Class="mt-0 mud-search-input-thin "></MudTextField>
+                        </MudPaper>
+                        <MudPaper Elevation="0" Class="">
+                            <MudButton Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       DropShadow="true"
+                                       Size="Size.Large"
+                                       StartIcon="@Icons.Material.Filled.Add"
+                                       OnClick="OpenCreateDialog">Nuevo</MudButton>
+                        </MudPaper>
+                    </MudStack>
+                </ToolBarContent>
+                <ColGroup>
+                    <col style="width: 80%;" />
+                </ColGroup>
+                <Columns>
+                    <TemplateColumn Title="Descripción" CellClass=" "  Filterable="false">
+                        <CellTemplate>
+                            <MudStack>
+                                <MudText Typo="Typo.body1">@context.Item.Descripcion</MudText>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="Acciones" CellClass="d-flex ">
+                        <CellTemplate>
+                            <MudStack Row>
+                                <MudTooltip Text="Ver">
+                                    <MudIconButton
+                                        OnClick="@(() => OpenViewDialog(@context.Item))"
+                                        Icon="@Icons.Material.Filled.Visibility"
+                                        Color="Color.Info"
+                                        Size="Size.Small" />
+                                </MudTooltip>
+                                <MudTooltip Text="Editar">
+                                    <MudIconButton
+                                        OnClick="@(() => OpenEditDialog(@context.Item))"
+                                        Icon="@Icons.Material.Filled.Edit"
+                                        Color="Color.Warning"
+                                        Size="Size.Small" />
+                                </MudTooltip>
+                                <MudTooltip Text="Eliminar">
+                                    <MudIconButton
+                                        OnClick="@(() => Eliminar(@context.Item.Id))"
+                                        Icon="@Icons.Material.Filled.Delete"
+                                        Color="Color.Error"
+                                        Size="Size.Small"/>
+                                </MudTooltip>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+                <PagerContent>
+                    <MudDataGridPager T="TipoCultivoDTO" PageSizeOptions=@(new int[] {5, 10, 15})/>
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private string _searchString;
+    private bool _isLoadingData;
+    private IEnumerable<TipoCultivoDTO> listaTiposCultivo;
+
+    private Func<TipoCultivoDTO, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        return x.Descripcion.Contains(_searchString, StringComparison.OrdinalIgnoreCase);
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAll();
+    }
+
+    private async Task GetAll()
+    {
+        _isLoadingData = true;
+        listaTiposCultivo = await TipoCultivoAgent.GetAllAsync();
+        _isLoadingData = false;
+        StateHasChanged();
+    }
+
+    private async Task Eliminar(string id)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Content", "¿Está seguro de eliminar este registro?" },
+            { "ButtonColor", Color.Error },
+            { "ButtonText", "Eliminar" }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = DialogService.Show<AvisoConfirmacion>("Confirmación", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await TipoCultivoAgent.HardDeleteAsync(id);
+            Snackbar.Add("Registro eliminado correctamente", Severity.Success);
+            await GetAll();
+        }
+    }
+    private async Task OpenViewDialog(TipoCultivoDTO item)
+    {
+        var parameters = new DialogParameters {
+            { "TipoCultivo", item },
+            { "IsViewMode", true }
+        };
+    
+        DialogService.Show<FrmTipoCultivo>("Ver Tipo de Cultivo", parameters, new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+        });
+    }
+    private async Task OpenCreateDialog()
+    {
+        var result = await DialogService.Show<FrmTipoCultivo>("Nuevo Tipo de Cultivo", new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+
+        }).Result;
+    
+        if (!result.Canceled) await GetAll();
+    }
+
+    private async Task OpenEditDialog(TipoCultivoDTO item)
+    {
+        var parameters = new DialogParameters {
+            { "TipoCultivo", item },
+            { "IsViewMode", false }
+        };
+    
+        var result = await DialogService.Show<FrmTipoCultivo>("Editar Tipo de Cultivo" +
+                                                              "" +
+                                                            "" +
+                                                            "", parameters, new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+
+        }).Result;
+    
+        if (!result.Canceled) await GetAll();
+    }
+}
