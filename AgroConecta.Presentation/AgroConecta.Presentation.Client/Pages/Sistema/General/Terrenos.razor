@@ -4,21 +4,16 @@
 <MudContainer Class="py-4 py-sm-8 py-md-12 py-lg-16 py-xl-20">
     <MudItem xs="12">
         <MudImage ObjectFit="ObjectFit.Cover" Src="https://dummyimage.com/1200x500" Alt="Örebro Slott" Class="rounded-lg" Height="256" Style="width: 100%" />
-        <br/>
-        <br/>
-        <br/>
-
     </MudItem>
+    <MudDivider Style="color: #ffffff; height: 20px;" />
     <MudItem xs="12">
         <MudGrid Class="mb-8">
             <MudItem xs="12" md="6">
-                <MudText Typo="Typo.h2" Class="mud-typography-h4 mb-2">Explora Nuestras Opciones de Terrenos Agrícolas en Arrendamiento</MudText>
-                <MudSkeleton Animation="Animation.False" SkeletonType="SkeletonType.Rectangle" Height="4px" Width="20%" Style="background-color: #ffffff;" />
+                <MudText Typo="Typo.h2" Class="mud-typography-h4 mb-2">Pitchfork Kickstarter Taxidermy</MudText>
+                <MudSkeleton Animation="Animation.False" SkeletonType="SkeletonType.Rectangle" Height="4px" Width="20%" Style="background-color: #ffffff;"/>
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudText Typo="Typo.body1">
-                    Ofrecemos una variedad de terrenos agrícolas disponibles para arrendamiento, ideales para agricultores que buscan expandir sus operaciones sin incurrir en los costos iniciales de adquisición de tierras. :contentReference[oaicite:0]{index=0} Nuestros contratos de arrendamiento están diseñados para ser equitativos y seguros, favoreciendo tanto a los arrendatarios como a los propietarios, y promoviendo el acceso a la tierra y la mejora de la producción agrícola. :contentReference[oaicite:1]{index=1}
-                </MudText>
+                <MudText Typo="Typo.body1">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify, subway tile poke farm-to-table. Franzen you probably haven't heard of them man bun deep jianbing selfies heirloom prism food truck ugh squid celiac humblebrag.</MudText>
             </MudItem>
         </MudGrid>
     </MudItem>
@@ -65,27 +60,40 @@
 
 @code {
     private int CurrentPage = 1;
-    private int ItemsPerPage = 8; 
+    private int ItemsPerPage = 8; // Ajusta según necesidad
 
     // Datos de ejemplo
-private List<CardItem> Cards = new List<CardItem>
-{
-    new CardItem("Azua", "Azua ", "Terreno de 50 hectáreas ideal para el cultivo de mango, gracias a su clima seco y suelo fértil.", "https://dummyimage.com/700x400/"),
-    new CardItem("La Vega", "Constanza", "Parcela de 30 hectáreas perfecta para el cultivo de vegetales y fresas, debido a su clima templado.", "https://dummyimage.com/700x400/"),
-    new CardItem("San Juan", "San Juan de la Maguana", "Terreno de 75 hectáreas adecuado para el cultivo de habichuelas, con sistema de riego disponible.", "https://dummyimage.com/700x400/"),
-    new CardItem("Santiago", "Santiago de los Caballeros", "Finca de 40 hectáreas óptima para el cultivo de tabaco, en una zona con tradición tabacalera.", "https://dummyimage.com/700x400/"),
-    new CardItem("Duarte", "San Francisco de Macorís", "Terreno de 60 hectáreas ideal para el cultivo de cacao orgánico, en una región con alta pluviometría.", "https://dummyimage.com/700x400/"),
-    new CardItem("Barahona", "Santa Cruz", "Parcela de 80 hectáreas perfecta para el cultivo de plátanos, con acceso a fuentes de agua.", "https://dummyimage.com/700x400/"),
-    new CardItem("Monte Plata", "Monte Plata", "Terreno de 55 hectáreas adecuado para el cultivo de piña, en una zona con suelos arenosos.", "https://dummyimage.com/700x400/"),
-    new CardItem("Peravia", "Baní", "Finca de 45 hectáreas óptima para el cultivo de tomate, con clima semiárido favorable.", "https://dummyimage.com/700x400/"),
-    new CardItem("La Altagracia", "Higüey", "Terreno de 70 hectáreas ideal para el cultivo de caña de azúcar, en una región con tradición azucarera.", "https://dummyimage.com/700x400/"),
-    new CardItem("Puerto Plata", "San Felipe", "Parcela de 35 hectáreas perfecta para el cultivo de café, en zonas montañosas con buena altitud.", "https://dummyimage.com/700x400/"),
-    new CardItem("Azua", "Azua ", "Terreno de 50 hectáreas ideal para el cultivo de mango, gracias a su clima seco y suelo fértil.", "https://dummyimage.com/700x400/"),
-    new CardItem("La Vega", "Constanza", "Parcela de 30 hectáreas perfecta para el cultivo de vegetales y fresas, debido a su clima templado.", "https://dummyimage.com/700x400/"),
-    new CardItem("San Juan", "San Juan de la Maguana", "Terreno de 75 hectáreas adecuado para el cultivo de habichuelas, con sistema de riego disponible.", "https://dummyimage.com/700x400/"),
-    new CardItem("Santiago", "Santiago de los Caballeros", "Finca de 40 hectáreas óptima para el cultivo de tabaco, en una zona con tradición tabacalera.", "https://dummyimage.com/700x400/"),
+    private List<CardItem> Cards = new List<CardItem>
+    {
+        new CardItem("Chichen Itza", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Azua", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Bonao", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("San Juan", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
+        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
 
-};
+        // Agrega todos tus items aquí...
+    };
 
     // Lista paginada (modificada para usar la lista filtrada)
     private List<CardItem> CurrentPageCards => FilteredCards
