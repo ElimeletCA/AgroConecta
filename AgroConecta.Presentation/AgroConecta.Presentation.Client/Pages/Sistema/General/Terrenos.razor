@@ -9,11 +9,15 @@
     <MudItem xs="12">
         <MudGrid Class="mb-8">
             <MudItem xs="12" md="6">
-                <MudText Typo="Typo.h2" Class="mud-typography-h4 mb-2">Pitchfork Kickstarter Taxidermy</MudText>
-                <MudSkeleton Animation="Animation.False" SkeletonType="SkeletonType.Rectangle" Height="4px" Width="20%" Style="background-color: #ffffff;"/>
+                <MudText Typo="Typo.h2" Class="mud-typography-h4 mb-2">
+                    Terrenos Disponibles para Arrendamiento
+                </MudText>
+                <MudSkeleton Animation="Animation.False" SkeletonType="SkeletonType.Rectangle" Height="4px" Width="20%" Style="background-color: #ffffff;" />
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudText Typo="Typo.body1">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify, subway tile poke farm-to-table. Franzen you probably haven't heard of them man bun deep jianbing selfies heirloom prism food truck ugh squid celiac humblebrag.</MudText>
+                <MudText Typo="Typo.body1">
+                    Explore nuestra selección de terrenos agrícolas disponibles para arrendamiento en diversas provincias de la República Dominicana. Cada terreno está optimizado para cultivos específicos, garantizando condiciones ideales para su inversión agrícola.
+                </MudText>
             </MudItem>
         </MudGrid>
     </MudItem>
@@ -41,8 +45,10 @@
             <MudItem xs="12" sm="6" md="3">
                 <MudCard>
                     <MudCardMedia Image="@card.Image" Height="160"/>
-                    <MudCardContent>
-                        <MudText Typo="Typo.button" Class="mud-primary-text">@card.Subtitle</MudText>
+                    <MudCardContent Style="min-height: 250px;">
+                        <div style="height: 48px; overflow: hidden;">
+                            <MudText Typo="Typo.button" Class="mud-primary-text">@card.Subtitle</MudText>
+                        </div>
                         <MudText Typo="Typo.h6" Class="mb-4">@card.Title</MudText>
                         <MudText Typo="Typo.body2">@card.Description</MudText>
                     </MudCardContent>
@@ -52,7 +58,7 @@
     </MudGrid>
 
     <div class="d-flex justify-center my-6">
-        <MudPagination Selected="@CurrentPage"
+        <MudPagination @bind-Selected="CurrentPage"
                        Count="@TotalPages"
                        BoundaryCount="2"/>
     </div>
@@ -62,37 +68,18 @@
     private int CurrentPage = 1;
     private int ItemsPerPage = 8; // Ajusta según necesidad
 
-    // Datos de ejemplo
     private List<CardItem> Cards = new List<CardItem>
     {
-        new CardItem("Chichen Itza", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Azua", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Bonao", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("San Juan", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-        new CardItem("Colosseum Roma", "Subtitle", "Fingerstache flexitarian...", "https://dummyimage.com/700x400/"),
-
-        // Agrega todos tus items aquí...
+        new CardItem("Azua", "Municipio de Azua de Compostela", "Terreno de 50 hectáreas ideal para el cultivo de mango, gracias a su clima seco y suelo fértil.", "https://dummyimage.com/700x400/"),
+        new CardItem("La Vega", "Municipio de Constanza", "Parcela de 30 hectáreas perfecta para el cultivo de vegetales y fresas, debido a su clima templado.", "https://dummyimage.com/700x400/"),
+        new CardItem("San Juan", "Municipio de San Juan de la Maguana", "Terreno de 75 hectáreas adecuado para el cultivo de habichuelas, con sistema de riego disponible.", "https://dummyimage.com/700x400/"),
+        new CardItem("Santiago", "Municipio de Santiago de los Caballeros", "Finca de 40 hectáreas óptima para el cultivo de tabaco, en una zona con tradición tabacalera.", "https://dummyimage.com/700x400/"),
+        new CardItem("Duarte", "Municipio de San Francisco de Macorís", "Terreno de 60 hectáreas ideal para el cultivo de cacao orgánico, en una región con alta pluviometría.", "https://dummyimage.com/700x400/"),
+        new CardItem("Barahona", "Municipio de Santa Cruz de Barahona", "Parcela de 80 hectáreas perfecta para el cultivo de plátanos, con acceso a fuentes de agua.", "https://dummyimage.com/700x400/"),
+        new CardItem("Monte Plata", "Municipio de Monte Plata", "Terreno de 55 hectáreas adecuado para el cultivo de piña, en una zona con suelos arenosos.", "https://dummyimage.com/700x400/"),
+        new CardItem("Peravia", "Municipio de Baní", "Finca de 45 hectáreas óptima para el cultivo de tomate, con clima semiárido favorable.", "https://dummyimage.com/700x400/"),
+        new CardItem("La Altagracia", "Municipio de Higüey", "Terreno de 70 hectáreas ideal para el cultivo de caña de azúcar, en una región con tradición azucarera.", "https://dummyimage.com/700x400/"),
+        new CardItem("Puerto Plata", "Municipio de San Felipe de Puerto Plata", "Parcela de 35 hectáreas perfecta para el cultivo de café, en zonas montañosas con buena altitud.", "https://dummyimage.com/700x400/")
     };
 
     // Lista paginada (modificada para usar la lista filtrada)
@@ -100,6 +87,7 @@
         .Skip((CurrentPage - 1) * ItemsPerPage)
         .Take(ItemsPerPage)
         .ToList();
+    
     // Total de páginas basado en la lista filtrada
     private int TotalPages => (int)Math.Ceiling((double)FilteredCards.Count / ItemsPerPage);
     public class CardItem
