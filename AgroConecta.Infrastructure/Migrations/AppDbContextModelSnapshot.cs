@@ -201,6 +201,72 @@ namespace AgroConecta.Infrastructure.Migrations
                     b.ToTable("Archivo", (string)null);
                 });
 
+            modelBuilder.Entity("AgroConecta.Domain.Sistema.General.Municipio", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeletedTimeUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastUpdateUtc")
+                        .IsConcurrencyToken()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double?>("Latitud")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("Longitud")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("ProvinciaId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinciaId");
+
+                    b.ToTable("Municipio", (string)null);
+                });
+
+            modelBuilder.Entity("AgroConecta.Domain.Sistema.General.Provincia", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeletedTimeUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastUpdateUtc")
+                        .IsConcurrencyToken()
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<double?>("Latitud")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("Longitud")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Provincia", (string)null);
+                });
+
             modelBuilder.Entity("AgroConecta.Domain.Sistema.Proyecto", b =>
                 {
                     b.Property<string>("Id")
@@ -307,7 +373,7 @@ namespace AgroConecta.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "25200d12-7660-4c8b-b099-337985f2b868",
+                            Id = "006da7fd-3c10-4b70-90c2-7380c3e5febf",
                             DescripcionPerfil = "Propietario",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -315,7 +381,7 @@ namespace AgroConecta.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = "013c0fb1-0617-43f3-b115-077a4191e7c7",
+                            Id = "cd65bea9-e37d-4672-a7f3-115e1b911eaf",
                             DescripcionPerfil = "Agricultor",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -323,7 +389,7 @@ namespace AgroConecta.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = "3217c11d-b223-4383-b5df-3b59a87e8e79",
+                            Id = "5286e36d-7418-4940-997b-0880959a2483",
                             DescripcionPerfil = "Inversionista",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -434,6 +500,13 @@ namespace AgroConecta.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("MunicipioId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("PrecioPorArea")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("PropietarioId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -450,6 +523,8 @@ namespace AgroConecta.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MunicipioId");
 
                     b.HasIndex("PropietarioId");
 
@@ -766,6 +841,17 @@ namespace AgroConecta.Infrastructure.Migrations
                     b.Navigation("TipoArchivo");
                 });
 
+            modelBuilder.Entity("AgroConecta.Domain.Sistema.General.Municipio", b =>
+                {
+                    b.HasOne("AgroConecta.Domain.Sistema.General.Provincia", "Provincia")
+                        .WithMany("Municipios")
+                        .HasForeignKey("ProvinciaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Provincia");
+                });
+
             modelBuilder.Entity("AgroConecta.Domain.Sistema.Proyecto", b =>
                 {
                     b.HasOne("AgroConecta.Domain.Sistema.Arrendamiento", "Arrendamiento")
@@ -792,6 +878,11 @@ namespace AgroConecta.Infrastructure.Migrations
 
             modelBuilder.Entity("AgroConecta.Domain.Sistema.Terreno", b =>
                 {
+                    b.HasOne("AgroConecta.Domain.Sistema.General.Municipio", "Municipio")
+                        .WithMany("Terrenos")
+                        .HasForeignKey("MunicipioId")
+                        .IsRequired();
+
                     b.HasOne("AgroConecta.Domain.Sistema.Seguridad.Usuario", "Propietario")
                         .WithMany("terrenos")
                         .HasForeignKey("PropietarioId")
@@ -806,6 +897,8 @@ namespace AgroConecta.Infrastructure.Migrations
                         .WithMany("Terrenos")
                         .HasForeignKey("TipoSueloId")
                         .IsRequired();
+
+                    b.Navigation("Municipio");
 
                     b.Navigation("Propietario");
 
@@ -883,6 +976,16 @@ namespace AgroConecta.Infrastructure.Migrations
             modelBuilder.Entity("AgroConecta.Domain.Sistema.Arrendamiento", b =>
                 {
                     b.Navigation("Proyectos");
+                });
+
+            modelBuilder.Entity("AgroConecta.Domain.Sistema.General.Municipio", b =>
+                {
+                    b.Navigation("Terrenos");
+                });
+
+            modelBuilder.Entity("AgroConecta.Domain.Sistema.General.Provincia", b =>
+                {
+                    b.Navigation("Municipios");
                 });
 
             modelBuilder.Entity("AgroConecta.Domain.Sistema.Seguridad.Usuario", b =>

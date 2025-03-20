@@ -1,0 +1,426 @@
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.General
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Tipos
+@using AgroConecta.Shared.DTO
+@using AgroConecta.Shared.DTO.Tipos
+@using MudBlazor.Utilities
+@using LeafletForBlazor
+
+@inject ITipoMedidaAreaAgent TipoMedidaAreaAgent
+@inject ITipoSueloAgent TipoSueloAgent
+@inject IProvinciaAgent ProvinciaAgent
+@inject IMunicipioAgent MunicipioAgent
+
+@inject ITerrenoAgent TerrenoAgent
+@inject ISnackbar Snackbar
+
+<MudDialog ContentStyle="width: 1000px; !important">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@Title</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudStepper CenterLabels="true" ShowResetButton>
+            @*Información básica*@
+            <MudStep Title="Información básica del terreno">
+                <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="12" sm="8" md="8" lg="8">
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudText Class="pb-1" HtmlTag="label" for="select_tipo_medida_area" Color="Color.Dark">Tipo de medida de área</MudText>
+                                    <div style="max-width: 300px;">
+                                        <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="Terreno.TipoMedidaAreaId" InputId="select_tipo_medida_area" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                                            @foreach (var tipoMedidaArea in _listaTiposMedidaArea)
+                                            {
+                                                <MudSelectItem Value="tipoMedidaArea.Id">@tipoMedidaArea.Descripcion</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </div>              
+                                    </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudText Class="pb-1" HtmlTag="label" for="select_tipo_suelo" Color="Color.Dark">Tipo de suelo</MudText>
+                                    <div style="max-width: 300px;">
+                                        <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="Terreno.TipoSueloId" InputId="select_tipo_suelo" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                                            @foreach (var tipoSuelo in _listaTiposSuelo)
+                                            {
+                                                <MudSelectItem Value="tipoSuelo.Id">@tipoSuelo.Descripcion</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </div>                                   
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudText Class="pb-1" HtmlTag="label" for="input_cantidad_total_area" Color="Color.Dark">Cantidad total de área de suelo</MudText>
+                                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_cantidad_total_area" @bind-Value="@Terreno.CantidadAreaSueloTotal" Label="" Variant="Variant.Outlined"> </MudTextField>
+
+                                </MudItem>
+                                <MudItem xs="12" sm="6">
+                                    <MudText Class="pb-1" HtmlTag="label" for="input_precio_unidad_area" Color="Color.Dark">Precio por unidad de área</MudText>
+                                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_precio_unidad_area" @bind-Value="@Terreno.PrecioPorArea" Label="" Variant="Variant.Outlined"> </MudTextField>
+
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                    </MudGrid>
+                </MudContainer>
+                </MudStep>
+            @*Ubicación del terreno*@
+            <MudStep Title="Ubicación del terreno">
+                <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="12" sm="8" md="8" lg="8">
+                            <MudGrid>
+                                <MudItem xs="12" sm="6">
+                                    <MudText Class="pb-1" HtmlTag="label" for="select_provincia" Color="Color.Dark">Provincia</MudText>
+                                    <div style="max-width: 300px;">
+                                        <MudSelect T="string" Value="Terreno.ProvinciaId"
+                                                   ValueChanged="ObtenerMunicipiosDeProvincia"
+                                                   ValueExpression="@(() => Terreno.ProvinciaId)"
+                                                   Margin="Margin.Dense"
+                                                   Class="flow-select"
+                                                   InputId="select_provincia"
+                                                   Label=""
+                                                   Variant="Variant.Outlined"
+                                                   AnchorOrigin="Origin.BottomCenter"
+                                                   TransformOrigin="Origin.TopCenter">
+                                            @foreach (var provincia in _listaProvincias)
+                                            {
+                                                <MudSelectItem T="string" Value="@provincia.Id">@provincia.Descripcion</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </div>
+                                </MudItem>
+
+                                <MudItem xs="12" sm="6">
+                                    <MudText Class="pb-1" HtmlTag="label" for="select_municipio" Color="Color.Dark">Municipio</MudText>
+                                    <div style="max-width: 300px;">
+                                        <MudSelect T="string" @bind-Value="Terreno.MunicipioId" Margin="Margin.Dense" Class="flow-select" InputId="select_municipio" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                                            @foreach (var municipio in _listaMunicipiosFiltrados)
+                                            {
+                                                <MudSelectItem T="string" Value="@municipio.Id">@municipio.Descripcion</MudSelectItem>
+                                            }
+                                        </MudSelect>
+                                    </div>
+                                </MudItem>
+                                <MudItem xs="12">
+                                    <RealTimeMap   @ref="realTimeMap" Parameters="parameters" height="300px" width="620px"></RealTimeMap>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                    </MudGrid>
+                </MudContainer> 
+                </MudStep>
+            @*Imagenes del terreno*@
+            <MudStep Title="Imágenes">
+                <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="12" sm="8" md="8" lg="8">
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudStack Style="width: 100%">
+                                        <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+                                                       Accept=".jpg,.jpeg,.png"
+                                                       @ref="_fileUpload"
+                                                       MaximumFileCount="8"
+                                                       OnFilesChanged="OnInputFileChanged"
+                                                       AppendMultipleFiles
+                                                       Hidden="false"
+                                                       InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                                                       InputStyle="opacity:0"
+                                                       tabindex="-1"
+                                                       @ondrop="ClearDragClass"
+                                                       @ondragenter="SetDragClass"
+                                                       @ondragleave="ClearDragClass"
+                                                       @ondragend="ClearDragClass">
+                                            <ActivatorContent>
+                                                <MudPaper Height="350px"
+                                                          Outlined="true"
+                                                          Class="@_dragClass">
+                                                    <MudText Typo="Typo.h6" Align="Align.Center">
+                                                        Arrastre y suelte los archivos aquí o haga click
+                                                    </MudText>
+                                                    @* Se muestra el preview de las imágenes en formato cuadrado *@
+                                                    <div class="d-flex flex-wrap justify-center mt-4">
+                                                        @foreach (var preview in imagePreviews)
+                                                        {
+                                                            <div class="m-2 mb-4 mr-4" style="width:110px; height:110px; overflow:hidden; border:1px solid #ccc; border-radius:4px">
+                                                                <img src="@preview" style="width:100%; height:100%; object-fit:cover;" />
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </MudPaper>
+                                            </ActivatorContent>
+                                        </MudFileUpload>
+                                        <MudToolBar Gutters="false"
+                                                    Class="relative d-flex justify-end gap-4">
+                                            <MudButton Color="Color.Primary"
+                                                       OnClick="OpenFilePickerAsync"
+                                                       Variant="Variant.Filled">
+                                                Abrir archivos
+                                            </MudButton>
+                                            <MudButton Color="Color.Primary"
+                                                       Disabled="@(!imagePreviews.Any())"
+                                                       OnClick="Upload"
+                                                       Variant="Variant.Filled">
+                                                Subir
+                                            </MudButton>
+                                            <MudButton Color="Color.Error"
+                                                       Disabled="@(!imagePreviews.Any())"
+                                                       OnClick="ClearAsync"
+                                                       Variant="Variant.Filled">
+                                                Limpiar
+                                            </MudButton>
+                                        </MudToolBar>
+                                    </MudStack>                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                    </MudGrid>
+                </MudContainer>
+            </MudStep>
+            @*Comentarios y verificación*@
+            <MudStep Title="Comentarios">
+                <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                    <MudGrid Justify="Justify.Center">
+                        <MudItem xs="12" sm="8" md="8" lg="8">
+                            <MudGrid>
+                                <MudItem xs="12" sm="12">
+                                    <MudText Class="pb-1" HtmlTag="label" for="input_comentarios" Color="Color.Dark">Comentarios acerca del terreno</MudText>
+                                    <MudTextField AutoGrow Lines="5" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"> </MudTextField>
+                                </MudItem>
+                            </MudGrid>
+                        </MudItem>
+                    </MudGrid>
+                </MudContainer>
+            </MudStep>
+        </MudStepper>
+        @*
+        <MudForm @ref="_form" Disabled="@IsViewMode">
+            <!--Descripción-->
+            <MudText Class="pb-1" HtmlTag="label" for="input_prueba" Style="@($"color:{Colors.Shades.Black};")">Descripción</MudText>
+            <MudTextField Margin="Margin.Dense"
+                          Class="flow-input"
+                          InputId="input_prueba"
+                          Label=""
+                          Variant="Variant.Outlined"
+                          @bind-Value="TipoMedida.Descripcion"
+                          Required="true"
+                          ReadOnly="@IsViewMode"
+                          RequiredError="La descripción es requerida"
+                          Validation="@(new Func<string, IEnumerable<string>>(ValidateDescription))"/>
+
+        </MudForm>
+    *@
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Secondary"
+                   OnClick="Cancel">@(IsViewMode ? "Cerrar" : "Cancelar")</MudButton>
+        @if (!IsViewMode)
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="Save">Guardar</MudButton>
+        }
+
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+    [Parameter] public TerrenoDTO Terreno { get; set; } = new();
+    [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public bool IsViewMode { get; set; }
+
+    private MudForm _form;
+    private string Title => IsViewMode ? "Ver Tipo de Medida" : 
+                        (Terreno.Id == null ? "Agregar terreno" : "Modificar terreno");
+
+    
+    RealTimeMap? realTimeMap;
+
+    //Listas de opciones
+
+    private IEnumerable<TipoMedidaAreaDTO> _listaTiposMedidaArea = new List<TipoMedidaAreaDTO>();
+    
+    private IEnumerable<TipoSueloDTO> _listaTiposSuelo = new List<TipoSueloDTO>();
+    private IEnumerable<ProvinciaDTO> _listaProvincias = new List<ProvinciaDTO>();
+
+    private IEnumerable<MunicipioDTO> _listaMunicipios = new List<MunicipioDTO>();
+
+
+    private IEnumerable<MunicipioDTO> _listaMunicipiosFiltrados = new List<MunicipioDTO>();
+    
+
+    // Configuración inicial del mapa (centro, zoom, etc.)
+    RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()
+    {
+        location = new RealTimeMap.Location() { latitude = 18.47186, longitude = -69.89232 },
+        zoomLevel = 9
+    };
+
+    // Ejemplo para agregar un marcador
+    async Task AgregarMarcador()
+    {
+        double[] coordenadas = new double[] { 18.472, -69.893 }; // Latitud y longitud del marcador
+        RealTimeMap.PointSymbol simbolo = new RealTimeMap.PointSymbol()
+        {
+            color = "red",
+            fillColor = "red",
+            radius = 8,
+            weight = 2,
+            opacity = 1,
+            fillOpacity = 0.8
+        };
+
+        RealTimeMap.PointTooltip tooltip = new RealTimeMap.PointTooltip()
+        {
+            content = "Ubicación del marcador",
+            permanent = true,
+            opacity = 0.9
+        };
+
+        // Coloca el marcador en el mapa
+        await realTimeMap.movePoint(coordenadas, simbolo, tooltip);
+    }
+    // Validación personalizada
+    private IEnumerable<string> ValidateDescription(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            yield return "La descripción es requerida";
+        }
+        else if (value.Length > 100)
+        {
+            yield return "Máximo 100 caracteres permitidos";
+        }
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && realTimeMap != null)
+        {
+            await AgregarMarcador();
+        }
+    }
+
+    #region Carga de datos
+
+    protected async override void OnInitialized()
+    {
+        _listaTiposMedidaArea = await TipoMedidaAreaAgent.GetAllAsync();
+        _listaTiposSuelo = await TipoSueloAgent.GetAllAsync();
+        _listaProvincias = await ProvinciaAgent.GetAllAsync();
+        _listaMunicipios = await MunicipioAgent.GetAllAsync();
+
+        if (!IsViewMode && !string.IsNullOrEmpty(Terreno.Id))
+        {
+            // Clonar el objeto para edición
+            Terreno = new TerrenoDTO
+            {
+                Id = Terreno.Id,
+                Comentario = Terreno.Comentario
+            };
+        }
+    }   
+
+    #endregion
+
+
+    private async Task Save()
+    {
+        if (IsViewMode) return;
+
+        await _form.Validate();
+        
+        if (_form.IsValid)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(Terreno.Id))
+                {
+                    //await TipoMedidaAreaAgent.AddAsync(TipoMedida);
+                }
+                else
+                {
+                    //await TipoMedidaAreaAgent.UpdateAsync(TipoMedida.Id, TipoMedida);
+                }
+                
+                Snackbar.Add("Operación realizada correctamente", Severity.Success);
+                await OnSaved.InvokeAsync();
+                MudDialog.Close();
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    #region Manejo de provincias y municipios
+
+    private async Task ObtenerMunicipiosDeProvincia(string provinciaId)
+    {
+        Terreno.ProvinciaId = provinciaId;
+        _listaMunicipiosFiltrados = _listaMunicipios.Where(m => m.ProvinciaId == provinciaId).ToList();
+        StateHasChanged();    }
+    
+
+    #endregion
+    #region Manejo de imagenes
+
+ private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    private string _dragClass = DefaultDragClass;
+    private readonly List<string> _fileNames = new();
+    private List<string> imagePreviews = new();
+    private MudFileUpload<IReadOnlyList<IBrowserFile>>? _fileUpload;
+
+    private async Task ClearAsync()
+    {
+        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+        _fileNames.Clear();
+        imagePreviews.Clear();
+        ClearDragClass();
+    }
+
+    private Task OpenFilePickerAsync()
+        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        _fileNames.Clear();
+        imagePreviews.Clear();
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            // Validar el ContentType para aceptar solo JPEG y PNG
+            if (file.ContentType != "image/jpeg" && file.ContentType != "image/png")
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add($"El archivo {file.Name} no es válido. Solo se permiten JPG y PNG.", Severity.Error);
+                continue;
+            }
+
+            _fileNames.Add(file.Name);
+            await using var fs = new MemoryStream();
+            await file.OpenReadStream(1048576).CopyToAsync(fs);
+            var base64Data = Convert.ToBase64String(fs.ToArray());
+            imagePreviews.Add($"data:{file.ContentType};base64,{base64Data}");
+        }
+    }
+
+    private void Upload()
+    {
+        // Aquí puedes agregar la lógica para subir los archivos
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("TODO: Upload your files!");
+    }
+
+    private void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    private void ClearDragClass()
+        => _dragClass = DefaultDragClass;    
+
+    #endregion
+}
