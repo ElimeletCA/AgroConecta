@@ -8,12 +8,23 @@
 @inject HttpClient Http
 @inject NavigationManager Nav
 <PageTitle>Dashboard Propietario - AgroConecta</PageTitle>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<style>
+    .montserrat-900 {
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 900;
+        font-style: normal;
+    }
+</style>
 <MudContainer MaxWidth="MaxWidth.False">
     <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4 montserrat-900">Dashboard</MudText>
     <MudGrid>
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-                <img style="height:40px; width: 40px;" class="mx-4" src="~/icons/svgs/duotone/atom.svg" />
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/layer-plus.svg" />
                 <div>
                     <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Terrenos Publicados</MudText>
                     <MudText Typo="Typo.h6">@TotalTerrenos</MudText>
@@ -22,16 +33,16 @@
         </MudItem>
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-                <MudIcon Icon="@Icons.Material.Filled.Layers" Color="Color.Secondary" Class="mx-4" Style="width:40px; height:40px;"></MudIcon>
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/bell.svg" />
                 <div>
-                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Solicitudes Pendientes</MudText>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Solicitudes Pend.</MudText>
                     <MudText Typo="Typo.h6">@SolicitudesPendientes</MudText>
                 </div>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-                <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Color="Color.Success" Class="mx-4" Style="width:40px; height:40px;"></MudIcon>
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/layer-minus.svg" />
                 <div>
                     <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Terrenos Arrendados</MudText>
                     <MudText Typo="Typo.h6">@TerrenosArrendados</MudText>
@@ -40,7 +51,7 @@
         </MudItem>
         <MudItem xs="12" sm="6" md="3">
             <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
-                <MudIcon Icon="@Icons.Material.Filled.RealEstateAgent" Color="Color.Warning" Class="mx-4" Style="width:40px; height:40px;"></MudIcon>
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/chart-line.svg" />
                 <div>
                     <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Ingresos Estimados</MudText>
                     <MudText Typo="Typo.h6">@IngresosEstimados</MudText>
