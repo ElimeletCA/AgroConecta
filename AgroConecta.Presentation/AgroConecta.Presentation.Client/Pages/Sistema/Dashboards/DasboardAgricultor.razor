@@ -7,97 +7,118 @@
 @inject IJSRuntime JS
 @inject HttpClient Http
 @inject NavigationManager Nav
-
+<PageTitle>Dashboard Agricultor - AgroConecta</PageTitle>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<style>
+    .montserrat-900 {
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 900;
+        font-style: normal;
+    }
+</style>
 <MudContainer MaxWidth="MaxWidth.False">
-    <MudGrid Spacing="3">
-        
-        <!-- Tarjetas de Resumen -->
-        <MudItem xs="12" md="3">
-            <MudPaper Elevation="4" Class="p-4 text-center">
-                <MudText Typo="Typo.h6">Proyectos Activos</MudText>
-                <MudText Typo="Typo.h4" Color="Color.Primary">@TotalProyectos</MudText>
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4 montserrat-900">Dashboard</MudText>
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/chart-kanban.svg" />
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Proyectos Activos</MudText>
+                    <MudText Typo="Typo.h6">@TotalProyectos</MudText>
+                </div>
             </MudPaper>
         </MudItem>
-
-        <MudItem xs="12" md="3">
-            <MudPaper Elevation="4" Class="p-4 text-center">
-                <MudText Typo="Typo.h6">Proyectos en Propuesta</MudText>
-                <MudText Typo="Typo.h4" Color="Color.Secondary">@ProyectosEnPropuesta</MudText>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/envelope-open-dollar.svg" />
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Propuestas</MudText>
+                    <MudText Typo="Typo.h6">@ProyectosEnPropuesta</MudText>
+                </div>
             </MudPaper>
         </MudItem>
-
-        <MudItem xs="12" md="3">
-            <MudPaper Elevation="4" Class="p-4 text-center">
-                <MudText Typo="Typo.h6">Inversiones Recibidas</MudText>
-                <MudText Typo="Typo.h4" Color="Color.Tertiary">@InversionesRecibidas</MudText>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/inbox-in.svg" />
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Inversiones Recibidas</MudText>
+                    <MudText Typo="Typo.h6">@InversionesRecibidas</MudText>
+                </div>
             </MudPaper>
         </MudItem>
-
-        <MudItem xs="12" md="3">
-            <MudPaper Elevation="4" Class="p-4 text-center">
-                <MudText Typo="Typo.h6">Ingresos Estimados</MudText>
-                <MudText Typo="Typo.h4" Color="Color.Success">@IngresosEstimados</MudText>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/chart-line.svg" />
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Ingresos Estimados</MudText>
+                    <MudText Typo="Typo.h6">@IngresosEstimados</MudText>
+                </div>
             </MudPaper>
         </MudItem>
+        <MudItem xs="12" sm="12" md="12">
+            <MudCard Class="card-tables" Style="height:100%;">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudChip T="string" Color="Color.Default">Proyectos</MudChip>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Class="px-0">
+                    <MudTable Items="@Proyectos" Dense="true">
+                        <HeaderContent>
+                            <MudTh>Nombre</MudTh>
+                            <MudTh>Ubicación</MudTh>
+                            <MudTh>Estado</MudTh>
+                            <MudTh>Financiamiento</MudTh>
+                        </HeaderContent>
 
-        <!-- Tabla de Proyectos -->
-        <MudItem xs="12">
-            <MudTable Items="@Proyectos" Dense="true">
-                <HeaderContent>
-                    <MudTh>Nombre</MudTh>
-                    <MudTh>Ubicaci�n</MudTh>
-                    <MudTh>Estado</MudTh>
-                    <MudTh>Financiamiento</MudTh>
-                    <MudTh>Acciones</MudTh>
-                </HeaderContent>
-
-                <RowTemplate Context="proyecto">
-                    <MudTd>@proyecto.Nombre</MudTd>
-                    <MudTd>@proyecto.Ubicacion</MudTd>
-                    <MudTd>
-                        <MudChip T="string" Color="@GetEstadoColor(proyecto.Estado)">
-                            @proyecto.Estado
-                        </MudChip>
-                    </MudTd>
-                    <MudTd>@($"${proyecto.InversionActual} / ${proyecto.InversionMeta}")</MudTd>
-                    <MudTd>
-                        <MudIconButton Icon="icons.mdi-eye" Color="Color.Primary" OnClick="@(() => VerDetallesProyecto(proyecto.Id))" />
-                        <MudIconButton Icon="icons.mdi-pencil" Color="Color.Secondary" OnClick="@(() => EditarProyecto(proyecto.Id))" />
-                        <MudIconButton Icon="icons.mdi-delete" Color="Color.Error" OnClick="@(() => EliminarProyecto(proyecto.Id))" />
-                    </MudTd>
-                </RowTemplate>
-            </MudTable>
+                        <RowTemplate Context="proyecto">
+                            <MudTd>@proyecto.Nombre</MudTd>
+                            <MudTd>@proyecto.Ubicacion</MudTd>
+                            <MudTd>
+                                <MudChip T="string" Color="@GetEstadoColor(proyecto.Estado)">
+                                    @proyecto.Estado
+                                </MudChip>
+                            </MudTd>
+                            <MudTd>@($"${proyecto.InversionActual} / ${proyecto.InversionMeta}")</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudCardContent>
+            </MudCard>
         </MudItem>
+        <MudItem xs="12" sm="12" md="12">
+            <MudCard Class="card-tables" Style="height:100%;">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudChip T="string" Color="Color.Default">Solicitudes</MudChip>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Class="px-0">
+                    <MudTable Items="@SolicitudesInversion" Dense="true">
+                        <HeaderContent>
+                            <MudTh>Inversionista</MudTh>
+                            <MudTh>Proyecto</MudTh>
+                            <MudTh>Fecha</MudTh>
+                            <MudTh>Monto</MudTh>
+                            <MudTh>Estado</MudTh>
+                        </HeaderContent>
 
-        <!-- Tabla de Solicitudes de Inversi�n -->
-        <MudItem xs="12">
-            <MudTable Items="@SolicitudesInversion" Dense="true">
-                <HeaderContent>
-                    <MudTh>Inversionista</MudTh>
-                    <MudTh>Proyecto</MudTh>
-                    <MudTh>Fecha</MudTh>
-                    <MudTh>Monto</MudTh>
-                    <MudTh>Estado</MudTh>
-                    <MudTh>Acciones</MudTh>
-                </HeaderContent>
-
-                <RowTemplate Context="solicitud">
-                    <MudTd>@solicitud.Inversionista</MudTd>
-                    <MudTd>@solicitud.Proyecto</MudTd>
-                    <MudTd>@solicitud.Fecha.ToShortDateString()</MudTd>
-                    <MudTd>@($"${solicitud.Monto}")</MudTd>
-                    <MudTd>
-                        <MudChip T="string" Color="@GetEstadoColor(solicitud.Estado)">
-                            @solicitud.Estado
-                        </MudChip>
-                    </MudTd>
-                    <MudTd>
-                        <MudIconButton Icon="icons.mdi-check" Color="Color.Success" OnClick="@(() => AceptarInversion(solicitud.Id))" />
-                        <MudIconButton Icon="icons.mdi-close" Color="Color.Error" OnClick="@(() => RechazarInversion(solicitud.Id))" />
-                        <MudIconButton Icon="icons.mdi-chat" Color="Color.Primary" OnClick="@(() => ChatearConInversionista(solicitud.Id))" />
-                    </MudTd>
-                </RowTemplate>
-            </MudTable>
+                        <RowTemplate Context="solicitud">
+                            <MudTd>@solicitud.Inversionista</MudTd>
+                            <MudTd>@solicitud.Proyecto</MudTd>
+                            <MudTd>@solicitud.Fecha.ToShortDateString()</MudTd>
+                            <MudTd>@($"${solicitud.Monto}")</MudTd>
+                            <MudTd>
+                                <MudChip T="string" Color="@GetEstadoColor(solicitud.Estado)">
+                                    @solicitud.Estado
+                                </MudChip>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudCardContent>
+            </MudCard>
         </MudItem>
     </MudGrid>
 </MudContainer>
@@ -112,13 +133,13 @@
     {
         new { Id = 1, Nombre = "Cultivo de Tomates", Ubicacion = "La Vega", Estado = "En Progreso", InversionActual = 5000, InversionMeta = 10000 },
         new { Id = 2, Nombre = "Plantaci�n de Aguacates", Ubicacion = "Monte Plata", Estado = "Finalizado", InversionActual = 10000, InversionMeta = 10000 },
-        new { Id = 3, Nombre = "Cosecha de Caf�", Ubicacion = "San Crist�bal", Estado = "En Propuesta", InversionActual = 2000, InversionMeta = 15000 }
+        new { Id = 3, Nombre = "Cosecha de Café", Ubicacion = "San Cristóbal", Estado = "En Propuesta", InversionActual = 2000, InversionMeta = 15000 }
     };
 
     private List<dynamic> SolicitudesInversion = new()
     {
-        new { Id = 1, Inversionista = "Carlos Ram�rez", Proyecto = "Cultivo de Tomates", Fecha = DateTime.Now, Monto = 3000, Estado = "Pendiente" },
-        new { Id = 2, Inversionista = "Mar�a L�pez", Proyecto = "Plantaci�n de Aguacates", Fecha = DateTime.Now.AddDays(-2), Monto = 5000, Estado = "Aprobado" }
+        new { Id = 1, Inversionista = "Carlos Ramírez", Proyecto = "Cultivo de Tomates", Fecha = DateTime.Now, Monto = 3000, Estado = "Pendiente" },
+        new { Id = 2, Inversionista = "María López", Proyecto = "Plantación de Aguacates", Fecha = DateTime.Now.AddDays(-2), Monto = 5000, Estado = "Aprobado" }
     };
 
     private void VerDetallesProyecto(int id) => Nav.NavigateTo($"/proyecto/{id}");
