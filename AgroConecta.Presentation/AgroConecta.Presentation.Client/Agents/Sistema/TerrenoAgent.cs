@@ -1,14 +1,15 @@
-using System.Net.Http.Json;
 using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema;
+using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Tipos;
 using AgroConecta.Shared.DTO;
+using AgroConecta.Shared.DTO.Tipos;
 using Microsoft.JSInterop;
 
 namespace AgroConecta.Presentation.Client.Agents.Sistema;
 
-public class TipoMedidaAreaAgent : InitialAgent<TipoMedidaAreaDTO>, ITipoMedidaAreaAgent
+public class TerrenoAgent : InitialAgent<TerrenoDTO>, ITerrenoAgent
 {
-    public TipoMedidaAreaAgent(HttpClient httpClient, IJSRuntime jsRuntime) 
-        : base(httpClient, "api/TiposMedidaArea", jsRuntime) // Ruta del controlador
+    public TerrenoAgent(HttpClient httpClient, IJSRuntime jsRuntime) 
+        : base(httpClient, "api/Terrenos", jsRuntime) // Ruta del controlador
     {
     }
 

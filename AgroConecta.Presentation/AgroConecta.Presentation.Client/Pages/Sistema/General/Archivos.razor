@@ -1,0 +1,114 @@
+@page "/sistema/configuracion/archivos"
+@inject ISnackbar Snackbar
+
+<MudStack Style="width: 100%">
+    <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+                   Accept=".jpg,.jpeg,.png"
+                   @ref="_fileUpload"
+                   OnFilesChanged="OnInputFileChanged"
+                   AppendMultipleFiles
+                   Hidden="false"
+                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                   InputStyle="opacity:0"
+                   tabindex="-1"
+                   @ondrop="ClearDragClass"
+                   @ondragenter="SetDragClass"
+                   @ondragleave="ClearDragClass"
+                   @ondragend="ClearDragClass">
+        <ActivatorContent>
+            <MudPaper Height="350px"
+                      Outlined="true"
+                      Class="@_dragClass">
+                <MudText Typo="Typo.h6" Align="Align.Center">
+                    Drag and drop files here or click
+                </MudText>
+                @* Se muestra el preview de las imágenes en formato cuadrado *@
+                <div class="d-flex flex-wrap justify-center mt-4">
+                    @foreach (var preview in imagePreviews)
+                    {
+                        <div class="m-2 mb-4 mr-4" style="width:110px; height:110px; overflow:hidden; border:1px solid #ccc; border-radius:4px">
+                            <img src="@preview" style="width:100%; height:100%; object-fit:cover;" />
+                        </div>
+                    }
+                </div>
+            </MudPaper>
+        </ActivatorContent>
+    </MudFileUpload>
+    <MudToolBar Gutters="false"
+                Class="relative d-flex justify-end gap-4">
+        <MudButton Color="Color.Primary"
+                   OnClick="OpenFilePickerAsync"
+                   Variant="Variant.Filled">
+            Open file picker
+        </MudButton>
+        <MudButton Color="Color.Primary"
+                   Disabled="@(!imagePreviews.Any())"
+                   OnClick="Upload"
+                   Variant="Variant.Filled">
+            Upload
+        </MudButton>
+        <MudButton Color="Color.Error"
+                   Disabled="@(!imagePreviews.Any())"
+                   OnClick="ClearAsync"
+                   Variant="Variant.Filled">
+            Clear
+        </MudButton>
+    </MudToolBar>
+</MudStack>
+
+@code {
+#nullable enable
+    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    private string _dragClass = DefaultDragClass;
+    private readonly List<string> _fileNames = new();
+    private List<string> imagePreviews = new();
+    private MudFileUpload<IReadOnlyList<IBrowserFile>>? _fileUpload;
+
+    private async Task ClearAsync()
+    {
+        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+        _fileNames.Clear();
+        imagePreviews.Clear();
+        ClearDragClass();
+    }
+
+    private Task OpenFilePickerAsync()
+        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
+    private async Task OnInputFileChanged(InputFileChangeEventArgs e)
+    {
+        ClearDragClass();
+        _fileNames.Clear();
+        imagePreviews.Clear();
+        var files = e.GetMultipleFiles();
+        foreach (var file in files)
+        {
+            // Validar el ContentType para aceptar solo JPEG y PNG
+            if (file.ContentType != "image/jpeg" && file.ContentType != "image/png")
+            {
+                Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+                Snackbar.Add($"El archivo {file.Name} no es válido. Solo se permiten JPG y PNG.", Severity.Error);
+                continue;
+            }
+
+            _fileNames.Add(file.Name);
+            await using var fs = new MemoryStream();
+            await file.OpenReadStream(1048576).CopyToAsync(fs);
+            var base64Data = Convert.ToBase64String(fs.ToArray());
+            imagePreviews.Add($"data:{file.ContentType};base64,{base64Data}");
+        }
+    }
+
+    private void Upload()
+    {
+        // Aquí puedes agregar la lógica para subir los archivos
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+        Snackbar.Add("TODO: Upload your files!");
+    }
+
+    private void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    private void ClearDragClass()
+        => _dragClass = DefaultDragClass;
+}

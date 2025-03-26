@@ -10,6 +10,9 @@ using AgroConecta.Presentation.Client.Helpers.Seguridad;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Identity;
+using MudBlazor.Translations;
+using System.Globalization;
+
 using MudBlazor;
 using MudBlazor.Services;
 
@@ -26,9 +29,12 @@ builder.Services.AddMudServices(config =>
  config.SnackbarConfiguration.ShowTransitionDuration = 500;
  config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
+builder.Services.AddLocalization();
+builder.Services.AddMudTranslations();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-
+CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("es-ES");
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("es-ES");
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 
@@ -37,7 +43,7 @@ builder.Services.AddCascadingAuthenticationState();
  builder.Services.AddScoped<ISeguridadAgent, SeguridadAgent>();
  builder.Services.AddScoped<IUsuarioAgent, UsuarioAgent>();
 
- var clientAssembly = typeof(Program).Assembly;  // Asumiendo que los agents están en el mismo ensamblado
+ var clientAssembly = typeof(Program).Assembly; 
  var baseAgentInterface  = typeof(IInitialAgent<>);
 
  var agentTypes = clientAssembly.GetTypes()
@@ -54,7 +60,7 @@ builder.Services.AddCascadingAuthenticationState();
 
  foreach (var agent in agentTypes)
  {
-  // Registrar bajo la interfaz específica (ej: ITipoMedidaAreaAgent)
+  // Registrar bajo la interfaz específica (ITipoMedidaAreaAgent)
   var specificInterface = agent.Implementation.GetInterfaces()
    .FirstOrDefault(i => !i.IsGenericType && i != typeof(IBaseAgent));
     

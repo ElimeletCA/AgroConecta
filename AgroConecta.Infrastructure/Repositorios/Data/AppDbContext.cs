@@ -2,6 +2,7 @@ using System.Diagnostics;
 using AgroConecta.Domain.Sistema;
 using AgroConecta.Domain.Sistema.Auditoria;
 using AgroConecta.Domain.Sistema.Extras;
+using AgroConecta.Domain.Sistema.General;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Tipos;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -19,6 +20,9 @@ public class AppDbContext : IdentityDbContext<Usuario>
 
     }
     public DbSet<SystemLog> SystemLogs { get; set; }
+    public DbSet<Provincia> Provincias { get; set; }
+    public DbSet<Municipio> Municipios { get; set; }
+
     public DbSet<Archivo> Archivos { get; set; }
     public DbSet<Perfil> Perfiles { get; set; }
     public DbSet<Arrendamiento> Arrendamientos { get; set; }
@@ -34,6 +38,9 @@ public class AppDbContext : IdentityDbContext<Usuario>
     protected override void OnModelCreating(ModelBuilder modelbuilder)
     {
         modelbuilder.Entity<Archivo>().ToTable("Archivo");
+        modelbuilder.Entity<Municipio>().ToTable("Municipio");
+        modelbuilder.Entity<Provincia>().ToTable("Provincia");
+
         modelbuilder.Entity<Perfil>().ToTable("Rol");
         modelbuilder.Entity<Arrendamiento>().ToTable("Arrendamiento");
         modelbuilder.Entity<Proyecto>().ToTable("Proyecto");
@@ -64,6 +71,12 @@ public class AppDbContext : IdentityDbContext<Usuario>
                 .HasOne(terreno => terreno.TipoSuelo)
                 .WithMany(tipo_suelo => tipo_suelo.Terrenos)
                 .HasForeignKey(terreno => terreno.TipoSueloId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+            
+            modelbuilder.Entity<Terreno>()
+                .HasOne(terreno => terreno.Municipio)
+                .WithMany(municipio => municipio.Terrenos)
+                .HasForeignKey(terreno => terreno.MunicipioId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
             
         #endregion
@@ -123,7 +136,15 @@ public class AppDbContext : IdentityDbContext<Usuario>
             .OnDelete(DeleteBehavior.ClientSetNull);
         
         #endregion
-
+        #region Relaciones Entidad -Municipio-
+        
+        modelbuilder.Entity<Municipio>()
+            .HasOne(municipio => municipio.Provincia)
+            .WithMany(provincia => provincia.Municipios)
+            .HasForeignKey(municipio => municipio.ProvinciaId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        #endregion
         modelbuilder.Entity<SystemLog>(entity =>
         {
             entity.ToTable("SystemLogs"); 

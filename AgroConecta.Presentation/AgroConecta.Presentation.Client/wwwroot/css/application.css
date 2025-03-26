@@ -2,6 +2,10 @@
 :root {
 
 }
+/*Sobreescribir ancho máximo de los Muddialog*/
+.mud-dialog-width-sm{
+    max-width: 1400px !important;
+}
 .mud-input-outlined-border { border-radius: 8px !important; }
 .flow-input .mud-input{
     background-color: rgb(249, 250, 251); border-radius: 8px;
