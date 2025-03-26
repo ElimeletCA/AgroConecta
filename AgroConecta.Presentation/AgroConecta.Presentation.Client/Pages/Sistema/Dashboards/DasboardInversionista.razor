@@ -1,0 +1,171 @@
+@page "/sistema/dashboard/inversionista"
+@using System.Net.Http.Headers
+@using System.Security.Claims
+@using AgroConecta.Presentation.Client.Helpers.Seguridad
+@using AgroConecta.Shared.Constantes.Seguridad
+@using AgroConecta.Shared.Seguridad.Mensajes
+@inject IJSRuntime JS
+@inject HttpClient Http
+@inject NavigationManager Nav
+<PageTitle>Dashboard Propietario - AgroConecta</PageTitle>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<style>
+    .montserrat-900 {
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 900;
+        font-style: normal;
+    }
+</style>
+<MudContainer MaxWidth="MaxWidth.False">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-4 montserrat-900">Dashboard</MudText>
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/layer-plus.svg" />
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Inversiones Activas</MudText>
+                    <MudText Typo="Typo.h6">@InversionesActivas</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/bell.svg" />
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Inversiones Finalizadas</MudText>
+                    <MudText Typo="Typo.h6">@InversionesFinalizadas</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/layer-minus.svg" />
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Capital Invertido</MudText>
+                    <MudText Typo="Typo.h6">@($"${CapitalInvertido:N2}")</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+                <img style="height:40px; width: 40px;" class="mx-4" src="/icons/svgs/duotone/chart-line.svg" />
+                <div>
+                    <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Ingresos Estimados</MudText>
+                    <MudText Typo="Typo.h6">@($"${RetornoEstimado:N2}")</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="12">
+            <MudCard Class="card-tables" Style="height:100%;">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudChip T="string" Color="Color.Default">Terrenos</MudChip>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Class="px-0">
+                    <MudTable Items="@Inversiones" Dense="true">
+                        <HeaderContent>
+                            <MudTh>Proyecto</MudTh>
+                            <MudTh>Monto Invertido</MudTh>
+                            <MudTh>Estado</MudTh>
+                            <MudTh>Retorno Estimado</MudTh>
+                        </HeaderContent>
+
+                        <RowTemplate Context="inversion">
+                            <MudTd>@inversion.Proyecto</MudTd>
+                            <MudTd>@($"${inversion.Monto:N2}")</MudTd>
+                            <MudTd>
+                                <MudChip T="string" Color="@GetEstadoColor(inversion.Estado)">
+                                    @inversion.Estado
+                                </MudChip>
+                            </MudTd>
+                            <MudTd>@($"${inversion.Retorno:N2}")</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="12">
+            <MudCard Class="card-tables" Style="height:100%;">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudChip T="string" Color="Color.Default">Solicitudes</MudChip>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent Class="px-0">
+                    <MudTable Items="@Oportunidades" Dense="true">
+                        <HeaderContent>
+                            <MudTh>Proyecto</MudTh>
+                            <MudTh>Ubicación</MudTh>
+                            <MudTh>Meta de Inversión</MudTh>
+                            <MudTh>Inversión Recolectada</MudTh>
+                        </HeaderContent>
+
+                        <RowTemplate Context="oportunidad">
+                            <MudTd>@oportunidad.Proyecto</MudTd>
+                            <MudTd>@oportunidad.Ubicacion</MudTd>
+                            <MudTd>@($"${oportunidad.Meta:N2}")</MudTd>
+                            <MudTd>@($"${oportunidad.Recolectado:N2}")</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private int InversionesActivas = 4;
+    private int InversionesFinalizadas = 2;
+    private decimal CapitalInvertido = 35000;
+    private decimal RetornoEstimado = 45000;
+
+    private List<dynamic> Inversiones = new()
+    {
+        new { Id = 1, Proyecto = "Cultivo de Tomates", Monto = 5000, Estado = "Activa", Retorno = 7000 },
+        new { Id = 2, Proyecto = "Plantación de Aguacates", Monto = 10000, Estado = "Finalizada", Retorno = 13000 },
+        new { Id = 3, Proyecto = "Cosecha de Café", Monto = 2000, Estado = "Pendiente", Retorno = 3000 }
+    };
+
+    private List<dynamic> Oportunidades = new()
+    {
+        new { Id = 1, Proyecto = "Producción de Maíz Orgánico", Ubicacion = "Monte Plata", Meta = 15000, Recolectado = 8000 },
+        new { Id = 2, Proyecto = "Siembra de Frutas Tropicales", Ubicacion = "San Cristóbal", Meta = 20000, Recolectado = 12000 }
+    };
+
+    private void VerDetallesInversion(int id) => Nav.NavigateTo($"/inversion/{id}");
+    private void VerReporteFinanciero(int id) => Nav.NavigateTo($"/inversion/reporte/{id}");
+    private void VerDetallesOportunidad(int id) => Nav.NavigateTo($"/oportunidad/{id}");
+    private void InvertirEnProyecto(int id) => Console.WriteLine($"Invertir en el proyecto {id}");
+
+    private Color GetEstadoColor(string estado) => estado switch
+    {
+        "Activa" => Color.Success,
+        "Finalizada" => Color.Tertiary,
+        "Pendiente" => Color.Warning,
+        "Cancelada" => Color.Error,
+        _ => Color.Default
+    };
+    private string Prueba;
+    string _value;
+    private TokenManager _tokenManager;
+    private ClaimsPrincipal _usuario;
+    protected override Task OnInitializedAsync()
+    {
+        _tokenManager = new TokenManager(JS);
+        return base.OnInitializedAsync();
+    }
+    public async Task PruebaT()
+    {
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _tokenManager.GetTokenAsync());
+        //var response2FA = (await Http.GetAsync("api/Auth/GetTerrenos")).Content.ReadFromJsonAsync<ApiResponse>().Result;
+        var response2FA = (await Http.GetStringAsync("api/Auth/GetTerrenos"));
+
+        //var response2F = (await Http.GetAsync("api/Auth/GetTerrenos")).Content
+
+        Console.WriteLine(response2FA);
+    }
+}
