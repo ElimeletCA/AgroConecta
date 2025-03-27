@@ -2,6 +2,7 @@ using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema;
 using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Tipos;
 using AgroConecta.Shared.DTO;
 using AgroConecta.Shared.DTO.Tipos;
+using AgroConecta.Shared.Estados;
 using Microsoft.JSInterop;
 
 namespace AgroConecta.Presentation.Client.Agents.Sistema;
@@ -19,16 +20,39 @@ public class TerrenoAgent : InitialAgent<TerrenoDTO>, ITerrenoAgent
         // Aquí puedes agregar lógica adicional específica para TerrenoDTO si es necesario
         return terrenos;
     }
+    public async Task<IEnumerable<TerrenoDTO>> ObtenerTerrenosDisponiblesAsync()
+    {
+        var terrenos = await base.GetAllAsync(new[]
+        {
+            "Municipio", "Municipio.Provincia",
+            "TipoMedidaArea",
+            "TipoSuelo",
+            "Propietario"
+                
+                
+        }); 
+        var terrenosDisponibles = terrenos.Where(x => x.Estado == (int)TerrenoEstado.Disponible);
+        
+        return terrenosDisponibles;
+        
+    }
     public new async Task<TerrenoDTO> GetByIdAsync(string id, string[] includes = null)
     {
         var terreno = await base.GetByIdAsync(id, includes);
         // Aquí puedes agregar lógica adicional específica para TerrenoDTO si es necesario
         return terreno ?? new TerrenoDTO();
     }
-    // // Método específico (devuelve DTOs, no entidades)
-    // public async Task<IEnumerable<TerrenoDTO>> GetTerrenosByUbicacionAsync(string ubicacion)
-    // {
-    //     return await _httpClient.GetFromJsonAsync<IEnumerable<TerrenoDTO>>($"{_endpoint}/ubicacion/{ubicacion}") 
-    //            ?? Enumerable.Empty<TerrenoDTO>();
-    // }
+    public  async Task<bool> CambiarEstado(string id, int estado)
+    {
+        var terreno = await base.GetByIdAsync(id, new[] { "Municipio", "Municipio.Provincia" });
+        if (terreno != null)
+        {
+            terreno.Estado = estado;
+            await base.UpdateAsync(id, terreno);
+            return true;
+
+        }
+        return false;
+
+    }
 }

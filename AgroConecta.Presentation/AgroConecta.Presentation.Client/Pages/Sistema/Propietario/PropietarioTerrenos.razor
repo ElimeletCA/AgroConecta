@@ -3,6 +3,7 @@
 @using AgroConecta.Presentation.Client.Agents.Sistema.Tipo
 @using AgroConecta.Presentation.Client.Components.General.Alertas
 @using AgroConecta.Shared.DTO
+@using AgroConecta.Shared.Estados
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject ITerrenoAgent TerrenoAgent
@@ -64,12 +65,40 @@
                             <MudText Typo="Typo.button" Class="mud-primary-text">@card.Subtitulo</MudText>
                         </div>
                         <MudText Typo="Typo.h6" Class="mb-4">@card.Titulo</MudText>
+
                         <MudText Typo="Typo.body2">@card.Descripcion</MudText>
 
                     </MudCardContent>
                     <MudCardActions>
                         <MudSpacer/>
                         <MudStack Row>
+                            <MudChip T="string" Size="Size.Small" Color="GetStatusColor(card.Estado)">@GetEstadoNombre(card.Estado)</MudChip>
+
+                            @switch (card.Estado)
+                            {
+                                case (int)TerrenoEstado.Creado:
+                                {
+                                    <MudTooltip Text="Cambiar a disponible">
+                                        <MudIconButton
+                                            OnClick="@(() => CambiarEstado(card.Id, (int)TerrenoEstado.Disponible))"
+                                            Icon="@Icons.Material.Filled.Task"
+                                            Color="Color.Success"
+                                            Size="Size.Small"/>
+                                    </MudTooltip> 
+                                    break;      
+                                }
+                                case (int)TerrenoEstado.Disponible:
+                                {
+                                    <MudTooltip Text="Cambiar a no disponible">
+                                        <MudIconButton
+                                            OnClick="@(() => CambiarEstado(card.Id, (int)TerrenoEstado.Creado))"
+                                            Icon="@Icons.Material.Filled.Cancel"
+                                            Color="Color.Error"
+                                            Size="Size.Small"/>
+                                    </MudTooltip> 
+                                    break;      
+                                }
+                            }
                             <MudTooltip Text="Ver">
                                 <MudIconButton
                                     OnClick="@(() => OpenViewDialog(card.Id))"
@@ -172,7 +201,8 @@
             titulo: t.DescripcionProvincia ?? String.Empty,
             subtitulo: $"MUNICIPIO DE {t.DescripcionMunicipio}" ?? String.Empty,
             descripcion:  t.Descripcion,
-            imagen: "./images/dummy/dummy-terreno-1.jpg" // O bien, derivarla de t
+            imagen: "./images/dummy/dummy-terreno-1.jpg",
+            estado:t.Estado
         )).ToList();
         _terrenosCards = nuevosTerrenosCards;
         // Agrega los nuevos elementos a la lista existente _terrenosCards
@@ -191,14 +221,16 @@
         public string Subtitulo { get; set; }
         public string Descripcion { get; set; }
         public string Imagen { get; set; }
+        public int Estado { get; set; }
 
-        public TerrenoCard(string id, string titulo, string subtitulo, string descripcion, string imagen )
+        public TerrenoCard(string id, string titulo, string subtitulo, string descripcion, string imagen, int estado )
         {
             Id = id;
             Titulo = titulo;
             Subtitulo = subtitulo;
             Descripcion = descripcion;
             Imagen = imagen;
+            Estado = estado;
         }
     }
     #endregion
@@ -233,7 +265,7 @@
     }
     private async Task OpenViewDialog(string id)
     {
-        NavigationManager.NavigateTo($"/sistema/propietario/vistaterreno/{id}");
+        NavigationManager.NavigateTo($"/sistema/vistaterreno/{id}");
     }
     private async Task Eliminar(string id)
     {
@@ -256,6 +288,23 @@
             await GetAll();
         }
     }
+    private async Task CambiarEstado(string id, int estado)
+    {
+        await TerrenoAgent.CambiarEstado(id, estado);
+        Snackbar.Add("Estado de terreno cambiado", Severity.Success);
+        await GetAll();
+    }
     #endregion
+    private Color GetStatusColor(int status) => status switch
+    {
+        (int)TerrenoEstado.Creado => Color.Warning,
+        (int)TerrenoEstado.Disponible => Color.Success,
+        (int)TerrenoEstado.Arrendado => Color.Info,
+        _ => Color.Warning
+    };
+    private string GetEstadoNombre(int estado)
+    {
+        return Enum.GetName(typeof(TerrenoEstado), estado) ?? "Desconocido";
+    }
 }
 

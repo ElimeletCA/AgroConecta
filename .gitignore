@@ -38,4 +38,3 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 /AgroConecta.Presentation/AgroConecta.Presentation/appsettings.Development.json
-*.razor
