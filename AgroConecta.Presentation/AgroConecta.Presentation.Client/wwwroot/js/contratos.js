@@ -15,7 +15,7 @@ window.generateContratoArrendamiento = (data) => {
     const contratoText =
         `Por el presente documento, ${data.propietario}, en adelante "El Arrendador", y ${data.arrendatario}, en adelante "El Arrendatario", 
 acuerdan celebrar el presente contrato de arrendamiento, el cual se regirá por las siguientes cláusulas:
-**bold and**
+
 1. Objeto del Contrato:
 El Arrendador da en arrendamiento al Arrendatario el terreno ubicado en ${data.direccionTerreno}, para su uso exclusivo y en los términos 
 establecidos en este documento.
@@ -46,18 +46,8 @@ y se obligan a cumplir con lo aquí pactado.
 
 Firmado en la ciudad a los ${data.fecha}.`;
 
-    const arrayOfNormalAndBoldText = contratoText.split('**');
-    arrayOfNormalAndBoldText.map((text, i) => {
-        doc.setFontType("bold");
-        // every even item is a normal font weight item
-        if (i % 2 === 0) {
-            doc.setFontType("normal");
-        }
-        doc.text(text, startX, 20);
-        startX = startX + doc.getStringUnitWidth(text) * fontSize;
-    });
     // Dividir el texto en líneas que se ajusten al ancho del PDF (ancho aproximado de 170)
-    const textLines = doc.splitTextToSize(arrayOfNormalAndBoldText, 170);
+    const textLines = doc.splitTextToSize(contratoText, 170);
     doc.text(textLines, 20, yPos);
 
     // Posicionar las líneas de firma al final del contenido (ajustando la posición vertical según la cantidad de texto)
