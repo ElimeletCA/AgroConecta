@@ -9,6 +9,7 @@
 @inject ITipoSueloAgent TipoSueloAgent
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject IJSRuntime JS
 
 <AuthorizeView Context="authContext">
     <Authorized>
@@ -94,6 +95,15 @@
                                        StartIcon="@Icons.Material.Filled.Add"
                                        OnClick="OpenCreateDialog">Nuevo</MudButton>
                         </MudPaper>
+                        <MudPaper Elevation="0" Class="">
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Error"
+                                   DropShadow="true"
+                                   Size="Size.Large"
+                                   StartIcon="@Icons.Material.Filled.PictureAsPdf"
+                                   OnClick="DescargarReporte">Descargar PDF</MudButton>
+                        </MudPaper>
+
                     </MudStack>
                 </ToolBarContent>
                 <ColGroup>
@@ -232,5 +242,10 @@
         }).Result;
     
         if (!result.Canceled) await GetAll();
+    }
+    private async Task DescargarReporte()
+    {
+        await JS.InvokeVoidAsync("ReporteTiposSuelo", listaTiposSuelo);
+
     }
 }
