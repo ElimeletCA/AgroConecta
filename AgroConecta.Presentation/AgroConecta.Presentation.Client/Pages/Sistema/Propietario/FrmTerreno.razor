@@ -51,6 +51,7 @@
                                                 <MudText Class="pb-1" HtmlTag="label" for="select_tipo_medida_area" Color="Color.Dark">Tipo de medida de área</MudText>
                                                 <div style="max-width: 300px;">
                                                     <MudSelect
+                                                        @ref="_mudSelectTipoMedidaAreaRef"
                                                         Margin="Margin.Dense"
                                                         Class="flow-select"
                                                         @bind-Value="Terreno.TipoMedidaAreaId"
@@ -264,7 +265,7 @@
                             </MudContainer>
                         </MudStep>
                         @*Comentarios y verificación*@
-                        <MudStep Title="Comentarios">
+                        <MudStep Title="Descripción y comentarios">
                             <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
                                 <MudGrid Justify="Justify.Center">
                                     <MudItem xs="12" sm="8" md="8" lg="8">
@@ -283,10 +284,13 @@
                                                     Required="true"
                                                     ReadOnly="@IsViewMode"
                                                     RequiredError="Este campo es requerido"
+                                                    MaxLength="450"
                                                 />
 
                                                 <MudText Class="pb-1" HtmlTag="label" for="input_comentarios" Color="Color.Dark">Comentarios acerca del terreno</MudText>
-                                                <MudTextField AutoGrow Lines="1" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"> </MudTextField>
+                                                <MudTextField AutoGrow Lines="1" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"        
+                                                              MaxLength="450"
+                                                > </MudTextField>
 
                                             </MudItem>
                                         </MudGrid>
@@ -340,7 +344,7 @@
     [Parameter]
     public bool IsViewMode { get; set; }
     private int _index;
-
+    private MudSelect<string> _mudSelectTipoMedidaAreaRef;
     private TerrenoDTO Terreno { get; set; } = new TerrenoDTO();
     
     private MudForm _form;
@@ -426,17 +430,20 @@
 
     protected async override void OnInitialized()
     {
+        if (!string.IsNullOrEmpty(idItem))
+        {
+            Terreno = await TerrenoAgent.GetByIdAsync(idItem, new[] { "Municipio", "Municipio.Provincia" }) ;
+        }
         _listaTiposMedidaArea = await TipoMedidaAreaAgent.GetAllAsync();
         _listaTiposSuelo = await TipoSueloAgent.GetAllAsync();
         _listaProvincias = await ProvinciaAgent.GetAllAsync();
         _listaMunicipios = await MunicipioAgent.GetAllAsync();
+        StateHasChanged();
+        await _mudSelectTipoMedidaAreaRef.ForceUpdate();
 
-        if (!string.IsNullOrEmpty(idItem))
-        {
-            Terreno = await TerrenoAgent.GetByIdAsync(idItem, new[] { "Municipio", "Municipio.Provincia" }) ;
-            StateHasChanged();
-        }
-    }   
+
+    }
+    
 
     #endregion
 

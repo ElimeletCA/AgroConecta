@@ -6,6 +6,7 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 @inject ITerrenoAgent TerrenoAgent
+@inject NavigationManager NavigationManager
 
 <MudContainer Class="py-4 py-sm-8 py-md-12 py-lg-16 py-xl-20">
     <MudItem xs="12">
@@ -110,7 +111,8 @@
     private bool _isLoadingData;
     private IEnumerable<TerrenoDTO> _terrenos = new List<TerrenoDTO>();
 
-    private List<TerrenoCard> _terrenosCards = new List<TerrenoCard>
+    private List<TerrenoCard> _terrenosCards = new List<TerrenoCard>();
+    /*private List<TerrenoCard> _terrenosCards = new List<TerrenoCard>
     {
         new TerrenoCard("","Azua", "Municipio de Azua de Compostela", "Terreno de 50 hectáreas ideal para el cultivo de mango, gracias a su clima seco y suelo fértil.", "./images/dummy/dummy-terreno-1.jpg"),
         new TerrenoCard("","La Vega", "Municipio de Constanza", "Parcela de 30 hectáreas perfecta para el cultivo de vegetales y fresas, debido a su clima templado.", "./images/dummy/dummy-terreno-2.jpg"),
@@ -122,7 +124,7 @@
         new TerrenoCard("","Peravia", "Municipio de Baní", "Finca de 45 hectáreas óptima para el cultivo de tomate, con clima semiárido favorable.", "./images/dummy/dummy-terreno-8.jpg"),
         new TerrenoCard("","La Altagracia", "Municipio de Higüey", "Terreno de 70 hectáreas ideal para el cultivo de caña de azúcar, en una región con tradición azucarera.", "./images/dummy/dummy-terreno-9.jpg"),
         new TerrenoCard("","Puerto Plata", "Municipio de San Felipe de Puerto Plata", "Parcela de 35 hectáreas perfecta para el cultivo de café, en zonas montañosas con buena altitud.", "./images/dummy/dummy-terreno-10.jpg")
-    };
+    };*/
 
     // Lista paginada (modificada para usar la lista filtrada)
     private List<TerrenoCard> CurrentPageCards => FilteredCards
@@ -172,9 +174,9 @@
             descripcion:  t.Descripcion,
             imagen: "./images/dummy/dummy-terreno-1.jpg" // O bien, derivarla de t
         )).ToList();
-
+        _terrenosCards = nuevosTerrenosCards;
         // Agrega los nuevos elementos a la lista existente _terrenosCards
-        _terrenosCards.AddRange(nuevosTerrenosCards);
+        //_terrenosCards.AddRange(nuevosTerrenosCards);
         _isLoadingData = false;
         StateHasChanged();
     }
@@ -231,16 +233,7 @@
     }
     private async Task OpenViewDialog(string id)
     {
-        var parameters = new DialogParameters {
-            { "idItem", id },
-            { "IsViewMode", true }
-        };
-    
-        DialogService.Show<FrmTerreno>("Ver terreno", parameters, new DialogOptions {
-            CloseButton = true,
-            MaxWidth = MaxWidth.Small,
-            BackdropClick = false
-        });
+        NavigationManager.NavigateTo($"/sistema/propietario/vistaterreno/{id}");
     }
     private async Task Eliminar(string id)
     {

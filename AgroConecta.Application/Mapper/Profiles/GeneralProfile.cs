@@ -31,6 +31,9 @@ public class GeneralProfile : Profile
         CreateMap<TerrenoDTO, Terreno>();
          CreateMap<Terreno, TerrenoDTO>()
              .ForMember(x => x.ProvinciaId, y => y.MapFrom(x => x.Municipio.ProvinciaId))
+             .ForMember(x => x.NombrePropietario, y => y.MapFrom(x => x.Propietario.nombre_completo))
+             .ForMember(x => x.DescripcionTipoSuelo, y => y.MapFrom(x => x.TipoSuelo.Descripcion))
+             .ForMember(x => x.DescripcionTipoMedidaArea, y => y.MapFrom(x => x.TipoMedidaArea.Descripcion))
 
              .ForMember(x => x.DescripcionMunicipio, y => y.MapFrom(x => x.Municipio.Descripcion))
              .ForMember(x => x.DescripcionProvincia, y => y.MapFrom(x => x.Municipio.Provincia.Descripcion));

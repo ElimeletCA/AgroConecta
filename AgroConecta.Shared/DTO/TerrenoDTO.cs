@@ -26,6 +26,14 @@ public class TerrenoDTO: BaseDTO
     
     public string? DescripcionProvincia { get; set; }
     public string? DescripcionMunicipio { get; set; }
+    
+    public string? NombrePropietario { get; set; }
+    
+    public string? DescripcionTipoMedidaArea { get; set; }
+
+    public string? DescripcionTipoSuelo { get; set; }
+
+
     public string? RutaImagen { get; set; }
 
 
