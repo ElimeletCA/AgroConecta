@@ -11,14 +11,16 @@ public class TerrenoDTO: BaseDTO
 
     public string ProvinciaId { get; set; }
 
+    public string Descripcion { get; set; }
+
     public double CoordenadaLatitud { get; set; }
     
     public double CoordenadaLongitud { get; set; }
     
-    public double CantidadAreaSueloTotal { get; set; }
+    public double? CantidadAreaSueloTotal { get; set; }
     
     public double CantidadAreaSueloDisponible{ get; set; }
-    public decimal PrecioPorArea{ get; set; }
+    public decimal? PrecioPorArea{ get; set; }
 
     public string Comentario { get; set; }
     

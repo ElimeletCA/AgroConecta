@@ -18,7 +18,8 @@ public class Arrendamiento : BaseEntity
     public DateTime FechaInicio { get; set; }
     
     public DateTime FechaFin { get; set; }
-    
+    [MaxLength(500)]
+    public string Descripción { get; set; }
     [MaxLength(500)]
     public string Condiciones { get; set; }
     
@@ -29,7 +30,7 @@ public class Arrendamiento : BaseEntity
     public string FrecuenciaPago { get; set; }
     
     [MaxLength(500)]
-    public string Comentario { get; set; }
+    public string? Comentario { get; set; }
     
     
     public int Estado  { get; set; }

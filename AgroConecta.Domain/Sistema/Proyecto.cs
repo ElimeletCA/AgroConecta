@@ -33,9 +33,8 @@ public class Proyecto : BaseEntity
     public decimal MontoTotalRetornoEstimado { get; set; }
 
     [MaxLength(500)]
-    public string Comentario { get; set; }
+    public string? Comentario { get; set; }
     
-    public bool RegistroActivo { get; set; }
     
     public int Estado  { get; set; }
 

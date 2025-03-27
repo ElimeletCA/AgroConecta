@@ -35,7 +35,6 @@ namespace AgroConecta.Infrastructure.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<string>("Comentario")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -46,6 +45,11 @@ namespace AgroConecta.Infrastructure.Migrations
 
                     b.Property<DateTime?>("DeletedTimeUtc")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descripción")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("Estado")
                         .HasColumnType("integer");
@@ -277,7 +281,6 @@ namespace AgroConecta.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Comentario")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -321,9 +324,6 @@ namespace AgroConecta.Infrastructure.Migrations
                     b.Property<string>("Objetivos")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("RegistroActivo")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("ResultadosEsperados")
                         .IsRequired()
@@ -373,7 +373,7 @@ namespace AgroConecta.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "006da7fd-3c10-4b70-90c2-7380c3e5febf",
+                            Id = "713c5c63-9aed-4226-8d71-ad5ea18db88d",
                             DescripcionPerfil = "Propietario",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -381,7 +381,7 @@ namespace AgroConecta.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = "cd65bea9-e37d-4672-a7f3-115e1b911eaf",
+                            Id = "5423b4eb-84f3-4521-9330-c7a70e8f8727",
                             DescripcionPerfil = "Agricultor",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -389,7 +389,7 @@ namespace AgroConecta.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = "5286e36d-7418-4940-997b-0880959a2483",
+                            Id = "5d81051d-27c5-44aa-bd98-06d4f6d3e958",
                             DescripcionPerfil = "Inversionista",
                             IsDeleted = false,
                             LastUpdateUtc = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -480,7 +480,6 @@ namespace AgroConecta.Infrastructure.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<string>("Comentario")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
@@ -492,6 +491,11 @@ namespace AgroConecta.Infrastructure.Migrations
 
                     b.Property<DateTime?>("DeletedTimeUtc")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Descripción")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");

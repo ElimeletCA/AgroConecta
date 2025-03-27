@@ -1,11 +1,12 @@
+@using System.Globalization
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.General
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Tipos
 @using AgroConecta.Shared.DTO
 @using AgroConecta.Shared.DTO.Tipos
+@using AgroConecta.Shared.Estados
 @using MudBlazor.Utilities
-@using LeafletForBlazor
-
+@inject IJSRuntime JS
 @inject ITipoMedidaAreaAgent TipoMedidaAreaAgent
 @inject ITipoSueloAgent TipoSueloAgent
 @inject IProvinciaAgent ProvinciaAgent
@@ -19,7 +20,9 @@
         <MudText Typo="Typo.h6">@Title</MudText>
     </TitleContent>
     <DialogContent>
-        <MudStepper CenterLabels="true" ShowResetButton>
+        <MudForm @ref="_form" Disabled="@IsViewMode">
+
+        <MudStepper  @bind-ActiveIndex="_index" CenterLabels="true" OnPreviewInteraction="OnPreviewInteraction" ShowResetButton>
             @*Información básica*@
             <MudStep Title="Información básica del terreno">
                 <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
@@ -29,7 +32,19 @@
                                 <MudItem xs="12" sm="6">
                                     <MudText Class="pb-1" HtmlTag="label" for="select_tipo_medida_area" Color="Color.Dark">Tipo de medida de área</MudText>
                                     <div style="max-width: 300px;">
-                                        <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="Terreno.TipoMedidaAreaId" InputId="select_tipo_medida_area" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                                        <MudSelect 
+                                            Margin="Margin.Dense"
+                                            Class="flow-select" 
+                                            @bind-Value="Terreno.TipoMedidaAreaId" 
+                                            InputId="select_tipo_medida_area" 
+                                            Label="" 
+                                            Variant="Variant.Outlined" 
+                                            AnchorOrigin="Origin.BottomCenter" 
+                                            TransformOrigin="Origin.TopCenter"
+                                            Required="true"
+                                            ReadOnly="@IsViewMode"
+                                            RequiredError="Se requiere un tipo de media de área"
+                                            >
                                             @foreach (var tipoMedidaArea in _listaTiposMedidaArea)
                                             {
                                                 <MudSelectItem Value="tipoMedidaArea.Id">@tipoMedidaArea.Descripcion</MudSelectItem>
@@ -40,7 +55,19 @@
                                 <MudItem xs="12" sm="6">
                                     <MudText Class="pb-1" HtmlTag="label" for="select_tipo_suelo" Color="Color.Dark">Tipo de suelo</MudText>
                                     <div style="max-width: 300px;">
-                                        <MudSelect Margin="Margin.Dense" Class="flow-select" @bind-Value="Terreno.TipoSueloId" InputId="select_tipo_suelo" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                                        <MudSelect
+                                            Margin="Margin.Dense"
+                                            Class="flow-select" 
+                                            @bind-Value="Terreno.TipoSueloId" 
+                                            InputId="select_tipo_suelo" 
+                                            Label="" 
+                                            Variant="Variant.Outlined"
+                                            AnchorOrigin="Origin.BottomCenter" 
+                                            TransformOrigin="Origin.TopCenter"
+                                            Required="true"
+                                            ReadOnly="@IsViewMode"
+                                            RequiredError="Se requiere un tipo de suelo"
+                                            >
                                             @foreach (var tipoSuelo in _listaTiposSuelo)
                                             {
                                                 <MudSelectItem Value="tipoSuelo.Id">@tipoSuelo.Descripcion</MudSelectItem>
@@ -50,13 +77,37 @@
                                 </MudItem>
                                 <MudItem xs="12" sm="6">
                                     <MudText Class="pb-1" HtmlTag="label" for="input_cantidad_total_area" Color="Color.Dark">Cantidad total de área de suelo</MudText>
-                                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_cantidad_total_area" @bind-Value="@Terreno.CantidadAreaSueloTotal" Label="" Variant="Variant.Outlined"> </MudTextField>
+                                    <MudNumericField 
+                                        Margin="Margin.Dense"
+                                        Class="flow-input" 
+                                        HideSpinButtons="true"
+                                        Label=""
+                                        Variant="Variant.Outlined"
+                                        InputId="input_cantidad_total_area"
+                                        @bind-Value="@Terreno.CantidadAreaSueloTotal" 
+                                        Min="0.0"
+                                        Max="10000000.0"
+                                        ReadOnly="@IsViewMode"
+                                        Validation="@(new Func<double?, IEnumerable<string>>(ValidateNumericFieldDouble))"
+                                        />
 
                                 </MudItem>
                                 <MudItem xs="12" sm="6">
                                     <MudText Class="pb-1" HtmlTag="label" for="input_precio_unidad_area" Color="Color.Dark">Precio por unidad de área</MudText>
-                                    <MudTextField Margin="Margin.Dense" Class="flow-input" InputId="input_precio_unidad_area" @bind-Value="@Terreno.PrecioPorArea" Label="" Variant="Variant.Outlined"> </MudTextField>
-
+                                    <MudNumericField
+                                        Margin="Margin.Dense"
+                                        Class="flow-input"
+                                        HideSpinButtons="true"
+                                        Label=""
+                                        Variant="Variant.Outlined"
+                                        InputId="input_precio_unidad_area"
+                                        @bind-Value="@Terreno.PrecioPorArea"
+                                        Min="0.0M"
+                                        Step=".2M"
+                                        Max="10000000.0M"
+                                        ReadOnly="@IsViewMode"
+                                        Validation="@(new Func<decimal?, IEnumerable<string>>(ValidateNumericFieldDecimal))"
+                                    />
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
@@ -81,7 +132,11 @@
                                                    Label=""
                                                    Variant="Variant.Outlined"
                                                    AnchorOrigin="Origin.BottomCenter"
-                                                   TransformOrigin="Origin.TopCenter">
+                                                   TransformOrigin="Origin.TopCenter"
+                                                   Required="true"
+                                                   ReadOnly="@IsViewMode"
+                                                   RequiredError="Este campo es requerido"
+                                                   >
                                             @foreach (var provincia in _listaProvincias)
                                             {
                                                 <MudSelectItem T="string" Value="@provincia.Id">@provincia.Descripcion</MudSelectItem>
@@ -93,7 +148,19 @@
                                 <MudItem xs="12" sm="6">
                                     <MudText Class="pb-1" HtmlTag="label" for="select_municipio" Color="Color.Dark">Municipio</MudText>
                                     <div style="max-width: 300px;">
-                                        <MudSelect T="string" @bind-Value="Terreno.MunicipioId" Margin="Margin.Dense" Class="flow-select" InputId="select_municipio" Label="" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+                                        <MudSelect T="string"
+                                                   @bind-Value="Terreno.MunicipioId"
+                                                   Margin="Margin.Dense"
+                                                   Class="flow-select"
+                                                   InputId="select_municipio" 
+                                                   Label="" 
+                                                   Variant="Variant.Outlined"
+                                                   AnchorOrigin="Origin.BottomCenter" 
+                                                   TransformOrigin="Origin.TopCenter"
+                                                   Required="true"
+                                                   ReadOnly="@IsViewMode"
+                                                   RequiredError="Este campo es requerido"
+                                                   >
                                             @foreach (var municipio in _listaMunicipiosFiltrados)
                                             {
                                                 <MudSelectItem T="string" Value="@municipio.Id">@municipio.Descripcion</MudSelectItem>
@@ -102,7 +169,8 @@
                                     </div>
                                 </MudItem>
                                 <MudItem xs="12">
-                                    <RealTimeMap   @ref="realTimeMap" Parameters="parameters" height="300px" width="620px"></RealTimeMap>
+                                    <div id="mapTerreno" class="map" style="height:250px;width:550px"></div>
+
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
@@ -183,8 +251,24 @@
                         <MudItem xs="12" sm="8" md="8" lg="8">
                             <MudGrid>
                                 <MudItem xs="12" sm="12">
+                                    <MudText Class="pb-1" HtmlTag="label" for="input_descripcion" Color="Color.Dark">Descripción del terreno</MudText>
+                                    <MudTextField 
+                                        AutoGrow 
+                                        Lines="3"
+                                        Margin="Margin.Dense"
+                                        Class="flow-input" 
+                                        InputId="input_descripcion"
+                                        @bind-Value="@Terreno.Descripcion" 
+                                        Label="" 
+                                        Variant="Variant.Outlined"
+                                        Required="true"
+                                        ReadOnly="@IsViewMode"
+                                        RequiredError="Este campo es requerido"
+                                    /> 
+
                                     <MudText Class="pb-1" HtmlTag="label" for="input_comentarios" Color="Color.Dark">Comentarios acerca del terreno</MudText>
-                                    <MudTextField AutoGrow Lines="5" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"> </MudTextField>
+                                    <MudTextField AutoGrow Lines="1" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"> </MudTextField>
+
                                 </MudItem>
                             </MudGrid>
                         </MudItem>
@@ -209,18 +293,13 @@
 
         </MudForm>
     *@
+        </MudForm>
+
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Text"
                    Color="Color.Secondary"
                    OnClick="Cancel">@(IsViewMode ? "Cerrar" : "Cancelar")</MudButton>
-        @if (!IsViewMode)
-        {
-            <MudButton Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       OnClick="Save">Guardar</MudButton>
-        }
-
     </DialogActions>
 </MudDialog>
 
@@ -229,13 +308,12 @@
     [Parameter] public TerrenoDTO Terreno { get; set; } = new();
     [Parameter] public EventCallback OnSaved { get; set; }
     [Parameter] public bool IsViewMode { get; set; }
+    private int _index;
 
     private MudForm _form;
-    private string Title => IsViewMode ? "Ver Tipo de Medida" : 
+    private string Title => IsViewMode ? "Ver terreno" : 
                         (Terreno.Id == null ? "Agregar terreno" : "Modificar terreno");
-
     
-    RealTimeMap? realTimeMap;
 
     //Listas de opciones
 
@@ -249,38 +327,54 @@
 
     private IEnumerable<MunicipioDTO> _listaMunicipiosFiltrados = new List<MunicipioDTO>();
     
-
-    // Configuración inicial del mapa (centro, zoom, etc.)
-    RealTimeMap.LoadParameters parameters = new RealTimeMap.LoadParameters()
+    private async Task OnPreviewInteraction(StepperInteractionEventArgs args)
     {
-        location = new RealTimeMap.Location() { latitude = 18.47186, longitude = -69.89232 },
-        zoomLevel = 9
-    };
-
-    // Ejemplo para agregar un marcador
-    async Task AgregarMarcador()
-    {
-        double[] coordenadas = new double[] { 18.472, -69.893 }; // Latitud y longitud del marcador
-        RealTimeMap.PointSymbol simbolo = new RealTimeMap.PointSymbol()
+        // Por ejemplo, si se trata de completar el paso actual (avanzar o retroceder)
+        if (args.Action == StepAction.Complete || args.Action == StepAction.Activate)
         {
-            color = "red",
-            fillColor = "red",
-            radius = 8,
-            weight = 2,
-            opacity = 1,
-            fillOpacity = 0.8
-        };
+            // Validar el formulario
+            await _form.Validate();
+            if (!_form.IsValid)
+            {
+                // Si la validación falla, cancelar la acción
+                args.Cancel = true;
+                // (Opcional) Mostrar un mensaje o realizar alguna acción adicional
+            }
+            else
+            {
+                if (_index == 3 && args.Action == StepAction.Complete)
+                {
+                    //Proceso de guardado al completar el stepper
+                    try
+                    {
+                        if (string.IsNullOrEmpty(Terreno.Id))
+                        {
+                            Terreno.Estado = (int)TerrenoEstado.Creado;
+                            await TerrenoAgent.AddAsync(Terreno);
+                        }
+                        else
+                        {
+                            await TerrenoAgent.UpdateAsync(Terreno.Id, Terreno);
+                        }
+                
+                        Snackbar.Add("Operación realizada correctamente", Severity.Success);
+                        await OnSaved.InvokeAsync();
+                        MudDialog.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+                    }
+                    //Snackbar.Add("Operación realizada correctamente", Severity.Success);
 
-        RealTimeMap.PointTooltip tooltip = new RealTimeMap.PointTooltip()
-        {
-            content = "Ubicación del marcador",
-            permanent = true,
-            opacity = 0.9
-        };
+                }
 
-        // Coloca el marcador en el mapa
-        await realTimeMap.movePoint(coordenadas, simbolo, tooltip);
+
+            }
+        }
     }
+
+   
     // Validación personalizada
     private IEnumerable<string> ValidateDescription(string value)
     {
@@ -291,13 +385,6 @@
         else if (value.Length > 100)
         {
             yield return "Máximo 100 caracteres permitidos";
-        }
-    }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && realTimeMap != null)
-        {
-            await AgregarMarcador();
         }
     }
 
@@ -360,9 +447,27 @@
 
     private async Task ObtenerMunicipiosDeProvincia(string provinciaId)
     {
+        ProvinciaDTO _provinciaSeleccionada = _listaProvincias.Where(x => x.Id == provinciaId).ToList().FirstOrDefault();
+
+        if (_provinciaSeleccionada is null)
+        {
+            return;
+        }
         Terreno.ProvinciaId = provinciaId;
+        Terreno.CoordenadaLatitud = _provinciaSeleccionada.Latitud ?? 0;
+        Terreno.CoordenadaLongitud = _provinciaSeleccionada.Longitud ?? 0;
+
         _listaMunicipiosFiltrados = _listaMunicipios.Where(m => m.ProvinciaId == provinciaId).ToList();
-        StateHasChanged();    }
+        StateHasChanged();
+        await JS.InvokeVoidAsync("GenerarMapa",
+            Terreno.CoordenadaLatitud.ToString(CultureInfo.InvariantCulture), 
+            Terreno.CoordenadaLongitud.ToString(CultureInfo.InvariantCulture),
+            "8",
+                _provinciaSeleccionada.Descripcion
+            );
+
+        
+    }
     
 
     #endregion
@@ -422,5 +527,30 @@
     private void ClearDragClass()
         => _dragClass = DefaultDragClass;    
 
+    #endregion
+
+
+    #region Validaciones
+    private int GetDecimalPlaces(double number)
+    {
+        string numberStr = number.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        int decimalIndex = numberStr.IndexOf(".");
+        return decimalIndex == -1 ? 0 : numberStr.Length - decimalIndex - 1;
+    }
+    private IEnumerable<string> ValidateNumericFieldDouble(double? value)
+    {
+        if (!value.HasValue || value.Value <= 0)
+            yield return "Este campo es requerido";
+        
+        if (GetDecimalPlaces(value.Value) > 4)
+            yield return "Solo se permiten hasta 4 decimales";
+    }
+    private IEnumerable<string> ValidateNumericFieldDecimal(decimal? value)
+    {
+        if (!value.HasValue || value.Value <= 0)
+            yield return "Este campo es requerido";
+
+    }
+    
     #endregion
 }

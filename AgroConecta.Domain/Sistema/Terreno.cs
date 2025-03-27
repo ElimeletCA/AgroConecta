@@ -16,6 +16,8 @@ public class Terreno: BaseEntity
     
     public string MunicipioId { get; set; }
 
+    [MaxLength(500)]
+    public string Descripción { get; set; }
     public string TipoSueloId { get; set; }
     
     public double CoordenadaLatitud { get; set; }
@@ -30,7 +32,7 @@ public class Terreno: BaseEntity
 
     
     [MaxLength(500)]
-    public string Comentario { get; set; }
+    public string? Comentario { get; set; }
     
     
     public int estado  { get; set; }

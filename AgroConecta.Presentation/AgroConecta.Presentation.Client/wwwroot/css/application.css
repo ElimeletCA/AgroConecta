@@ -10,7 +10,7 @@
 .flow-input .mud-input{
     background-color: rgb(249, 250, 251); border-radius: 8px;
 }
-.flow-select{
+.flow-select .mud-input{
     background-color: rgb(249, 250, 251); border-radius: 8px;
 }
 .flow-button{

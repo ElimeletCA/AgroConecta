@@ -15,6 +15,8 @@
     *@
     <link rel="icon" type="image/ico" href="favicon.ico"/>
     <link href="css/application.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/css/leaflet/leaflet.css" />
+
     <HeadOutlet @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)"/>
 </head>
 
@@ -32,7 +34,7 @@
 <script src="js/FileUtil.js"></script>
 <script src="js/aos/aos.js"></script>
 <script src="js/flowbite/flowbite.min.js" defer></script>
-
+<script src="/js/leaflet/leaflet.js" defer ></script>
 <script>
     function checkIfAsideIsOpen() {
         var aside = document.getElementById('drawer-navigation');
@@ -42,6 +44,24 @@
         AOS.init();
         initFlowbite();
     }
+
+    async function GenerarMapa(latitude, longitude, zoom, descripcion) {
+        var container = L.DomUtil.get('mapTerreno');
+        if(container != null){
+            container._leaflet_id = null;
+        }
+        var map = L.map('mapTerreno').setView([latitude, longitude], zoom);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([latitude, longitude]).addTo(map)
+            .bindPopup(descripcion)
+            .openPopup(); 
+    }
+
+
 </script>
 <script>
 

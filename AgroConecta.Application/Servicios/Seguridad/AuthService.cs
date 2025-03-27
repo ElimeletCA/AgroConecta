@@ -154,7 +154,7 @@ public class AuthService : IAuthService
                 claims: claims,
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
-                expires: System.DateTime.Now.AddMinutes(60),
+                expires: System.DateTime.Now.AddMinutes(120),
                 signingCredentials: signingcred);
                 
             string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
