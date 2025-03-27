@@ -29,16 +29,16 @@ public class BaseService<TDto, TEntity> : IBaseService<TDto, TEntity>
         await _unitOfWork.CommitAsync();
     }
 
-    public async Task<IEnumerable<TDto>> GetAllAsync()
+    public async Task<IEnumerable<TDto>> GetAllAsync(params string[] includes)
     {
-        var entities = await _repository.GetAllAsync();
+        var entities = await _repository.GetAllAsync(includes);
         // Mapear de entidad a DTO
         return _mapper.Map<IEnumerable<TDto>>(entities);
     }
 
-    public async Task<TDto?> GetByIdAsync(string id)
+    public async Task<TDto?> GetByIdAsync(string id, params string[] includes)
     {
-        var entity = await _repository.GetByIdAsync(id);
+        var entity = await _repository.GetByIdAsync(id, includes);
         return entity is null ? null : _mapper.Map<TDto>(entity);
     }
 

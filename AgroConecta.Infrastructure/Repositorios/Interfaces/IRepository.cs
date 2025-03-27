@@ -5,10 +5,10 @@ namespace AgroConecta.Infrastructure.Repositorios.Interfaces;
 public interface IRepository<T> where T : BaseEntity
 {
     // Obtiene una entidad por su ID
-    Task<T?> GetByIdAsync(string id);
+    Task<T?> GetByIdAsync(string id, params string[] includes);
     
     // Obtiene todas las entidades (usualmente filtrando los eliminados lógicamente)
-    Task<IEnumerable<T>> GetAllAsync();
+    Task<IEnumerable<T>> GetAllAsync(params string[] includes);
     
     // Agrega una nueva entidad
     Task AddAsync(T entity);

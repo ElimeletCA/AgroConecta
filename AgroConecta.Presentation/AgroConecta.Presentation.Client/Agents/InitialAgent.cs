@@ -21,12 +21,20 @@ public abstract class InitialAgent<TDto> : BaseAgent, IInitialAgent<TDto>
         _jsRuntime = jsRuntime;
     }
 
-    public async Task<IEnumerable<TDto>> GetAllAsync()
+    public async Task<IEnumerable<TDto>> GetAllAsync(string[] includes = null)
     {
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
+        string url = _endpoint;
 
-        var response = await _httpClient.GetAsync(_endpoint);
-        
+        if (includes != null && includes.Length > 0)
+        {
+            var queryString = string.Join("&", includes.Select(x => "includes=" + WebUtility.UrlEncode(x)));
+            url = _endpoint.Contains("?") 
+                ? $"{_endpoint}&{queryString}" 
+                : $"{_endpoint}?{queryString}";
+        }
+
+        var response = await _httpClient.GetAsync(url);
         if (response.IsSuccessStatusCode)
         {
             var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<IEnumerable<TDto>>>();
@@ -37,18 +45,25 @@ public abstract class InitialAgent<TDto> : BaseAgent, IInitialAgent<TDto>
         return Enumerable.Empty<TDto>();
     }
 
-    public async Task<TDto?> GetByIdAsync(string id)
+    public async Task<TDto?> GetByIdAsync(string id, string[] includes = null)
     {
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await _tokenManager.GetTokenAsync());
+        string url = $"{_endpoint}/{id}";
 
-        var response = await _httpClient.GetAsync($"{_endpoint}/{id}");
-        
+        if (includes != null && includes.Length > 0)
+        {
+            var queryString = string.Join("&", includes.Select(include => $"includes={WebUtility.UrlEncode(include)}"));
+            url = $"{url}?{queryString}";
+        }
+
+        var response = await _httpClient.GetAsync(url);
+
         if (response.IsSuccessStatusCode)
         {
             var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<TDto>>();
             return apiResponse?.Message;
         }
-        
+
         HandleErrorResponse(response);
         return default;
     }

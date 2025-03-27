@@ -17,16 +17,39 @@ public abstract class Repository<T> : IRepository<T>
         _context = context;
     }
 
-    public async Task<T?> GetByIdAsync(string id)
+    public async Task<T?> GetByIdAsync(string id, params string[] includes)
     {
+        IQueryable<T> query = Entities.Where(e => e.Id == id && !e.IsDeleted);
 
-        return await Entities.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
+        if (includes != null && includes.Length > 0)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
+        return await query.FirstOrDefaultAsync();
+        //return await Entities.FirstOrDefaultAsync(e => e.Id == id && !e.IsDeleted);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(params string[] includes)
     {
+        
+        IQueryable<T> query = Entities.Where(e => !e.IsDeleted);
+        
+        if (includes != null && includes.Length > 0)
+        {
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+        }
+
         // Retornar todas las entidades que no estén marcadas como eliminadas (soft delete)
-        return await Entities.Where(e => !e.IsDeleted).ToListAsync();
+        //return await Entities.Where(e => !e.IsDeleted).ToListAsync();
+        return await query.ToListAsync();
+
     }
 
     public async Task AddAsync(T entity)

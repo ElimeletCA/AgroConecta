@@ -43,14 +43,14 @@ namespace AgroConecta.Presentation.Controllers;
             _actionContextAccessor = actionContextAccessor;
         }
 
-        // GET: api/[controller]
+        // GET: api/[controller]?includes=Entity&includes=Entity.SecondEntity
         [HttpGet]
-        public virtual async Task<IActionResult>  GetAll()
+        public virtual async Task<IActionResult>  GetAll([FromQuery] string[] includes)
         {
             var fullActionName = GetFullActionName();
             try
             {
-                var dtos = await _service.GetAllAsync();
+                var dtos = await _service.GetAllAsync(includes);
                 var response = new ApiResponse<IEnumerable<TDto>>
                 {
                     Success = true,
@@ -85,14 +85,14 @@ namespace AgroConecta.Presentation.Controllers;
             }
         }
 
-        // GET: api/[controller]/{id}
+        // GET: api/[controller]/{id}?includes=Entity&includes=Entity.SecondEntity
         [HttpGet("{id}")]
-        public virtual async  Task<IActionResult> GetById(string id)
+        public virtual async  Task<IActionResult> GetById(string id, [FromQuery] string[] includes)
         {
             var fullActionName = GetFullActionName();
             try
             {
-                var dto = await _service.GetByIdAsync(id);
+                var dto = await _service.GetByIdAsync(id, includes);
                 if (dto == null)
                 {
                     var notFoundResponse = new ApiResponse<string>

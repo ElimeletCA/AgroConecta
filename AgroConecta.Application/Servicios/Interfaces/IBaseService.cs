@@ -7,8 +7,8 @@ public interface IBaseService<TDto, TEntity>
     where TEntity : BaseEntity
     where TDto : BaseDTO
 {
-    Task<TDto?> GetByIdAsync(string id);
-    Task<IEnumerable<TDto>> GetAllAsync();
+    Task<TDto?> GetByIdAsync(string id,  params string[] includes);
+    Task<IEnumerable<TDto>> GetAllAsync(params string[] includes);
     Task AddAsync(TDto dto);
     Task UpdateAsync(TDto dto);
     Task SoftDeleteAsync(string id);

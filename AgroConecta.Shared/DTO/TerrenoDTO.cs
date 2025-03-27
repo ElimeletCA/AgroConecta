@@ -22,9 +22,13 @@ public class TerrenoDTO: BaseDTO
     public double CantidadAreaSueloDisponible{ get; set; }
     public decimal? PrecioPorArea{ get; set; }
 
-    public string Comentario { get; set; }
+    public string? Comentario { get; set; }
     
-    
+    public string? DescripcionProvincia { get; set; }
+    public string? DescripcionMunicipio { get; set; }
+    public string? RutaImagen { get; set; }
+
+
     public int Estado  { get; set; }
 
 }

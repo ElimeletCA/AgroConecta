@@ -1,11 +1,15 @@
 @using System.Globalization
+@using System.Security.Claims
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.General
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Tipos
 @using AgroConecta.Shared.DTO
+@using AgroConecta.Presentation.Client.Components.Seguridad
+
 @using AgroConecta.Shared.DTO.Tipos
 @using AgroConecta.Shared.Estados
 @using MudBlazor.Utilities
+@using AgroConecta.Presentation.Client.Components.General
 @inject IJSRuntime JS
 @inject ITipoMedidaAreaAgent TipoMedidaAreaAgent
 @inject ITipoSueloAgent TipoSueloAgent
@@ -15,268 +19,285 @@
 @inject ITerrenoAgent TerrenoAgent
 @inject ISnackbar Snackbar
 
-<MudDialog ContentStyle="width: 1000px; !important">
-    <TitleContent>
-        <MudText Typo="Typo.h6">@Title</MudText>
-    </TitleContent>
-    <DialogContent>
-        <MudForm @ref="_form" Disabled="@IsViewMode">
+<AuthorizeView Context="authContext">
+    <Authorizing>
+        <PantallaCarga/>
+    </Authorizing>
+    <NotAuthorized>
+        <NoAutenticado/>
+    </NotAuthorized>
+    <Authorized>
+        @{
+            _usuario = authContext.User;
 
-        <MudStepper  @bind-ActiveIndex="_index" CenterLabels="true" OnPreviewInteraction="OnPreviewInteraction" ShowResetButton>
-            @*Información básica*@
-            <MudStep Title="Información básica del terreno">
-                <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
-                    <MudGrid Justify="Justify.Center">
-                        <MudItem xs="12" sm="8" md="8" lg="8">
-                            <MudGrid>
-                                <MudItem xs="12" sm="6">
-                                    <MudText Class="pb-1" HtmlTag="label" for="select_tipo_medida_area" Color="Color.Dark">Tipo de medida de área</MudText>
-                                    <div style="max-width: 300px;">
-                                        <MudSelect 
-                                            Margin="Margin.Dense"
-                                            Class="flow-select" 
-                                            @bind-Value="Terreno.TipoMedidaAreaId" 
-                                            InputId="select_tipo_medida_area" 
-                                            Label="" 
-                                            Variant="Variant.Outlined" 
-                                            AnchorOrigin="Origin.BottomCenter" 
-                                            TransformOrigin="Origin.TopCenter"
-                                            Required="true"
-                                            ReadOnly="@IsViewMode"
-                                            RequiredError="Se requiere un tipo de media de área"
-                                            >
-                                            @foreach (var tipoMedidaArea in _listaTiposMedidaArea)
-                                            {
-                                                <MudSelectItem Value="tipoMedidaArea.Id">@tipoMedidaArea.Descripcion</MudSelectItem>
-                                            }
-                                        </MudSelect>
-                                    </div>              
-                                    </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudText Class="pb-1" HtmlTag="label" for="select_tipo_suelo" Color="Color.Dark">Tipo de suelo</MudText>
-                                    <div style="max-width: 300px;">
-                                        <MudSelect
-                                            Margin="Margin.Dense"
-                                            Class="flow-select" 
-                                            @bind-Value="Terreno.TipoSueloId" 
-                                            InputId="select_tipo_suelo" 
-                                            Label="" 
-                                            Variant="Variant.Outlined"
-                                            AnchorOrigin="Origin.BottomCenter" 
-                                            TransformOrigin="Origin.TopCenter"
-                                            Required="true"
-                                            ReadOnly="@IsViewMode"
-                                            RequiredError="Se requiere un tipo de suelo"
-                                            >
-                                            @foreach (var tipoSuelo in _listaTiposSuelo)
-                                            {
-                                                <MudSelectItem Value="tipoSuelo.Id">@tipoSuelo.Descripcion</MudSelectItem>
-                                            }
-                                        </MudSelect>
-                                    </div>                                   
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudText Class="pb-1" HtmlTag="label" for="input_cantidad_total_area" Color="Color.Dark">Cantidad total de área de suelo</MudText>
-                                    <MudNumericField 
-                                        Margin="Margin.Dense"
-                                        Class="flow-input" 
-                                        HideSpinButtons="true"
-                                        Label=""
-                                        Variant="Variant.Outlined"
-                                        InputId="input_cantidad_total_area"
-                                        @bind-Value="@Terreno.CantidadAreaSueloTotal" 
-                                        Min="0.0"
-                                        Max="10000000.0"
-                                        ReadOnly="@IsViewMode"
-                                        Validation="@(new Func<double?, IEnumerable<string>>(ValidateNumericFieldDouble))"
-                                        />
 
-                                </MudItem>
-                                <MudItem xs="12" sm="6">
-                                    <MudText Class="pb-1" HtmlTag="label" for="input_precio_unidad_area" Color="Color.Dark">Precio por unidad de área</MudText>
-                                    <MudNumericField
-                                        Margin="Margin.Dense"
-                                        Class="flow-input"
-                                        HideSpinButtons="true"
-                                        Label=""
-                                        Variant="Variant.Outlined"
-                                        InputId="input_precio_unidad_area"
-                                        @bind-Value="@Terreno.PrecioPorArea"
-                                        Min="0.0M"
-                                        Step=".2M"
-                                        Max="10000000.0M"
-                                        ReadOnly="@IsViewMode"
-                                        Validation="@(new Func<decimal?, IEnumerable<string>>(ValidateNumericFieldDecimal))"
-                                    />
-                                </MudItem>
-                            </MudGrid>
-                        </MudItem>
-                    </MudGrid>
-                </MudContainer>
-                </MudStep>
-            @*Ubicación del terreno*@
-            <MudStep Title="Ubicación del terreno">
-                <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
-                    <MudGrid Justify="Justify.Center">
-                        <MudItem xs="12" sm="8" md="8" lg="8">
-                            <MudGrid>
-                                <MudItem xs="12" sm="6">
-                                    <MudText Class="pb-1" HtmlTag="label" for="select_provincia" Color="Color.Dark">Provincia</MudText>
-                                    <div style="max-width: 300px;">
-                                        <MudSelect T="string" Value="Terreno.ProvinciaId"
-                                                   ValueChanged="ObtenerMunicipiosDeProvincia"
-                                                   ValueExpression="@(() => Terreno.ProvinciaId)"
-                                                   Margin="Margin.Dense"
-                                                   Class="flow-select"
-                                                   InputId="select_provincia"
-                                                   Label=""
-                                                   Variant="Variant.Outlined"
-                                                   AnchorOrigin="Origin.BottomCenter"
-                                                   TransformOrigin="Origin.TopCenter"
-                                                   Required="true"
-                                                   ReadOnly="@IsViewMode"
-                                                   RequiredError="Este campo es requerido"
-                                                   >
-                                            @foreach (var provincia in _listaProvincias)
-                                            {
-                                                <MudSelectItem T="string" Value="@provincia.Id">@provincia.Descripcion</MudSelectItem>
-                                            }
-                                        </MudSelect>
-                                    </div>
-                                </MudItem>
+        }
+        <MudDialog ContentStyle="width: 1000px; !important">
+            <TitleContent>
+                <MudText Typo="Typo.h6">@Title</MudText>
+            </TitleContent>
+            <DialogContent>
 
-                                <MudItem xs="12" sm="6">
-                                    <MudText Class="pb-1" HtmlTag="label" for="select_municipio" Color="Color.Dark">Municipio</MudText>
-                                    <div style="max-width: 300px;">
-                                        <MudSelect T="string"
-                                                   @bind-Value="Terreno.MunicipioId"
-                                                   Margin="Margin.Dense"
-                                                   Class="flow-select"
-                                                   InputId="select_municipio" 
-                                                   Label="" 
-                                                   Variant="Variant.Outlined"
-                                                   AnchorOrigin="Origin.BottomCenter" 
-                                                   TransformOrigin="Origin.TopCenter"
-                                                   Required="true"
-                                                   ReadOnly="@IsViewMode"
-                                                   RequiredError="Este campo es requerido"
-                                                   >
-                                            @foreach (var municipio in _listaMunicipiosFiltrados)
-                                            {
-                                                <MudSelectItem T="string" Value="@municipio.Id">@municipio.Descripcion</MudSelectItem>
-                                            }
-                                        </MudSelect>
-                                    </div>
-                                </MudItem>
-                                <MudItem xs="12">
-                                    <div id="mapTerreno" class="map" style="height:250px;width:550px"></div>
+                    <MudStepper  @bind-ActiveIndex="_index" CenterLabels="true" OnPreviewInteraction="OnPreviewInteraction" ShowResetButton>
+                        <MudForm @ref="_form" Disabled="@IsViewMode">
 
-                                </MudItem>
-                            </MudGrid>
-                        </MudItem>
-                    </MudGrid>
-                </MudContainer> 
-                </MudStep>
-            @*Imagenes del terreno*@
-            <MudStep Title="Imágenes">
-                <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
-                    <MudGrid Justify="Justify.Center">
-                        <MudItem xs="12" sm="8" md="8" lg="8">
-                            <MudGrid>
-                                <MudItem xs="12">
-                                    <MudStack Style="width: 100%">
-                                        <MudFileUpload T="IReadOnlyList<IBrowserFile>"
-                                                       Accept=".jpg,.jpeg,.png"
-                                                       @ref="_fileUpload"
-                                                       MaximumFileCount="8"
-                                                       OnFilesChanged="OnInputFileChanged"
-                                                       AppendMultipleFiles
-                                                       Hidden="false"
-                                                       InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
-                                                       InputStyle="opacity:0"
-                                                       tabindex="-1"
-                                                       @ondrop="ClearDragClass"
-                                                       @ondragenter="SetDragClass"
-                                                       @ondragleave="ClearDragClass"
-                                                       @ondragend="ClearDragClass">
-                                            <ActivatorContent>
-                                                <MudPaper Height="350px"
-                                                          Outlined="true"
-                                                          Class="@_dragClass">
-                                                    <MudText Typo="Typo.h6" Align="Align.Center">
-                                                        Arrastre y suelte los archivos aquí o haga click
-                                                    </MudText>
-                                                    @* Se muestra el preview de las imágenes en formato cuadrado *@
-                                                    <div class="d-flex flex-wrap justify-center mt-4">
-                                                        @foreach (var preview in imagePreviews)
+                        @*Información básica*@
+                        <MudStep Title="Información básica del terreno">
+                            <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                                <MudGrid Justify="Justify.Center">
+                                    <MudItem xs="12" sm="8" md="8" lg="8">
+                                        <MudGrid>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText Class="pb-1" HtmlTag="label" for="select_tipo_medida_area" Color="Color.Dark">Tipo de medida de área</MudText>
+                                                <div style="max-width: 300px;">
+                                                    <MudSelect
+                                                        Margin="Margin.Dense"
+                                                        Class="flow-select"
+                                                        @bind-Value="Terreno.TipoMedidaAreaId"
+                                                        InputId="select_tipo_medida_area"
+                                                        Label=""
+                                                        Variant="Variant.Outlined"
+                                                        AnchorOrigin="Origin.BottomCenter"
+                                                        TransformOrigin="Origin.TopCenter"
+                                                        Required="true"
+                                                        ReadOnly="@IsViewMode"
+                                                        RequiredError="Se requiere un tipo de media de área"
+                                                    >
+                                                        @foreach (var tipoMedidaArea in _listaTiposMedidaArea)
                                                         {
-                                                            <div class="m-2 mb-4 mr-4" style="width:110px; height:110px; overflow:hidden; border:1px solid #ccc; border-radius:4px">
-                                                                <img src="@preview" style="width:100%; height:100%; object-fit:cover;" />
-                                                            </div>
+                                                            <MudSelectItem Value="tipoMedidaArea.Id">@tipoMedidaArea.Descripcion</MudSelectItem>
                                                         }
-                                                    </div>
-                                                </MudPaper>
-                                            </ActivatorContent>
-                                        </MudFileUpload>
-                                        <MudToolBar Gutters="false"
-                                                    Class="relative d-flex justify-end gap-4">
-                                            <MudButton Color="Color.Primary"
-                                                       OnClick="OpenFilePickerAsync"
-                                                       Variant="Variant.Filled">
-                                                Abrir archivos
-                                            </MudButton>
-                                            <MudButton Color="Color.Primary"
-                                                       Disabled="@(!imagePreviews.Any())"
-                                                       OnClick="Upload"
-                                                       Variant="Variant.Filled">
-                                                Subir
-                                            </MudButton>
-                                            <MudButton Color="Color.Error"
-                                                       Disabled="@(!imagePreviews.Any())"
-                                                       OnClick="ClearAsync"
-                                                       Variant="Variant.Filled">
-                                                Limpiar
-                                            </MudButton>
-                                        </MudToolBar>
-                                    </MudStack>                                </MudItem>
-                            </MudGrid>
-                        </MudItem>
-                    </MudGrid>
-                </MudContainer>
-            </MudStep>
-            @*Comentarios y verificación*@
-            <MudStep Title="Comentarios">
-                <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
-                    <MudGrid Justify="Justify.Center">
-                        <MudItem xs="12" sm="8" md="8" lg="8">
-                            <MudGrid>
-                                <MudItem xs="12" sm="12">
-                                    <MudText Class="pb-1" HtmlTag="label" for="input_descripcion" Color="Color.Dark">Descripción del terreno</MudText>
-                                    <MudTextField 
-                                        AutoGrow 
-                                        Lines="3"
-                                        Margin="Margin.Dense"
-                                        Class="flow-input" 
-                                        InputId="input_descripcion"
-                                        @bind-Value="@Terreno.Descripcion" 
-                                        Label="" 
-                                        Variant="Variant.Outlined"
-                                        Required="true"
-                                        ReadOnly="@IsViewMode"
-                                        RequiredError="Este campo es requerido"
-                                    /> 
+                                                    </MudSelect>
+                                                </div>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText Class="pb-1" HtmlTag="label" for="select_tipo_suelo" Color="Color.Dark">Tipo de suelo</MudText>
+                                                <div style="max-width: 300px;">
+                                                    <MudSelect
+                                                        Margin="Margin.Dense"
+                                                        Class="flow-select"
+                                                        @bind-Value="Terreno.TipoSueloId"
+                                                        InputId="select_tipo_suelo"
+                                                        Label=""
+                                                        Variant="Variant.Outlined"
+                                                        AnchorOrigin="Origin.BottomCenter"
+                                                        TransformOrigin="Origin.TopCenter"
+                                                        Required="true"
+                                                        ReadOnly="@IsViewMode"
+                                                        RequiredError="Se requiere un tipo de suelo"
+                                                    >
+                                                        @foreach (var tipoSuelo in _listaTiposSuelo)
+                                                        {
+                                                            <MudSelectItem Value="tipoSuelo.Id">@tipoSuelo.Descripcion</MudSelectItem>
+                                                        }
+                                                    </MudSelect>
+                                                </div>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText Class="pb-1" HtmlTag="label" for="input_cantidad_total_area" Color="Color.Dark">Cantidad total de área de suelo</MudText>
+                                                <MudNumericField
+                                                    Margin="Margin.Dense"
+                                                    Class="flow-input"
+                                                    HideSpinButtons="true"
+                                                    Label=""
+                                                    Variant="Variant.Outlined"
+                                                    InputId="input_cantidad_total_area"
+                                                    @bind-Value="@Terreno.CantidadAreaSueloTotal"
+                                                    Min="0.0"
+                                                    Max="10000000.0"
+                                                    ReadOnly="@IsViewMode"
+                                                    Validation="@(new Func<double?, IEnumerable<string>>(ValidateNumericFieldDouble))"
+                                                />
 
-                                    <MudText Class="pb-1" HtmlTag="label" for="input_comentarios" Color="Color.Dark">Comentarios acerca del terreno</MudText>
-                                    <MudTextField AutoGrow Lines="1" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"> </MudTextField>
+                                            </MudItem>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText Class="pb-1" HtmlTag="label" for="input_precio_unidad_area" Color="Color.Dark">Precio por unidad de área</MudText>
+                                                <MudNumericField
+                                                    Margin="Margin.Dense"
+                                                    Class="flow-input"
+                                                    HideSpinButtons="true"
+                                                    Label=""
+                                                    Variant="Variant.Outlined"
+                                                    InputId="input_precio_unidad_area"
+                                                    @bind-Value="@Terreno.PrecioPorArea"
+                                                    Min="0.0M"
+                                                    Step=".2M"
+                                                    Max="10000000.0M"
+                                                    ReadOnly="@IsViewMode"
+                                                    Validation="@(new Func<decimal?, IEnumerable<string>>(ValidateNumericFieldDecimal))"
+                                                />
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudContainer>
+                        </MudStep>
+                        @*Ubicación del terreno*@
+                        <MudStep Title="Ubicación del terreno">
+                            <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                                <MudGrid Justify="Justify.Center">
+                                    <MudItem xs="12" sm="8" md="8" lg="8">
+                                        <MudGrid>
+                                            <MudItem xs="12" sm="6">
+                                                <MudText Class="pb-1" HtmlTag="label" for="select_provincia" Color="Color.Dark">Provincia</MudText>
+                                                <div style="max-width: 300px;">
+                                                    <MudSelect T="string" Value="Terreno.ProvinciaId"
+                                                               ValueChanged="ObtenerMunicipiosDeProvincia"
+                                                               ValueExpression="@(() => Terreno.ProvinciaId)"
+                                                               Margin="Margin.Dense"
+                                                               Class="flow-select"
+                                                               InputId="select_provincia"
+                                                               Label=""
+                                                               Variant="Variant.Outlined"
+                                                               AnchorOrigin="Origin.BottomCenter"
+                                                               TransformOrigin="Origin.TopCenter"
+                                                               Required="true"
+                                                               ReadOnly="@IsViewMode"
+                                                               RequiredError="Este campo es requerido"
+                                                    >
+                                                        @foreach (var provincia in _listaProvincias)
+                                                        {
+                                                            <MudSelectItem T="string" Value="@provincia.Id">@provincia.Descripcion</MudSelectItem>
+                                                        }
+                                                    </MudSelect>
+                                                </div>
+                                            </MudItem>
 
-                                </MudItem>
-                            </MudGrid>
-                        </MudItem>
-                    </MudGrid>
-                </MudContainer>
-            </MudStep>
-        </MudStepper>
-        @*
+                                            <MudItem xs="12" sm="6">
+                                                <MudText Class="pb-1" HtmlTag="label" for="select_municipio" Color="Color.Dark">Municipio</MudText>
+                                                <div style="max-width: 300px;">
+                                                    <MudSelect T="string"
+                                                               @bind-Value="Terreno.MunicipioId"
+                                                               Margin="Margin.Dense"
+                                                               Class="flow-select"
+                                                               InputId="select_municipio"
+                                                               Label=""
+                                                               Variant="Variant.Outlined"
+                                                               AnchorOrigin="Origin.BottomCenter"
+                                                               TransformOrigin="Origin.TopCenter"
+                                                               Required="true"
+                                                               ReadOnly="@IsViewMode"
+                                                               RequiredError="Este campo es requerido"
+                                                    >
+                                                        @foreach (var municipio in _listaMunicipiosFiltrados)
+                                                        {
+                                                            <MudSelectItem T="string" Value="@municipio.Id">@municipio.Descripcion</MudSelectItem>
+                                                        }
+                                                    </MudSelect>
+                                                </div>
+                                            </MudItem>
+                                            <MudItem xs="12">
+                                                <div id="mapTerreno" class="map" style="height:250px;width:550px"></div>
+
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudContainer>
+                        </MudStep>
+                        @*Imagenes del terreno*@
+                        <MudStep Title="Imágenes">
+                            <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                                <MudGrid Justify="Justify.Center">
+                                    <MudItem xs="12" sm="8" md="8" lg="8">
+                                        <MudGrid>
+                                            <MudItem xs="12">
+                                                <MudStack Style="width: 100%">
+                                                    <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+                                                                   Accept=".jpg,.jpeg,.png"
+                                                                   @ref="_fileUpload"
+                                                                   MaximumFileCount="8"
+                                                                   OnFilesChanged="OnInputFileChanged"
+                                                                   AppendMultipleFiles
+                                                                   Hidden="false"
+                                                                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                                                                   InputStyle="opacity:0"
+                                                                   tabindex="-1"
+                                                                   @ondrop="ClearDragClass"
+                                                                   @ondragenter="SetDragClass"
+                                                                   @ondragleave="ClearDragClass"
+                                                                   @ondragend="ClearDragClass">
+                                                        <ActivatorContent>
+                                                            <MudPaper Height="350px"
+                                                                      Outlined="true"
+                                                                      Class="@_dragClass">
+                                                                <MudText Typo="Typo.h6" Align="Align.Center">
+                                                                    Arrastre y suelte los archivos aquí o haga click
+                                                                </MudText>
+                                                                @* Se muestra el preview de las imágenes en formato cuadrado *@
+                                                                <div class="d-flex flex-wrap justify-center mt-4">
+                                                                    @foreach (var preview in imagePreviews)
+                                                                    {
+                                                                        <div class="m-2 mb-4 mr-4" style="width:110px; height:110px; overflow:hidden; border:1px solid #ccc; border-radius:4px">
+                                                                            <img src="@preview" style="width:100%; height:100%; object-fit:cover;" />
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </MudPaper>
+                                                        </ActivatorContent>
+                                                    </MudFileUpload>
+                                                    <MudToolBar Gutters="false"
+                                                                Class="relative d-flex justify-end gap-4">
+                                                        <MudButton Color="Color.Primary"
+                                                                   OnClick="OpenFilePickerAsync"
+                                                                   Variant="Variant.Filled">
+                                                            Abrir archivos
+                                                        </MudButton>
+                                                        <MudButton Color="Color.Primary"
+                                                                   Disabled="@(!imagePreviews.Any())"
+                                                                   OnClick="Upload"
+                                                                   Variant="Variant.Filled">
+                                                            Subir
+                                                        </MudButton>
+                                                        <MudButton Color="Color.Error"
+                                                                   Disabled="@(!imagePreviews.Any())"
+                                                                   OnClick="ClearAsync"
+                                                                   Variant="Variant.Filled">
+                                                            Limpiar
+                                                        </MudButton>
+                                                    </MudToolBar>
+                                                </MudStack>                        
+                                                </MudItem>
+                                        </MudGrid>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudContainer>
+                        </MudStep>
+                        @*Comentarios y verificación*@
+                        <MudStep Title="Comentarios">
+                            <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                                <MudGrid Justify="Justify.Center">
+                                    <MudItem xs="12" sm="8" md="8" lg="8">
+                                        <MudGrid>
+                                            <MudItem xs="12" sm="12">
+                                                <MudText Class="pb-1" HtmlTag="label" for="input_descripcion" Color="Color.Dark">Descripción del terreno</MudText>
+                                                <MudTextField
+                                                    AutoGrow
+                                                    Lines="3"
+                                                    Margin="Margin.Dense"
+                                                    Class="flow-input"
+                                                    InputId="input_descripcion"
+                                                    @bind-Value="@Terreno.Descripcion"
+                                                    Label=""
+                                                    Variant="Variant.Outlined"
+                                                    Required="true"
+                                                    ReadOnly="@IsViewMode"
+                                                    RequiredError="Este campo es requerido"
+                                                />
+
+                                                <MudText Class="pb-1" HtmlTag="label" for="input_comentarios" Color="Color.Dark">Comentarios acerca del terreno</MudText>
+                                                <MudTextField AutoGrow Lines="1" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"> </MudTextField>
+
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudContainer>
+                        </MudStep>
+                        </MudForm>
+
+                    </MudStepper>
+                    @*
         <MudForm @ref="_form" Disabled="@IsViewMode">
             <!--Descripción-->
             <MudText Class="pb-1" HtmlTag="label" for="input_prueba" Style="@($"color:{Colors.Shades.Black};")">Descripción</MudText>
@@ -293,26 +314,38 @@
 
         </MudForm>
     *@
-        </MudForm>
 
-    </DialogContent>
-    <DialogActions>
-        <MudButton Variant="Variant.Text"
-                   Color="Color.Secondary"
-                   OnClick="Cancel">@(IsViewMode ? "Cerrar" : "Cancelar")</MudButton>
-    </DialogActions>
-</MudDialog>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Secondary"
+                           OnClick="Cancel">@(IsViewMode ? "Cerrar" : "Cancelar")</MudButton>
+            </DialogActions>
+        </MudDialog>
+
+    </Authorized>
+
+</AuthorizeView>
 
 @code {
-    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
-    [Parameter] public TerrenoDTO Terreno { get; set; } = new();
-    [Parameter] public EventCallback OnSaved { get; set; }
-    [Parameter] public bool IsViewMode { get; set; }
+    private ClaimsPrincipal _usuario;
+
+
+    [CascadingParameter] 
+    IMudDialogInstance MudDialog { get; set; }
+    [Parameter] 
+    public string idItem { get; set; } = String.Empty;
+    [Parameter] 
+    public EventCallback OnSaved { get; set; }
+    [Parameter]
+    public bool IsViewMode { get; set; }
     private int _index;
 
+    private TerrenoDTO Terreno { get; set; } = new TerrenoDTO();
+    
     private MudForm _form;
     private string Title => IsViewMode ? "Ver terreno" : 
-                        (Terreno.Id == null ? "Agregar terreno" : "Modificar terreno");
+                        (String.IsNullOrEmpty(idItem) ? "Agregar terreno" : "Modificar terreno");
     
 
     //Listas de opciones
@@ -350,6 +383,8 @@
                         if (string.IsNullOrEmpty(Terreno.Id))
                         {
                             Terreno.Estado = (int)TerrenoEstado.Creado;
+                            Terreno.PropietarioId = _usuario.Claims.First(x => x.Type == "sub").Value.ToString();
+                                
                             await TerrenoAgent.AddAsync(Terreno);
                         }
                         else
@@ -365,7 +400,6 @@
                     {
                         Snackbar.Add($"Error: {ex.Message}", Severity.Error);
                     }
-                    //Snackbar.Add("Operación realizada correctamente", Severity.Success);
 
                 }
 
@@ -397,14 +431,10 @@
         _listaProvincias = await ProvinciaAgent.GetAllAsync();
         _listaMunicipios = await MunicipioAgent.GetAllAsync();
 
-        if (!IsViewMode && !string.IsNullOrEmpty(Terreno.Id))
+        if (!string.IsNullOrEmpty(idItem))
         {
-            // Clonar el objeto para edición
-            Terreno = new TerrenoDTO
-            {
-                Id = Terreno.Id,
-                Comentario = Terreno.Comentario
-            };
+            Terreno = await TerrenoAgent.GetByIdAsync(idItem, new[] { "Municipio", "Municipio.Provincia" }) ;
+            StateHasChanged();
         }
     }   
 

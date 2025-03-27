@@ -1,7 +1,12 @@
 @page "/sistema/propietario/terrenos"
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema
+@using AgroConecta.Presentation.Client.Agents.Sistema.Tipo
+@using AgroConecta.Presentation.Client.Components.General.Alertas
 @using AgroConecta.Shared.DTO
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject ITerrenoAgent TerrenoAgent
+
 <MudContainer Class="py-4 py-sm-8 py-md-12 py-lg-16 py-xl-20">
     <MudItem xs="12">
         <MudImage ObjectFit="ObjectFit.Cover" Src="./images/dummy/dummy-terreno-11.jpg" Alt="Örebro Slott" Class="rounded-lg" Height="256" Style="width: 100%" />
@@ -52,14 +57,41 @@
         {
             <MudItem xs="12" sm="6" md="3">
                 <MudCard>
-                    <MudCardMedia Image="@card.Image" Height="160"/>
+                    <MudCardMedia Image="@card.Imagen" Height="160"/>
                     <MudCardContent Style="min-height: 250px;">
                         <div style="height: 48px; overflow: hidden;">
-                            <MudText Typo="Typo.button" Class="mud-primary-text">@card.Subtitle</MudText>
+                            <MudText Typo="Typo.button" Class="mud-primary-text">@card.Subtitulo</MudText>
                         </div>
-                        <MudText Typo="Typo.h6" Class="mb-4">@card.Title</MudText>
-                        <MudText Typo="Typo.body2">@card.Description</MudText>
+                        <MudText Typo="Typo.h6" Class="mb-4">@card.Titulo</MudText>
+                        <MudText Typo="Typo.body2">@card.Descripcion</MudText>
+
                     </MudCardContent>
+                    <MudCardActions>
+                        <MudSpacer/>
+                        <MudStack Row>
+                            <MudTooltip Text="Ver">
+                                <MudIconButton
+                                    OnClick="@(() => OpenViewDialog(card.Id))"
+                                    Icon="@Icons.Material.Filled.Visibility"
+                                    Color="Color.Info"
+                                    Size="Size.Small"/>
+                            </MudTooltip>
+                            <MudTooltip Text="Editar">
+                                <MudIconButton
+                                    OnClick="@(() => OpenEditDialog(card.Id))"
+                                    Icon="@Icons.Material.Filled.Edit"
+                                    Color="Color.Warning"
+                                    Size="Size.Small"/>
+                            </MudTooltip>
+                            <MudTooltip Text="Eliminar">
+                                <MudIconButton
+                                    OnClick="@(() => Eliminar(card.Id))"
+                                    Icon="@Icons.Material.Filled.Delete"
+                                    Color="Color.Error"
+                                    Size="Size.Small"/>
+                            </MudTooltip>
+                        </MudStack>
+                    </MudCardActions>
                 </MudCard>
             </MudItem>
         }
@@ -76,44 +108,31 @@
     private int CurrentPage = 1;
     private int ItemsPerPage = 8; // Ajusta según necesidad
     private bool _isLoadingData;
+    private IEnumerable<TerrenoDTO> _terrenos = new List<TerrenoDTO>();
 
-    private List<CardItem> Cards = new List<CardItem>
+    private List<TerrenoCard> _terrenosCards = new List<TerrenoCard>
     {
-        new CardItem("Azua", "Municipio de Azua de Compostela", "Terreno de 50 hectáreas ideal para el cultivo de mango, gracias a su clima seco y suelo fértil.", "./images/dummy/dummy-terreno-1.jpg"),
-        new CardItem("La Vega", "Municipio de Constanza", "Parcela de 30 hectáreas perfecta para el cultivo de vegetales y fresas, debido a su clima templado.", "./images/dummy/dummy-terreno-2.jpg"),
-        new CardItem("San Juan", "Municipio de San Juan de la Maguana", "Terreno de 75 hectáreas adecuado para el cultivo de habichuelas, con sistema de riego disponible.", "./images/dummy/dummy-terreno-3.jpg"),
-        new CardItem("Santiago", "Municipio de Santiago de los Caballeros", "Finca de 40 hectáreas óptima para el cultivo de tabaco, en una zona con tradición tabacalera.", "./images/dummy/dummy-terreno-4.jpg"),
-        new CardItem("Duarte", "Municipio de San Francisco de Macorís", "Terreno de 60 hectáreas ideal para el cultivo de cacao orgánico, en una región con alta pluviometría.", "./images/dummy/dummy-terreno-5.jpg"),
-        new CardItem("Barahona", "Municipio de Santa Cruz de Barahona", "Parcela de 80 hectáreas perfecta para el cultivo de plátanos, con acceso a fuentes de agua.", "./images/dummy/dummy-terreno-6.jpg"),
-        new CardItem("Monte Plata", "Municipio de Monte Plata", "Terreno de 55 hectáreas adecuado para el cultivo de piña, en una zona con suelos arenosos.", "./images/dummy/dummy-terreno-7.jpg"),
-        new CardItem("Peravia", "Municipio de Baní", "Finca de 45 hectáreas óptima para el cultivo de tomate, con clima semiárido favorable.", "./images/dummy/dummy-terreno-8.jpg"),
-        new CardItem("La Altagracia", "Municipio de Higüey", "Terreno de 70 hectáreas ideal para el cultivo de caña de azúcar, en una región con tradición azucarera.", "./images/dummy/dummy-terreno-9.jpg"),
-        new CardItem("Puerto Plata", "Municipio de San Felipe de Puerto Plata", "Parcela de 35 hectáreas perfecta para el cultivo de café, en zonas montañosas con buena altitud.", "./images/dummy/dummy-terreno-10.jpg")
+        new TerrenoCard("","Azua", "Municipio de Azua de Compostela", "Terreno de 50 hectáreas ideal para el cultivo de mango, gracias a su clima seco y suelo fértil.", "./images/dummy/dummy-terreno-1.jpg"),
+        new TerrenoCard("","La Vega", "Municipio de Constanza", "Parcela de 30 hectáreas perfecta para el cultivo de vegetales y fresas, debido a su clima templado.", "./images/dummy/dummy-terreno-2.jpg"),
+        new TerrenoCard("","San Juan", "Municipio de San Juan de la Maguana", "Terreno de 75 hectáreas adecuado para el cultivo de habichuelas, con sistema de riego disponible.", "./images/dummy/dummy-terreno-3.jpg"),
+        new TerrenoCard("","Santiago", "Municipio de Santiago de los Caballeros", "Finca de 40 hectáreas óptima para el cultivo de tabaco, en una zona con tradición tabacalera.", "./images/dummy/dummy-terreno-4.jpg"),
+        new TerrenoCard("","Duarte", "Municipio de San Francisco de Macorís", "Terreno de 60 hectáreas ideal para el cultivo de cacao orgánico, en una región con alta pluviometría.", "./images/dummy/dummy-terreno-5.jpg"),
+        new TerrenoCard("","Barahona", "Municipio de Santa Cruz de Barahona", "Parcela de 80 hectáreas perfecta para el cultivo de plátanos, con acceso a fuentes de agua.", "./images/dummy/dummy-terreno-6.jpg"),
+        new TerrenoCard("","Monte Plata", "Municipio de Monte Plata", "Terreno de 55 hectáreas adecuado para el cultivo de piña, en una zona con suelos arenosos.", "./images/dummy/dummy-terreno-7.jpg"),
+        new TerrenoCard("","Peravia", "Municipio de Baní", "Finca de 45 hectáreas óptima para el cultivo de tomate, con clima semiárido favorable.", "./images/dummy/dummy-terreno-8.jpg"),
+        new TerrenoCard("","La Altagracia", "Municipio de Higüey", "Terreno de 70 hectáreas ideal para el cultivo de caña de azúcar, en una región con tradición azucarera.", "./images/dummy/dummy-terreno-9.jpg"),
+        new TerrenoCard("","Puerto Plata", "Municipio de San Felipe de Puerto Plata", "Parcela de 35 hectáreas perfecta para el cultivo de café, en zonas montañosas con buena altitud.", "./images/dummy/dummy-terreno-10.jpg")
     };
 
     // Lista paginada (modificada para usar la lista filtrada)
-    private List<CardItem> CurrentPageCards => FilteredCards
+    private List<TerrenoCard> CurrentPageCards => FilteredCards
         .Skip((CurrentPage - 1) * ItemsPerPage)
         .Take(ItemsPerPage)
         .ToList();
 
     // Total de páginas basado en la lista filtrada
     private int TotalPages => (int)Math.Ceiling((double)FilteredCards.Count / ItemsPerPage);
-    public class CardItem
-    {
-        public string Title { get; set; }
-        public string Subtitle { get; set; }
-        public string Description { get; set; }
-        public string Image { get; set; }
 
-        public CardItem(string title, string subtitle, string description, string image)
-        {
-            Title = title;
-            Subtitle = subtitle;
-            Description = description;
-            Image = image;
-        }
-    }
     private string _searchTerm = string.Empty;
     private string SearchTerm
     {
@@ -126,11 +145,11 @@
     }
 
     // Lista filtrada
-    private List<CardItem> FilteredCards => Cards
+    private List<TerrenoCard> FilteredCards => _terrenosCards
         .Where(c =>
-            c.Title.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
-            c.Subtitle.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
-            c.Description.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
+            c.Titulo.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+            c.Subtitulo.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+            c.Descripcion.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase))
         .ToList();
 
 
@@ -143,15 +162,46 @@
     private async Task GetAll()
     {
         _isLoadingData = true;
-        //listaTiposMedidaArea = await TipoMedidaAreaAgent.GetAllAsync();
+        _terrenos = await TerrenoAgent.GetAllAsync(new[]{"Municipio", "Municipio.Provincia"});
+
+        // Mapea la colección _terrenos a una lista de TerrenoCard
+        var nuevosTerrenosCards = _terrenos.Select(t => new TerrenoCard(
+            id: t.Id,
+            titulo: t.DescripcionProvincia ?? String.Empty,
+            subtitulo: $"MUNICIPIO DE {t.DescripcionMunicipio}" ?? String.Empty,
+            descripcion:  t.Descripcion,
+            imagen: "./images/dummy/dummy-terreno-1.jpg" // O bien, derivarla de t
+        )).ToList();
+
+        // Agrega los nuevos elementos a la lista existente _terrenosCards
+        _terrenosCards.AddRange(nuevosTerrenosCards);
         _isLoadingData = false;
         StateHasChanged();
     }
     
 
     #endregion
-    
-    #region Agregar terreno
+    #region TerrenoCard
+    public class TerrenoCard
+    {
+        public string Id { get; set; }
+        public string Titulo { get; set; }
+        public string Subtitulo { get; set; }
+        public string Descripcion { get; set; }
+        public string Imagen { get; set; }
+
+        public TerrenoCard(string id, string titulo, string subtitulo, string descripcion, string imagen )
+        {
+            Id = id;
+            Titulo = titulo;
+            Subtitulo = subtitulo;
+            Descripcion = descripcion;
+            Imagen = imagen;
+        }
+    }
+    #endregion
+
+    #region Operaciones con terreno
 
     private async Task OpenCreateDialog()
     {
@@ -163,6 +213,56 @@
         if (!result.Canceled) await GetAll();
     }    
 
+    private async Task OpenEditDialog(string id)
+    {
+        var parameters = new DialogParameters {
+            { "idItem", id },
+            { "IsViewMode", false }
+        };
+    
+        var result = await DialogService.Show<FrmTerreno>("Editar terreno", parameters, new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+
+        }).Result;
+    
+        if (!result.Canceled) await GetAll();
+    }
+    private async Task OpenViewDialog(string id)
+    {
+        var parameters = new DialogParameters {
+            { "idItem", id },
+            { "IsViewMode", true }
+        };
+    
+        DialogService.Show<FrmTerreno>("Ver terreno", parameters, new DialogOptions {
+            CloseButton = true,
+            MaxWidth = MaxWidth.Small,
+            BackdropClick = false
+        });
+    }
+    private async Task Eliminar(string id)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Content", "¿Está seguro de eliminar este registro?" },
+            { "ButtonColor", Color.Error },
+            { "ButtonText", "Eliminar" }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = DialogService.Show<AvisoConfirmacion>("Confirmación", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await TerrenoAgent.HardDeleteAsync(id);
+            Snackbar.Add("Registro eliminado correctamente", Severity.Success);
+            await GetAll();
+        }
+    }
     #endregion
 }
 
