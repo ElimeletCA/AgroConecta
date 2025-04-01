@@ -37,9 +37,9 @@
                 <MudText Typo="Typo.h6">@Title</MudText>
             </TitleContent>
             <DialogContent>
+                <MudForm @ref="_form" Disabled="@IsViewMode">
 
                     <MudStepper  @bind-ActiveIndex="_index" CenterLabels="true" OnPreviewInteraction="OnPreviewInteraction" ShowResetButton>
-                        <MudForm @ref="_form" Disabled="@IsViewMode">
 
                         @*Información básica*@
                         <MudStep Title="Información básica del terreno">
@@ -298,10 +298,11 @@
                                 </MudGrid>
                             </MudContainer>
                         </MudStep>
-                        </MudForm>
 
                     </MudStepper>
-                    @*
+                </MudForm>
+
+                @*
         <MudForm @ref="_form" Disabled="@IsViewMode">
             <!--Descripción-->
             <MudText Class="pb-1" HtmlTag="label" for="input_prueba" Style="@($"color:{Colors.Shades.Black};")">Descripción</MudText>
@@ -381,21 +382,20 @@
             {
                 if (_index == 3 && args.Action == StepAction.Complete)
                 {
-                    //Proceso de guardado al completar el stepper
                     try
                     {
                         if (string.IsNullOrEmpty(Terreno.Id))
                         {
                             Terreno.Estado = (int)TerrenoEstado.Creado;
                             Terreno.PropietarioId = _usuario.Claims.First(x => x.Type == "sub").Value.ToString();
-                                
+                                    
                             await TerrenoAgent.AddAsync(Terreno);
                         }
                         else
                         {
                             await TerrenoAgent.UpdateAsync(Terreno.Id, Terreno);
                         }
-                
+                        
                         Snackbar.Add("Operación realizada correctamente", Severity.Success);
                         await OnSaved.InvokeAsync();
                         MudDialog.Close();
