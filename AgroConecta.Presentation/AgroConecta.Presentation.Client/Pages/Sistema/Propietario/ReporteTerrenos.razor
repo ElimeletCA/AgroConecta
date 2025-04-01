@@ -118,14 +118,14 @@
                     <TemplateColumn Title="Tipo suelo" CellClass=" "  Filterable="false">
                         <CellTemplate>
                             <MudStack>
-                                <MudText Typo="Typo.body1">@($"Suelo {context.Item.DescripcionTipoSuelo}") </MudText>
+                                <MudText Typo="Typo.body1">@($"Suelo {@context.Item.DescripcionTipoSuelo}") </MudText>
                             </MudStack>
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="Cantidad de área" CellClass=" "  Filterable="false">
                         <CellTemplate>
                             <MudStack>
-                                <MudText Typo="Typo.body1">@($"{context.Item.CantidadAreaSueloTotal} {context.Item.DescripcionTipoMedidaArea}") </MudText>
+                                <MudText Typo="Typo.body1">@($"{@context.Item.CantidadAreaSueloTotal} {@context.Item.DescripcionTipoMedidaArea}") </MudText>
                             </MudStack>
                         </CellTemplate>
                     </TemplateColumn>

@@ -155,7 +155,7 @@
     private async Task GetAll()
     {
         _isLoadingData = true;
-        _terrenos = await TerrenoAgent.ObtenerTerrenosDisponiblesAsync();
+        _terrenos = await TerrenoAgent.ObtenerTerrenosPorEstadoAsync((int)TerrenoEstado.Disponible);
 
         // Mapea la colección _terrenos a una lista de TerrenoCard
         var nuevosTerrenosCards = _terrenos.Select(t => new TerrenoCard(

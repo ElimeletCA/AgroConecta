@@ -20,7 +20,7 @@ public class TerrenoAgent : InitialAgent<TerrenoDTO>, ITerrenoAgent
         // Aquí puedes agregar lógica adicional específica para TerrenoDTO si es necesario
         return terrenos;
     }
-    public async Task<IEnumerable<TerrenoDTO>> ObtenerTerrenosDisponiblesAsync()
+    public async Task<IEnumerable<TerrenoDTO>> ObtenerTerrenosDeUsuarioAsync(string usuarioId)
     {
         var terrenos = await base.GetAllAsync(new[]
         {
@@ -31,9 +31,45 @@ public class TerrenoAgent : InitialAgent<TerrenoDTO>, ITerrenoAgent
                 
                 
         }); 
-        var terrenosDisponibles = terrenos.Where(x => x.Estado == (int)TerrenoEstado.Disponible);
+        var terrenosResultado = terrenos
+            .Where(x => x.PropietarioId == usuarioId);
         
-        return terrenosDisponibles;
+        return terrenosResultado;
+        
+    }
+
+    public async Task<IEnumerable<TerrenoDTO>> ObtenerTerrenosPorEstadoAsync(int estado)
+    {
+        var terrenos = await base.GetAllAsync(new[]
+        {
+            "Municipio", "Municipio.Provincia",
+            "TipoMedidaArea",
+            "TipoSuelo",
+            "Propietario"
+                
+                
+        }); 
+        var terrenosResultado = terrenos.Where(x => x.Estado == estado);
+        
+        return terrenosResultado;
+        
+    }
+    public async Task<IEnumerable<TerrenoDTO>> ObtenerTerrenosDeUsuarioPorEstadoAsync(string usuarioId, int estado)
+    {
+        var terrenos = await base.GetAllAsync(new[]
+        {
+            "Municipio", "Municipio.Provincia",
+            "TipoMedidaArea",
+            "TipoSuelo",
+            "Propietario"
+                
+                
+        }); 
+        var terrenosResultado = terrenos
+            .Where(x => x.Estado == estado 
+                        && x.PropietarioId == usuarioId);
+        
+        return terrenosResultado;
         
     }
     public new async Task<TerrenoDTO> GetByIdAsync(string id, string[] includes = null)
