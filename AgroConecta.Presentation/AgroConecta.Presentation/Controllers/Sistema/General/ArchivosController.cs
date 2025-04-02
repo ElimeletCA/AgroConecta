@@ -29,9 +29,12 @@ public class ArchivosController : InitialController<ArchivoDTO, Archivo>
     [HttpPost]
     public async Task<ActionResult<List<ArchivoDTO>>> UploadFile(List<IFormFile> files, [FromQuery] string entityId)
     {
+        var fullActionName = GetFullActionName();
+
 
         try
         {
+
             List<ArchivoDTO> uploadResults = new List<ArchivoDTO>();
  
             foreach(var file in files)
@@ -58,9 +61,17 @@ public class ArchivosController : InitialController<ArchivoDTO, Archivo>
                 archivo.EntidadId = entityId;
                 uploadResults.Add(archivo);
                 await base.Create(archivo);
+                
 
 
             }
+            //Registro de información
+            await _logger.LogInformation(
+                action: fullActionName,
+                message: $"Tipo: {typeof(ArchivoDTO).Name}, Agregado de archivos {files.Count()} registros",
+                userEmail: GetCurrentUserEmail(),
+                parameters: null
+            );
             var response = new ApiResponse<IEnumerable<ArchivoDTO>>
             {
                 Success = true,
@@ -71,6 +82,13 @@ public class ArchivosController : InitialController<ArchivoDTO, Archivo>
         }
         catch (Exception ex)
         {
+            //Registro de error
+            await _logger.LogError(
+                action: fullActionName,
+                ex: new Exception($"Tipo: {typeof(ArchivoDTO).Name}, Excepción al agregar registro-{ex.Message.Truncate(250)}", new Exception(ex.StackTrace?.Truncate(250))),
+                parameters: entityId, 
+                userEmail: GetCurrentUserEmail()
+            );
             var responseFailed = new ApiResponse<string>
             {
                 Success = false,

@@ -19,7 +19,7 @@ namespace AgroConecta.Presentation.Controllers;
         where TDto : BaseDTO
     {
         protected readonly IBaseService<TDto, TEntity> _service;
-        private readonly ILogService _logger;
+        public readonly ILogService _logger;
         protected ClaimsPrincipal? CurrentUser => _actionContextAccessor.ActionContext?.HttpContext.User;
         private readonly IActionContextAccessor _actionContextAccessor;
 
