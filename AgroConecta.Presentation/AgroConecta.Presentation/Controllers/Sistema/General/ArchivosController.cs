@@ -2,6 +2,7 @@ using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Application.Servicios.Interfaces.Sistema.General;
 using AgroConecta.Domain.Sistema.Extras;
 using AgroConecta.Domain.Sistema.General;
+using AgroConecta.Shared.Constantes.Seguridad;
 using AgroConecta.Shared.DTO;
 using AgroConecta.Shared.Extensions;
 using AgroConecta.Shared.Seguridad.Mensajes;
@@ -42,13 +43,18 @@ public class ArchivosController : InitialController<ArchivoDTO, Archivo>
                 //var trustedFileNameForDisplay = WebUtility.HtmlEncode(untrustedFileName);
  
                 trustedFileNameForFileStorage = file.FileName;
-                var path = Path.Combine(_env.ContentRootPath, "uploads", trustedFileNameForFileStorage);
- 
+                var uploadsPath = Path.Combine(_env.ContentRootPath, "wwwroot", "uploads");
+                if (!Directory.Exists(uploadsPath))
+                {
+                    Directory.CreateDirectory(uploadsPath);
+                }
+                var path = Path.Combine(uploadsPath, trustedFileNameForFileStorage); 
                 await using FileStream fs = new(path, FileMode.Create);
                 await file.CopyToAsync(fs);
                 //archivo.NombreArchivo = "Hola";
                 archivo.NombreArchivoAlmacenado = trustedFileNameForFileStorage;
                 archivo.TipoContenido = file.ContentType;
+                archivo.TipoArchivoId = TiposArchivos.ImagenId;
                 uploadResults.Add(archivo);
                 await base.Create(archivo);
 

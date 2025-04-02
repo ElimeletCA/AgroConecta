@@ -1,5 +1,6 @@
 @using System.Globalization
 @using System.Security.Claims
+@using System.Text.RegularExpressions
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.General
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Tipos
@@ -15,7 +16,7 @@
 @inject ITipoSueloAgent TipoSueloAgent
 @inject IProvinciaAgent ProvinciaAgent
 @inject IMunicipioAgent MunicipioAgent
-
+@inject HttpClient httpClient
 @inject ITerrenoAgent TerrenoAgent
 @inject ISnackbar Snackbar
 
@@ -510,28 +511,21 @@
     #endregion
     #region Manejo de imagenes
 
-    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
-    private string _dragClass = DefaultDragClass;
-    private readonly List<string> _fileNames = new();
+    // Lista para almacenar los archivos seleccionados
+    private List<IBrowserFile> selectedFiles = new();
     private List<string> imagePreviews = new();
     private MudFileUpload<IReadOnlyList<IBrowserFile>>? _fileUpload;
 
-    private async Task ClearAsync()
-    {
-        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
-        _fileNames.Clear();
-        imagePreviews.Clear();
-        ClearDragClass();
-    }
+    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    private string _dragClass = DefaultDragClass;
 
-    private Task OpenFilePickerAsync()
-        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
-
+    // Manejo del cambio de archivos
     private async Task OnInputFileChanged(InputFileChangeEventArgs e)
     {
         ClearDragClass();
-        _fileNames.Clear();
+        selectedFiles.Clear();
         imagePreviews.Clear();
+        
         var files = e.GetMultipleFiles();
         foreach (var file in files)
         {
@@ -543,7 +537,9 @@
                 continue;
             }
 
-            _fileNames.Add(file.Name);
+            selectedFiles.Add(file);
+
+            // Crear preview (convertir el archivo a base64)
             await using var fs = new MemoryStream();
             await file.OpenReadStream(1048576).CopyToAsync(fs);
             var base64Data = Convert.ToBase64String(fs.ToArray());
@@ -551,18 +547,66 @@
         }
     }
 
-    private void Upload()
+    // Método para subir los archivos
+    private async Task Upload()
     {
-        // Aquí puedes agregar la lógica para subir los archivos
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-        Snackbar.Add("TODO: Upload your files!");
+        if (!selectedFiles.Any())
+        {
+            Snackbar.Add("No hay archivos para subir.", Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            // Crear el contenido multipart/form-data
+            var content = new MultipartFormDataContent();
+            foreach (var file in selectedFiles)
+            {
+                var sanitizedFileName = SanitizeFileName(file.Name);
+
+                // Limitar el tamaño de lectura si es necesario (ej. 5MB por archivo)
+                var stream = file.OpenReadStream(25 * 1024 * 1024);
+                var streamContent = new StreamContent(stream);
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+                // El nombre "files" debe coincidir con el parámetro de la API
+                content.Add(streamContent, "files", sanitizedFileName);
+            }
+
+            // Realizar la petición POST al endpoint
+            var response = await httpClient.PostAsync("api/Archivos", content);
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Archivo(s) subido(s) correctamente", Severity.Success);
+                // Limpiar selección tras subida exitosa
+                await ClearAsync();
+            }
+            else
+            {
+                Snackbar.Add("Error al subir archivos.", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
     }
+
+    private async Task ClearAsync()
+    {
+        await (_fileUpload?.ClearAsync() ?? Task.CompletedTask);
+        selectedFiles.Clear();
+        imagePreviews.Clear();
+        ClearDragClass();
+    }
+
+    private Task OpenFilePickerAsync()
+        => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
 
     private void SetDragClass()
         => _dragClass = $"{DefaultDragClass} mud-border-primary";
 
     private void ClearDragClass()
-        => _dragClass = DefaultDragClass;    
+        => _dragClass = DefaultDragClass;  
 
     #endregion
 
@@ -588,6 +632,25 @@
             yield return "Este campo es requerido";
 
     }
+
+     private string SanitizeFileName(string fileName)
+    {
+        // Separa el nombre y la extensión
+        var nameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+        var extension = Path.GetExtension(fileName);
     
+        // Elimina todos los caracteres que no sean letras o números
+        var sanitized = Regex.Replace(nameWithoutExtension, "[^a-zA-Z0-9]", "");
+    
+        // Trunca el nombre a un máximo de 25 caracteres
+        if (sanitized.Length > 25)
+        {
+            sanitized = sanitized.Substring(0, 25);
+        }
+    
+        // Devuelve el nombre sanitizado con la extensión original
+        return sanitized + extension;
+    }
+
     #endregion
 }
