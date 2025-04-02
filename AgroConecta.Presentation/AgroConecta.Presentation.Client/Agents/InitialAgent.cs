@@ -84,6 +84,22 @@ public abstract class InitialAgent<TDto> : BaseAgent, IInitialAgent<TDto>
         HandleErrorResponse(response);
         return false;
     }
+    public async Task<string> AddWithIdAsync(TDto dto)
+    {
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",  await _tokenManager.GetTokenAsync());
+
+        dto.Id = String.Empty;
+        var response = await _httpClient.PostAsJsonAsync(_endpoint, dto);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            var apiResponse = await response.Content.ReadFromJsonAsync<ApiResponse<TDto>>();
+            return apiResponse?.Message.Id ?? String.Empty;
+        }
+        
+        HandleErrorResponse(response);
+        return  String.Empty;
+    }
 
     public async Task UpdateAsync(string id, TDto dto)
     {

@@ -148,6 +148,7 @@ namespace AgroConecta.Presentation.Controllers;
 
             try
             {
+                dto.Id = Guid.NewGuid().ToString();
                 await _service.AddAsync(dto);
                 var response = new ApiResponse<TDto>
                 {

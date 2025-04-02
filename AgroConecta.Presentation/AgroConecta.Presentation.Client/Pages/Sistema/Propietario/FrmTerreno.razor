@@ -18,6 +18,8 @@
 @inject IMunicipioAgent MunicipioAgent
 @inject HttpClient httpClient
 @inject ITerrenoAgent TerrenoAgent
+@inject IArchivoAgent ArchivoAgent
+
 @inject ISnackbar Snackbar
 
 <AuthorizeView Context="authContext">
@@ -197,6 +199,40 @@
                                 </MudGrid>
                             </MudContainer>
                         </MudStep>
+                        @*Comentarios y verificación*@
+                        <MudStep Title="Descripción y comentarios">
+                            <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
+                                <MudGrid Justify="Justify.Center">
+                                    <MudItem xs="12" sm="8" md="8" lg="8">
+                                        <MudGrid>
+                                            <MudItem xs="12" sm="12">
+                                                <MudText Class="pb-1" HtmlTag="label" for="input_descripcion" Color="Color.Dark">Descripción del terreno</MudText>
+                                                <MudTextField
+                                                    AutoGrow
+                                                    Lines="3"
+                                                    Margin="Margin.Dense"
+                                                    Class="flow-input"
+                                                    InputId="input_descripcion"
+                                                    @bind-Value="@Terreno.Descripcion"
+                                                    Label=""
+                                                    Variant="Variant.Outlined"
+                                                    Required="true"
+                                                    ReadOnly="@IsViewMode"
+                                                    RequiredError="Este campo es requerido"
+                                                    MaxLength="450"
+                                                />
+
+                                                <MudText Class="pb-1" HtmlTag="label" for="input_comentarios" Color="Color.Dark">Comentarios acerca del terreno</MudText>
+                                                <MudTextField AutoGrow Lines="1" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"
+                                                              MaxLength="450"
+                                                > </MudTextField>
+
+                                            </MudItem>
+                                        </MudGrid>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudContainer>
+                        </MudStep>
                         @*Imagenes del terreno*@
                         <MudStep Title="Imágenes">
                             <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
@@ -265,40 +301,7 @@
                                 </MudGrid>
                             </MudContainer>
                         </MudStep>
-                        @*Comentarios y verificación*@
-                        <MudStep Title="Descripción y comentarios">
-                            <MudContainer Class="py-4 py-sm-8 py-md-8 py-lg-8 py-xl-8">
-                                <MudGrid Justify="Justify.Center">
-                                    <MudItem xs="12" sm="8" md="8" lg="8">
-                                        <MudGrid>
-                                            <MudItem xs="12" sm="12">
-                                                <MudText Class="pb-1" HtmlTag="label" for="input_descripcion" Color="Color.Dark">Descripción del terreno</MudText>
-                                                <MudTextField
-                                                    AutoGrow
-                                                    Lines="3"
-                                                    Margin="Margin.Dense"
-                                                    Class="flow-input"
-                                                    InputId="input_descripcion"
-                                                    @bind-Value="@Terreno.Descripcion"
-                                                    Label=""
-                                                    Variant="Variant.Outlined"
-                                                    Required="true"
-                                                    ReadOnly="@IsViewMode"
-                                                    RequiredError="Este campo es requerido"
-                                                    MaxLength="450"
-                                                />
 
-                                                <MudText Class="pb-1" HtmlTag="label" for="input_comentarios" Color="Color.Dark">Comentarios acerca del terreno</MudText>
-                                                <MudTextField AutoGrow Lines="1" Margin="Margin.Dense" Class="flow-input" InputId="input_comentarios" @bind-Value="@Terreno.Comentario" Label="" Variant="Variant.Outlined"        
-                                                              MaxLength="450"
-                                                > </MudTextField>
-
-                                            </MudItem>
-                                        </MudGrid>
-                                    </MudItem>
-                                </MudGrid>
-                            </MudContainer>
-                        </MudStep>
 
                     </MudStepper>
                 </MudForm>
@@ -385,12 +388,27 @@
                 {
                     try
                     {
+                        if (!selectedFiles.Any())
+                        {
+                            Snackbar.Add("Se requiere como mínimo una imagen", Severity.Warning);
+                            args.Cancel = true;
+
+                            return;
+                        }
                         if (string.IsNullOrEmpty(Terreno.Id))
                         {
                             Terreno.Estado = (int)TerrenoEstado.Creado;
                             Terreno.PropietarioId = _usuario.Claims.First(x => x.Type == "sub").Value.ToString();
                                     
-                            await TerrenoAgent.AddAsync(Terreno);
+                            var nuevoTerrenoId = await TerrenoAgent.AddWithIdAsync(Terreno);
+                            
+                            var responseSubidaArchivos = await ArchivoAgent.UploadFiles(selectedFiles, nuevoTerrenoId);   
+                            if (!responseSubidaArchivos)
+                            {
+                                //Borrar si no se logran subir los archivos
+                                await TerrenoAgent.HardDeleteAsync(nuevoTerrenoId);
+                            }
+
                         }
                         else
                         {
@@ -407,6 +425,8 @@
                     }
 
                 }
+                await ClearAsync();
+
 
 
             }
@@ -558,7 +578,7 @@
 
         try
         {
-            // Crear el contenido multipart/form-data
+            /*// Crear el contenido multipart/form-data
             var content = new MultipartFormDataContent();
             foreach (var file in selectedFiles)
             {
@@ -573,17 +593,18 @@
             }
 
             // Realizar la petición POST al endpoint
-            var response = await httpClient.PostAsync("api/Archivos", content);
-            if (response.IsSuccessStatusCode)
-            {
-                Snackbar.Add("Archivo(s) subido(s) correctamente", Severity.Success);
-                // Limpiar selección tras subida exitosa
-                await ClearAsync();
-            }
-            else
-            {
-                Snackbar.Add("Error al subir archivos.", Severity.Error);
-            }
+            var response = await httpClient.PostAsync("api/Archivos", content);*/
+            // var response = await ArchivoAgent.UploadFiles(selectedFiles);
+            // if (response)
+            // {
+            //     Snackbar.Add("Archivo(s) subido(s) correctamente", Severity.Success);
+            //     // Limpiar selección tras subida exitosa
+            //     await ClearAsync();
+            // }
+            // else
+            // {
+            //     Snackbar.Add("Error al subir archivos.", Severity.Error);
+            // }
         }
         catch (Exception ex)
         {
@@ -633,24 +654,7 @@
 
     }
 
-     private string SanitizeFileName(string fileName)
-    {
-        // Separa el nombre y la extensión
-        var nameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-        var extension = Path.GetExtension(fileName);
-    
-        // Elimina todos los caracteres que no sean letras o números
-        var sanitized = Regex.Replace(nameWithoutExtension, "[^a-zA-Z0-9]", "");
-    
-        // Trunca el nombre a un máximo de 25 caracteres
-        if (sanitized.Length > 25)
-        {
-            sanitized = sanitized.Substring(0, 25);
-        }
-    
-        // Devuelve el nombre sanitizado con la extensión original
-        return sanitized + extension;
-    }
+
 
     #endregion
 }

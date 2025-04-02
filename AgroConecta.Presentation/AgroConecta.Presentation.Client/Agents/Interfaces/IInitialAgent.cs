@@ -9,6 +9,7 @@ public interface IInitialAgent<TDto> : IBaseAgent
     Task<IEnumerable<TDto>> GetAllAsync(string[] includes = null);
     Task<TDto?> GetByIdAsync(string id, string[] includes = null);
     Task<bool> AddAsync(TDto dto);
+    Task<string> AddWithIdAsync(TDto dto);
     Task UpdateAsync(string id, TDto dto);
     Task SoftDeleteAsync(string id);
     Task HardDeleteAsync(string id);

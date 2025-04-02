@@ -1,6 +1,7 @@
 @page "/sistema/propietario/terrenos"
 @using System.Security.Claims
 @using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema
+@using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.General
 @using AgroConecta.Presentation.Client.Agents.Sistema.Tipo
 @using AgroConecta.Presentation.Client.Components.General.Alertas
 @using AgroConecta.Shared.DTO
@@ -10,7 +11,7 @@
 @inject ITerrenoAgent TerrenoAgent
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
+@inject IArchivoAgent ArchivoAgent
 <AuthorizeView Context="authContext">
     <Authorized>
         <MudContainer Class="py-4 py-sm-8 py-md-12 py-lg-16 py-xl-20">
@@ -207,15 +208,27 @@
 
         _terrenos = await TerrenoAgent.ObtenerTerrenosDeUsuarioAsync(idUsuario);
 
-        // Mapea la colección _terrenos a una lista de TerrenoCard
-        var nuevosTerrenosCards = _terrenos.Select(t => new TerrenoCard(
-            id: t.Id,
-            titulo: t.DescripcionProvincia ?? String.Empty,
-            subtitulo: $"MUNICIPIO DE {t.DescripcionMunicipio}" ?? String.Empty,
-            descripcion:  t.Descripcion,
-            imagen: "./images/dummy/dummy-terreno-1.jpg",
-            estado:t.Estado
-        )).ToList();
+        var nuevosTerrenosCards = new List<TerrenoCard>();
+
+        foreach (var t in _terrenos)
+        {
+            // Obtiene la imagen asociada al terreno o un valor por defecto si no existe
+            var archivo = (await ArchivoAgent.GetFilesOfEntity(t.Id)).FirstOrDefault();
+            var imagenTerreno = (archivo != null && !string.IsNullOrEmpty(archivo.NombreArchivo))
+                ? $"./uploads/{archivo.NombreArchivo}"
+                : "./images/dummy/dummy-terreno-1.jpg";
+            // Mapea cada propiedad, utilizando valores predeterminados en caso de ser nulos
+            var card = new TerrenoCard(
+                id: t.Id,
+                titulo: t.DescripcionProvincia ?? string.Empty,
+                subtitulo: $"MUNICIPIO DE {t.DescripcionMunicipio}" ?? string.Empty,
+                descripcion: t.Descripcion,
+                imagen: imagenTerreno,
+                estado: t.Estado
+            );
+
+            nuevosTerrenosCards.Add(card);
+        }
         _terrenosCards = nuevosTerrenosCards;
         // Agrega los nuevos elementos a la lista existente _terrenosCards
         //_terrenosCards.AddRange(nuevosTerrenosCards);

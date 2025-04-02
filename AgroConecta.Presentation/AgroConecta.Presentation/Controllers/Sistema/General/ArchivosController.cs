@@ -27,7 +27,7 @@ public class ArchivosController : InitialController<ArchivoDTO, Archivo>
 
     private readonly IWebHostEnvironment _env;
     [HttpPost]
-    public async Task<ActionResult<List<ArchivoDTO>>> UploadFile(List<IFormFile> files)
+    public async Task<ActionResult<List<ArchivoDTO>>> UploadFile(List<IFormFile> files, [FromQuery] string entityId)
     {
 
         try
@@ -55,11 +55,19 @@ public class ArchivosController : InitialController<ArchivoDTO, Archivo>
                 archivo.NombreArchivoAlmacenado = trustedFileNameForFileStorage;
                 archivo.TipoContenido = file.ContentType;
                 archivo.TipoArchivoId = TiposArchivos.ImagenId;
+                archivo.EntidadId = entityId;
                 uploadResults.Add(archivo);
                 await base.Create(archivo);
 
+
             }
-            return Ok(uploadResults);
+            var response = new ApiResponse<IEnumerable<ArchivoDTO>>
+            {
+                Success = true,
+                Message = uploadResults
+            };
+            return Ok(response);
+            
         }
         catch (Exception ex)
         {
