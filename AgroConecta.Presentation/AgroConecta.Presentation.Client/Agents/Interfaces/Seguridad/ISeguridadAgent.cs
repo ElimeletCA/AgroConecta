@@ -1,4 +1,5 @@
 using AgroConecta.Shared.DTO;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.Seguridad;
 using AgroConecta.Shared.Seguridad.Mensajes;
 

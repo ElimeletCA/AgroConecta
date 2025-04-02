@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AgroConecta.Application.Helpers;
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.Seguridad;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;

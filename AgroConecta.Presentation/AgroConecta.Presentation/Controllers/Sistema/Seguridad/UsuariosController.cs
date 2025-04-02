@@ -5,6 +5,7 @@ using AgroConecta.Application.Servicios.Interfaces.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Presentation.Seguridad;
 using AgroConecta.Shared.Constantes.Seguridad;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.Seguridad;
 using AgroConecta.Shared.Seguridad.Mensajes;
 using Microsoft.AspNetCore.Authorization;

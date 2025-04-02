@@ -1,4 +1,4 @@
-namespace AgroConecta.Shared.DTO;
+namespace AgroConecta.Shared.DTO.Seguridad;
 
 public class AdministrarRolesUsuarioDTO
 {

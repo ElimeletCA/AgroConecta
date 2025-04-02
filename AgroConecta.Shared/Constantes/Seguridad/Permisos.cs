@@ -48,4 +48,12 @@ public class Permisos
         public const string Editar = "Permisos.Usuarios.Editar";
         public const string Eliminar = "Permisos.Usuarios.Eliminar";
     }
+    
+
+}
+public static class TiposArchivos
+{
+    public const string ImagenId = "tipo-archivo-imagen";
+    public const string DocumentoId  = "tipo-archivo-documento";
+
 }

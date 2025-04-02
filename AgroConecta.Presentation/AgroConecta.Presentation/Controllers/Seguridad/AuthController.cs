@@ -4,6 +4,7 @@ using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Presentation.Seguridad;
 using AgroConecta.Shared.Constantes.Seguridad;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.Extensions;
 using AgroConecta.Shared.Seguridad;
 using AgroConecta.Shared.Seguridad.Mensajes;

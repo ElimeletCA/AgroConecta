@@ -14,6 +14,7 @@ using AgroConecta.Application.Servicios.Interfaces.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Shared.Constantes.Seguridad;
 using AgroConecta.Shared.DTO;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.Seguridad;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;

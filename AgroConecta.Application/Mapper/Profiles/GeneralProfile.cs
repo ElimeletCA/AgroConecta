@@ -1,9 +1,11 @@
 using AgroConecta.Domain.Sistema;
 using AgroConecta.Domain.Sistema.Auditoria;
+using AgroConecta.Domain.Sistema.Extras;
 using AgroConecta.Domain.Sistema.General;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Domain.Sistema.Tipos;
 using AgroConecta.Shared.DTO;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.DTO.Tipos;
 using AgroConecta.Shared.Seguridad;
 using AutoMapper;
@@ -27,7 +29,8 @@ public class GeneralProfile : Profile
         CreateMap<TipoCultivo, TipoCultivoDTO>().ReverseMap();
         CreateMap<Municipio, MunicipioDTO>().ReverseMap();
         CreateMap<Provincia, ProvinciaDTO>().ReverseMap();
-        
+        CreateMap<Archivo, ArchivoDTO>().ReverseMap();
+
         CreateMap<TerrenoDTO, Terreno>();
          CreateMap<Terreno, TerrenoDTO>()
              .ForMember(x => x.ProvinciaId, y => y.MapFrom(x => x.Municipio.ProvinciaId))

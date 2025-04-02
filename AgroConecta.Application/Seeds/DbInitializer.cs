@@ -1,6 +1,7 @@
 using AgroConecta.Domain.Sistema.General;
 using AgroConecta.Domain.Sistema.Tipos;
 using AgroConecta.Infrastructure.Repositorios.Data;
+using AgroConecta.Shared.Constantes.Seguridad;
 
 namespace AgroConecta.Application.Seeds;
 
@@ -8,6 +9,15 @@ public static class DbInitializer
 {
     public static async Task Seed(AppDbContext context)
     {
+        if (!context.TipoArchivos.Any())
+        {
+            context.TipoArchivos.AddRange(
+                new TipoArchivo { Id = TiposArchivos.ImagenId, Descripcion = "Imagen" },
+                new TipoArchivo { Id = TiposArchivos.DocumentoId, Descripcion = "Documento" }
+
+            );
+        }
+
         // Verificar y sembrar TipoArrendamiento
         if (!context.TipoArrendamientos.Any())
         {

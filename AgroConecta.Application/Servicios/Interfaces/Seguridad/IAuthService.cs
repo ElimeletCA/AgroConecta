@@ -1,4 +1,5 @@
 using AgroConecta.Domain.Sistema.Seguridad;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.Seguridad;
 using Microsoft.AspNetCore.Http;
 

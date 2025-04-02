@@ -4,6 +4,7 @@ using AgroConecta.Presentation.Client.Agents.Interfaces.Seguridad;
 using AgroConecta.Presentation.Client.Agents.Interfaces.Sistema.Seguridad;
 using AgroConecta.Presentation.Client.Helpers.Seguridad;
 using AgroConecta.Shared.DTO;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.Seguridad;
 using AgroConecta.Shared.Seguridad.Mensajes;
 using Microsoft.JSInterop;

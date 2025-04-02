@@ -1,6 +1,7 @@
 using AgroConecta.Application.Servicios.Interfaces.Seguridad;
 using AgroConecta.Domain.Sistema.Seguridad;
 using AgroConecta.Shared.DTO;
+using AgroConecta.Shared.DTO.Seguridad;
 using AgroConecta.Shared.Seguridad;
 
 namespace AgroConecta.Application.Servicios.Interfaces.Sistema.Seguridad;
