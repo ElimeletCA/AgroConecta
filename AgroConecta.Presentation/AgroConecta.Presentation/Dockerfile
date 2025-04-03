@@ -27,6 +27,10 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
+# Cambiar temporalmente a root para crear la carpeta y asignarle permisos
+USER root
 RUN mkdir -p /app/wwwroot/uploads && chmod -R 755 /app/wwwroot/uploads
 
+# Volver al usuario definido en APP_UID
+USER ${APP_UID}
 ENTRYPOINT ["dotnet", "AgroConecta.Presentation.dll"]
