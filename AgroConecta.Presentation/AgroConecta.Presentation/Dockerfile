@@ -27,9 +27,11 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-# Cambiar temporalmente a root para crear la carpeta y asignarle permisos
+# Cambiar temporalmente a root para crear la carpeta, asignarle permisos y cambiar el propietario
 USER root
-RUN mkdir -p /app/wwwroot/uploads && chmod -R 755 /app/wwwroot/uploads
+RUN mkdir -p /app/wwwroot/uploads && \
+    chown -R ${APP_UID}:${APP_UID} /app/wwwroot/uploads && \
+    chmod -R 755 /app/wwwroot/uploads
 
 # Volver al usuario definido en APP_UID
 USER ${APP_UID}
