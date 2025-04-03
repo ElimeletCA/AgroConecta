@@ -12,27 +12,8 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IArchivoAgent ArchivoAgent
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 <AuthorizeView Context="authContext">
     <Authorized>
-        <style>
-            .mud-card-content {
-                min-height: 0px !important;
-            }
-
-            .montserrat-900 {
-                font-family: "Montserrat", sans-serif;
-                font-optical-sizing: auto;
-                font-weight: 900;
-                font-style: normal;
-            }
-
-            .dark-green {
-                color: #28600a;
-            }
-        </style>
         <MudContainer Class="py-4 py-sm-8 py-md-12 py-lg-16 py-xl-20">
             <MudItem xs="12">
                 <MudImage ObjectFit="ObjectFit.Cover" Src="./images/dummy/dummy-terreno-11.jpg" Alt="Örebro Slott" Class="rounded-lg" Height="256" Style="width: 100%" />
@@ -41,7 +22,7 @@
             <MudItem xs="12">
                 <MudGrid Class="mb-8">
                     <MudItem xs="12" md="6">
-                        <MudText Typo="Typo.h2" Class="mud-typography-h4 mb-2 montserrat-900 dark-green">
+                        <MudText Typo="Typo.h2" Class="mud-typography-h4 mb-2">
                             Mis terrenos
                         </MudText>
                         <MudSkeleton Animation="Animation.False" SkeletonType="SkeletonType.Rectangle" Height="4px" Width="20%" Style="background-color: #ffffff;" />
