@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroConecta.Application", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroConecta.Infrastructure", "AgroConecta.Infrastructure\AgroConecta.Infrastructure.csproj", "{32A6A25F-FD08-456A-87AA-7980E5234AFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgroConecta.Test", "AgroConecta.Test\AgroConecta.Test.csproj", "{4B43A96B-5300-41E2-8E96-570C1AD66A9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{32A6A25F-FD08-456A-87AA-7980E5234AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32A6A25F-FD08-456A-87AA-7980E5234AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32A6A25F-FD08-456A-87AA-7980E5234AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B43A96B-5300-41E2-8E96-570C1AD66A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B43A96B-5300-41E2-8E96-570C1AD66A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B43A96B-5300-41E2-8E96-570C1AD66A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B43A96B-5300-41E2-8E96-570C1AD66A9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

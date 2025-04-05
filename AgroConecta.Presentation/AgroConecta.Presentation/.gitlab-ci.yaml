@@ -4,6 +4,7 @@
 #
 stages:
   - build
+  - test
   - deploy
 
 build:
@@ -26,6 +27,18 @@ build:
       --tag $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
+test:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  script:
+    - echo "Ejecutando pruebas de NUnit..."
+    - dotnet restore AgroConecta.Test/AgroConecta.Test.csproj 
+    - dotnet build AgroConecta.Test/AgroConecta.Test.csproj  
+    - dotnet test AgroConecta.Test/AgroConecta.Test.csproj --logger "trx" --results-directory "test-results"
+  artifacts:
+    when: always
+    paths:
+      - test-results/*.trx
 deploy:
   tags:
     - dind
